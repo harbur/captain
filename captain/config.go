@@ -16,6 +16,7 @@ type Config interface {
 }
 
 type config struct {
+	Build  map[string][]string
 	Images []string
 }
 
@@ -113,11 +114,6 @@ func NewConfig(options Options, forceOrder bool) Config {
 
 // Containers returns the containers of the config in order
 func (c *config) GetImageNames() []string {
-	// var containers Containers
-	// for _, name := range c.order {
-	// 	containers = append([]Container{c.containerMap[name]}, containers...)
-	// }
-	// fmt.Printf("%#v\n", c.Images)
-
-	return c.Images
+	// fmt.Printf("%#v\n", c.Build["images"])
+	return c.Build["images"]
 }

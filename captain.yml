@@ -1,2 +1,3 @@
-images:
+build:
+  images:
   - Dockerfile=harbur/captain
