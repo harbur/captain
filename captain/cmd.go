@@ -5,6 +5,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type Options struct {
+	config string
+	images []string
+}
+
+var options Options
+
 func handleCmd() {
 
 	var cmdBuild = &cobra.Command{
@@ -12,6 +19,9 @@ func handleCmd() {
 		Short: "Builds the docker image(s) of your repository",
 		Long:  `It will build the docker image(s) described on captain.yml in order they appear on file.`,
 		Run: func(cmd *cobra.Command, args []string) {
+			config := NewConfig(options, true)
+			fmt.Println(config.GetImageNames())
+
 			fmt.Println("Coming soon...")
 		},
 	}
