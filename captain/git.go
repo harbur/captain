@@ -1,4 +1,4 @@
-package captain
+package captain // import "github.com/harbur/captain"
 
 import (
 	"bytes"

@@ -13,7 +13,12 @@ Here is a full `captain.yml` example:
 ```yaml
 build:
   images:
-    - Dockerfile=harbur/hello-world
+    - Dockerfile=harbur/hell-world
+    - Dockerfile.test=harbur/hello-world-test
+test:
+  unit:
+    - docker run -e NODE_ENV=TEST harbur/hello-world-test node mochaTest
+    - docker run -e NODE_ENV=TEST harbur/hello-world-test node karmaTest
 ```
 
 ## build section
@@ -30,4 +35,19 @@ build:
     - Dockerfile=harbur/hello-world
     - Dockerfile.dev=harbur/hello-world-dev
     - test/Dockerfile=harbur/hello-world-test
+```
+
+## test section
+
+*unit*
+
+List of commands that run unit tests
+
+e.g.
+
+```yaml
+test:
+  unit:
+    - docker run -e NODE_ENV=TEST harbur/hello-world-test node mochaTest
+    - docker run -e NODE_ENV=TEST harbur/hello-world-test node karmaTest
 ```

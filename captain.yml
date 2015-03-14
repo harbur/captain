@@ -1,3 +1,7 @@
 build:
   images:
-  - Dockerfile=harbur/captain
+    - Dockerfile=harbur/captain
+    - Dockerfile.test=harbur/captain-test
+test:
+  unit:
+    - docker run harbur/captain-test go test ./...

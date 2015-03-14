@@ -1,4 +1,4 @@
-package captain
+package captain // import "github.com/harbur/captain"
 
 import (
 	"fmt"
@@ -48,6 +48,25 @@ func handleCmd() {
 		},
 	}
 
+	var cmdTest = &cobra.Command{
+		Use:   "test",
+		Short: "Runs the unit tests",
+		Long:  `It will execute the commands described on unit testing in order they appear on file.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			config := NewConfig(options, true)
+
+			for _, value := range config.GetUnitTestCommands() {
+				fmt.Printf("%s Running unit test command: %s\n", prefix("[CAPTAIN]"), info(value))
+
+				cmd := exec.Command("bash", "-c", value)
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				cmd.Stdin = os.Stdin
+				cmd.Run()
+			}
+		},
+	}
+
 	var cmdVersion = &cobra.Command{
 		Use:   "version",
 		Short: "Display version",
@@ -66,6 +85,6 @@ Captain, the CLI build tool for Docker made for Continuous Integration / Continu
 It works by reading captain.yaml file which describes how to build, test, push and release the docker image(s) of your repository.`,
 	}
 
-	captainCmd.AddCommand(cmdBuild, cmdVersion)
+	captainCmd.AddCommand(cmdBuild, cmdTest, cmdVersion)
 	captainCmd.Execute()
 }

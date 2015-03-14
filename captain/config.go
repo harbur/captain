@@ -1,4 +1,4 @@
-package captain
+package captain // import "github.com/harbur/captain"
 
 import (
 	"bytes"
@@ -13,10 +13,12 @@ import (
 
 type Config interface {
 	GetImageNames() []string
+	GetUnitTestCommands() []string
 }
 
 type config struct {
 	Build  map[string][]string
+	Test   map[string][]string
 	Images []string
 }
 
@@ -112,8 +114,12 @@ func NewConfig(options Options, forceOrder bool) Config {
 	return config
 }
 
-// Containers returns the containers of the config in order
 func (c *config) GetImageNames() []string {
 	// fmt.Printf("%#v\n", c.Build["images"])
 	return c.Build["images"]
+}
+
+func (c *config) GetUnitTestCommands() []string {
+	fmt.Printf("%#v\n", c.Test["unit"])
+	return c.Test["unit"]
 }
