@@ -1,8 +1,13 @@
 package captain
 
 import (
+	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
+	"os"
+	"os/exec"
+	"strings"
+	"syscall"
 )
 
 type Options struct {
@@ -20,9 +25,23 @@ func handleCmd() {
 		Long:  `It will build the docker image(s) described on captain.yml in order they appear on file.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			config := NewConfig(options, true)
-			fmt.Println(config.GetImageNames())
 
-			fmt.Println("Coming soon...")
+			for _, value := range config.GetImageNames() {
+				s := strings.Split(value, "=")
+				dockerfile, image := s[0], s[1]
+
+				fmt.Println("Building image " + image)
+				cmd := exec.Command("docker", "build", "-f", dockerfile, "-t", image, ".")
+				cmd.Stdout = os.Stdout
+				cmd.Stderr = os.Stderr
+				cmd.Stdin = os.Stdin
+				cmd.Run()
+
+				if !cmd.ProcessState.Success() {
+					status := cmd.ProcessState.Sys().(syscall.WaitStatus).ExitStatus()
+					panic(StatusError{errors.New(cmd.ProcessState.String()), status})
+				}
+			}
 		},
 	}
 
