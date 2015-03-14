@@ -30,13 +30,20 @@ func handleCmd() {
 
 				var rev = getRevision()
 				var imagename = image + ":" + rev
-				fmt.Printf("Building image %s\n", info(imagename))
+				fmt.Printf("%s Building image %s\n", prefix("[CAPTAIN]"), info(image))
 
-				cmd := exec.Command("docker", "build", "-f", dockerfile, "-t", imagename, ".")
+				cmd := exec.Command("docker", "build", "-f", dockerfile, "-t", image, ".")
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
 				cmd.Stdin = os.Stdin
 				cmd.Run()
+
+				fmt.Printf("%s Tagging image as %s\n", prefix("[CAPTAIN]"), info(imagename))
+				tagCmd := exec.Command("docker", "tag", "-f", image, imagename)
+				tagCmd.Stdout = os.Stdout
+				tagCmd.Stderr = os.Stderr
+				tagCmd.Stdin = os.Stdin
+				tagCmd.Run()
 			}
 		},
 	}
