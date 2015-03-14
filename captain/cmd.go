@@ -1,14 +1,11 @@
 package captain
 
 import (
-	"bytes"
-	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
 	"os/exec"
 	"strings"
-	"syscall"
 )
 
 type Options struct {
@@ -30,27 +27,16 @@ func handleCmd() {
 			for _, value := range config.GetImageNames() {
 				s := strings.Split(value, "=")
 				dockerfile, image := s[0], s[1]
-				fmt.Println(dockerfile + image)
 
-				var buff bytes.Buffer
+				var rev = getRevision()
+				var imagename = image + ":" + rev
+				fmt.Printf("Building image %s\n", info(imagename))
 
-				gitCmd := exec.Command("git", "rev-parse", "--short", "HEAD")
-				gitCmd.Stdout = &buff
-				gitCmd.Run()
-				fmt.Println(buff.String())
-				var rev = strings.TrimSpace(buff.String())
-
-				fmt.Println("Building image " + image)
-				cmd := exec.Command("docker", "build", "-f", dockerfile, "-t", image+":"+rev, ".")
+				cmd := exec.Command("docker", "build", "-f", dockerfile, "-t", imagename, ".")
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
 				cmd.Stdin = os.Stdin
 				cmd.Run()
-				// cmd := gitCmd
-				if !cmd.ProcessState.Success() {
-					status := cmd.ProcessState.Sys().(syscall.WaitStatus).ExitStatus()
-					panic(StatusError{errors.New(cmd.ProcessState.String()), status})
-				}
 			}
 		},
 	}
