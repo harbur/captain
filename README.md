@@ -26,7 +26,7 @@ e.g.
 
 ```yaml
 build:
-  dockerfiles:
+  images:
     - Dockerfile=harbur/hello-world
     - Dockerfile.dev=harbur/hello-world-dev
     - test/Dockerfile=harbur/hello-world-test
