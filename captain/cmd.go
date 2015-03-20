@@ -3,13 +3,13 @@ package captain // import "github.com/harbur/captain/captain"
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/spf13/cobra"
 )
 
 type Options struct {
+	debug  bool
 	config string
 	images []string
 }
@@ -61,12 +61,7 @@ func handleCmd() {
 
 			for _, value := range config.GetUnitTestCommands() {
 				info("Running unit test command: %s", value)
-
-				cmd := exec.Command("bash", "-c", value)
-				cmd.Stdout = os.Stdout
-				cmd.Stderr = os.Stderr
-				cmd.Stdin = os.Stdin
-				cmd.Run()
+				execute("bash", "-c", value)
 			}
 		},
 	}
@@ -89,6 +84,7 @@ Captain, the CLI build tool for Docker made for Continuous Integration / Continu
 It works by reading captain.yaml file which describes how to build, test, push and release the docker image(s) of your repository.`,
 	}
 
+	captainCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "D", false, "Enable debug mode")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdVersion)
 	captainCmd.Execute()
 }

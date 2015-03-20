@@ -5,6 +5,7 @@ import (
 )
 
 var color_prefix = color.New(color.FgWhite, color.Bold).SprintFunc()
+var color_debug = color.New(color.FgBlue).SprintFunc()
 var color_info = color.New(color.FgGreen).SprintFunc()
 var color_warn = color.New(color.FgYellow).SprintFunc()
 var color_err = color.New(color.FgRed).SprintFunc()

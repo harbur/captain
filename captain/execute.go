@@ -8,6 +8,13 @@ import (
 )
 
 func execute(name string, arg ...string) *exec.Cmd {
+	// Construct command for debug purposes
+	var command = name
+	for _, i := range arg {
+		command += " " + i
+	}
+
+	debug("Executing %s", command)
 	cmd := exec.Command(name, arg...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
