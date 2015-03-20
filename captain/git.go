@@ -15,3 +15,13 @@ func getRevision() string {
 
 	return rev
 }
+
+func getBranch() string {
+	var buff bytes.Buffer
+	gitCmd := exec.Command("git", "rev-parse", "--abbrev-ref", "HEAD")
+	gitCmd.Stdout = &buff
+	gitCmd.Run()
+	var rev = strings.TrimSpace(buff.String())
+
+	return rev
+}

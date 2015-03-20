@@ -29,8 +29,6 @@ func handleCmd() {
 				s := strings.Split(value, "=")
 				dockerfile, image := s[0], s[1]
 
-				var rev = getRevision()
-				var imagename = image + ":" + rev
 				fmt.Printf("%s Building image %s\n", prefix("[CAPTAIN]"), info(image))
 
 				cmd := exec.Command("docker", "build", "-f", dockerfile, "-t", image, ".")
@@ -39,12 +37,23 @@ func handleCmd() {
 				cmd.Stdin = os.Stdin
 				cmd.Run()
 
+				var rev = getRevision()
+				var imagename = image + ":" + rev
 				fmt.Printf("%s Tagging image as %s\n", prefix("[CAPTAIN]"), info(imagename))
 				tagCmd := exec.Command("docker", "tag", "-f", image, imagename)
 				tagCmd.Stdout = os.Stdout
 				tagCmd.Stderr = os.Stderr
 				tagCmd.Stdin = os.Stdin
 				tagCmd.Run()
+
+				var branch = getBranch()
+				var branchname = image + ":" + branch
+				fmt.Printf("%s Tagging image as %s\n", prefix("[CAPTAIN]"), info(branchname))
+				branchCmd := exec.Command("docker", "tag", "-f", image, branchname)
+				branchCmd.Stdout = os.Stdout
+				branchCmd.Stderr = os.Stderr
+				branchCmd.Stdin = os.Stdin
+				branchCmd.Run()
 			}
 		},
 	}
