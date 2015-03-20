@@ -19,28 +19,34 @@ var options Options
 func handleCmd() {
 
 	var cmdBuild = &cobra.Command{
-		Use:   "build",
+		Use:   "build [image]",
 		Short: "Builds the docker image(s) of your repository",
 		Long:  `It will build the docker image(s) described on captain.yml in order they appear on file.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			config := NewConfig(options, true)
 
-			for _, value := range config.GetImageNames() {
+			var images = config.GetImageNames()
+
+			if len(args) == 1 {
+				images = filterImages(images, args[0])
+			}
+
+			for _, value := range images {
 				s := strings.Split(value, "=")
 				dockerfile, image := s[0], s[1]
 
-				fmt.Printf("%s Building image %s\n", prefix("[CAPTAIN]"), info(image))
+				info("Building image %s", image)
 
 				execute("docker", "build", "-f", dockerfile, "-t", image, ".")
 
 				var rev = getRevision()
 				var imagename = image + ":" + rev
-				fmt.Printf("%s Tagging image as %s\n", prefix("[CAPTAIN]"), info(imagename))
+				info("Tagging image as %s", imagename)
 				execute("docker", "tag", "-f", image, imagename)
 
 				var branch = getBranch()
 				var branchname = image + ":" + branch
-				fmt.Printf("%s Tagging image as %s\n", prefix("[CAPTAIN]"), info(branchname))
+				info("Tagging image as %s", branchname)
 				execute("docker", "tag", "-f", image, branchname)
 			}
 		},
@@ -54,7 +60,7 @@ func handleCmd() {
 			config := NewConfig(options, true)
 
 			for _, value := range config.GetUnitTestCommands() {
-				fmt.Printf("%s Running unit test command: %s\n", prefix("[CAPTAIN]"), info(value))
+				info("Running unit test command: %s", value)
 
 				cmd := exec.Command("bash", "-c", value)
 				cmd.Stdout = os.Stdout
@@ -85,4 +91,17 @@ It works by reading captain.yaml file which describes how to build, test, push a
 
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdVersion)
 	captainCmd.Execute()
+}
+
+func filterImages(images []string, arg string) []string {
+	for _, value := range images {
+		s := strings.Split(value, "=")
+		_, image := s[0], s[1]
+		if image == arg {
+			return []string{value}
+		}
+	}
+	err("Build image %s is not defined", arg)
+	os.Exit(-1)
+	return []string{}
 }
