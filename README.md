@@ -23,7 +23,7 @@ test:
 
 ## build section
 
-* *images*: A list of the Dockerfiles to be compiled accompanied by their docker image namespace.
+**images**: A list of the Dockerfiles to be compiled accompanied by their docker image namespace.
 
 e.g.
 
@@ -37,7 +37,7 @@ build:
 
 ## test section
 
-* *unit*: List of commands that run unit tests
+**unit**: List of commands that run unit tests
 
 e.g.
 
