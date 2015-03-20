@@ -116,11 +116,9 @@ func NewConfig(options Options, forceOrder bool) Config {
 }
 
 func (c *config) GetImageNames() []string {
-	// fmt.Printf("%#v\n", c.Build["images"])
 	return c.Build["images"]
 }
 
 func (c *config) GetUnitTestCommands() []string {
-	fmt.Printf("%#v\n", c.Test["unit"])
 	return c.Test["unit"]
 }
