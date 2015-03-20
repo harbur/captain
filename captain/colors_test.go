@@ -1,8 +1,9 @@
-package captain // import "github.com/harbur/captain"
+package captain // import "github.com/harbur/captain/captain"
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestColorCodes(t *testing.T) {

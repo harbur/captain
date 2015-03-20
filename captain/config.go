@@ -1,14 +1,15 @@
-package captain // import "github.com/harbur/captain"
+package captain // import "github.com/harbur/captain/captain"
 
 import (
 	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"gopkg.in/v2/yaml"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"gopkg.in/v2/yaml"
 )
 
 type Config interface {

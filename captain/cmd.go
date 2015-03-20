@@ -1,11 +1,12 @@
-package captain // import "github.com/harbur/captain"
+package captain // import "github.com/harbur/captain/captain"
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 type Options struct {
