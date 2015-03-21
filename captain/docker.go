@@ -25,7 +25,7 @@ func buildImage(dockerfile string, image string) {
 }
 
 func tagImage(target string, repo string, tag string) {
-	info("Tagging image as %s", target)
+	info("Tagging image as %s", target+":"+tag)
 	opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
 	client.TagImage(target, opts)
 }
