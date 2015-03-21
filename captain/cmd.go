@@ -47,6 +47,9 @@ func handleCmd() {
 					execute("docker", "tag", "-f", image, imagename)
 
 					var branch = getBranch()
+					if branch == "HEAD" {
+						debug("Skipping tag of %s in detached mode", image)
+					}
 					if branch != "HEAD" {
 						var branchname = image + ":" + branch
 						info("Tagging image as %s", branchname)
