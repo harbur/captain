@@ -41,13 +41,13 @@ func handleCmd() {
 					debug("Skipping tag of %s", image)
 				} else {
 					var rev = getRevision()
-					var imagename = image + ":" + rev
-					tagImage(image, imagename)
+					tagImage(image, image, rev)
 
 					var branch = getBranch()
-					if branch != "HEAD" {
-						var branchname = image + ":" + branch
-						tagImage(image, branchname)
+					if branch == "HEAD" {
+						debug("Skipping tag of %s in detached mode", image)
+					} else {
+						tagImage(image, image, branch)
 					}
 				}
 			}
