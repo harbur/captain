@@ -47,9 +47,11 @@ func handleCmd() {
 					execute("docker", "tag", "-f", image, imagename)
 
 					var branch = getBranch()
-					var branchname = image + ":" + branch
-					info("Tagging image as %s", branchname)
-					execute("docker", "tag", "-f", image, branchname)
+					if branch != "HEAD" {
+						var branchname = image + ":" + branch
+						info("Tagging image as %s", branchname)
+						execute("docker", "tag", "-f", image, branchname)
+					}
 				}
 			}
 		},
