@@ -36,18 +36,22 @@ func handleCmd() {
 				dockerfile, image := s[0], s[1]
 
 				info("Building image %s", image)
-
 				execute("docker", "build", "-f", dockerfile, "-t", image, ".")
 
-				var rev = getRevision()
-				var imagename = image + ":" + rev
-				info("Tagging image as %s", imagename)
-				execute("docker", "tag", "-f", image, imagename)
+				if isDirty() {
+					debug("Skipping tag of %s", image)
+				} else {
+					var rev = getRevision()
+					var imagename = image + ":" + rev
+					imagename = imagename + "x"
+					info("Tagging image as %s", imagename)
+					execute("docker", "tag", "-f", image, imagename)
 
-				var branch = getBranch()
-				var branchname = image + ":" + branch
-				info("Tagging image as %s", branchname)
-				execute("docker", "tag", "-f", image, branchname)
+					var branch = getBranch()
+					var branchname = image + ":" + branch
+					info("Tagging image as %s", branchname)
+					execute("docker", "tag", "-f", image, branchname)
+				}
 			}
 		},
 	}
