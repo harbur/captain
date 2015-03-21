@@ -7,3 +7,8 @@ func getRevision() string {
 func getBranch() string {
 	return oneliner("git", "rev-parse", "--abbrev-ref", "HEAD")
 }
+
+func isDirty() bool {
+	var res = oneliner("git", "status", "--porcelain")
+	return len(res) > 0
+}
