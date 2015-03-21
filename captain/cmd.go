@@ -35,25 +35,19 @@ func handleCmd() {
 				s := strings.Split(value, "=")
 				dockerfile, image := s[0], s[1]
 
-				info("Building image %s", image)
-				execute("docker", "build", "-f", dockerfile, "-t", image, ".")
+				buildImage(dockerfile, image)
 
 				if isDirty() {
 					debug("Skipping tag of %s", image)
 				} else {
 					var rev = getRevision()
 					var imagename = image + ":" + rev
-					info("Tagging image as %s", imagename)
-					execute("docker", "tag", "-f", image, imagename)
+					tagImage(image, imagename)
 
 					var branch = getBranch()
-					if branch == "HEAD" {
-						debug("Skipping tag of %s in detached mode", image)
-					}
 					if branch != "HEAD" {
 						var branchname = image + ":" + branch
-						info("Tagging image as %s", branchname)
-						execute("docker", "tag", "-f", image, branchname)
+						tagImage(image, branchname)
 					}
 				}
 			}
