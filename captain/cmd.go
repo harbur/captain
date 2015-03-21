@@ -43,7 +43,6 @@ func handleCmd() {
 				} else {
 					var rev = getRevision()
 					var imagename = image + ":" + rev
-					imagename = imagename + "x"
 					info("Tagging image as %s", imagename)
 					execute("docker", "tag", "-f", image, imagename)
 
