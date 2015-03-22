@@ -35,7 +35,12 @@ func handleCmd() {
 				s := strings.Split(value, "=")
 				dockerfile, image := s[0], s[1]
 
-				buildImage(dockerfile, image)
+				// Build commit image
+				if imageExist(image, rev) {
+					debug("Skipping build of %s:%s, image already exist", image, rev)
+				} else {
+					buildImage(dockerfile, image)
+				}
 
 				if isDirty() {
 					debug("Skipping tag of %s", image)

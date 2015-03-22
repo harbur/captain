@@ -28,4 +28,15 @@ func tagImage(target string, repo string, tag string) {
 	info("Tagging image as %s", target+":"+tag)
 	opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
 	client.TagImage(target, opts)
+
+func imageExist(repo string, tag string) bool {
+	images, _ := client.ListImages(docker.ListImagesOptions{})
+	for _, image := range images {
+		for _, b := range image.RepoTags {
+			if b == repo+":"+tag {
+				return true
+			}
+		}
+	}
+	return false
 }
