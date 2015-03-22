@@ -39,6 +39,18 @@ func handleCmd() {
 				// Skip build if there are no local changes and the commit is already built
 				if !isDirty() && imageExist(image, rev) {
 					info("Skipping build of %s:%s - image is already built", image, rev)
+
+					// Tag commit image
+					tagImage(image, rev, "latest")
+
+					// Tag branch image
+					var branch = getBranch()
+					if branch == "HEAD" {
+						debug("Skipping tag of %s in detached mode", image)
+					} else {
+						tagImage(image, rev, branch)
+					}
+
 				} else {
 					// Build latest image
 					buildImage(dockerfile, image, "latest")
