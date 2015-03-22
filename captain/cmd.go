@@ -30,31 +30,35 @@ func handleCmd() {
 			if len(args) == 1 {
 				images = filterImages(images, args[0])
 			}
+			var rev = getRevision()
 
 			for _, value := range images {
 				s := strings.Split(value, "=")
 				dockerfile, image := s[0], s[1]
 
-				// Build commit image
-				if imageExist(image, rev) {
-					debug("Skipping build of %s:%s, image already exist", image, rev)
+				// Skip build if there are no local changes and the commit is already built
+				if !isDirty() && imageExist(image, rev) {
+					info("Skipping build of %s:%s - image is already built", image, rev)
 				} else {
-					buildImage(dockerfile, image)
-				}
-
-				if isDirty() {
-					debug("Skipping tag of %s", image)
-				} else {
-					var rev = getRevision()
-					tagImage(image, image, rev)
-
-					var branch = getBranch()
-					if branch == "HEAD" {
-						debug("Skipping tag of %s in detached mode", image)
+					// Build latest image
+					buildImage(dockerfile, image, "latest")
+					if isDirty() {
+						debug("Skipping tag of %s:%s - local changes exist", image, rev)
 					} else {
-						tagImage(image, image, branch)
+						// Tag commit image
+						tagImage(image, "latest", rev)
+
+						// Tag branch image
+						var branch = getBranch()
+						if branch == "HEAD" {
+							debug("Skipping tag of %s in detached mode", image)
+						} else {
+							tagImage(image, "latest", branch)
+						}
 					}
+
 				}
+
 			}
 		},
 	}

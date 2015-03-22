@@ -1,6 +1,7 @@
 package captain // import "github.com/harbur/captain/captain"
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/fsouza/go-dockerclient"
@@ -9,11 +10,11 @@ import (
 var endpoint = "unix:///var/run/docker.sock"
 var client, _ = docker.NewClient(endpoint)
 
-func buildImage(dockerfile string, image string) {
-	info("Building image %s", image)
+func buildImage(dockerfile string, image string, tag string) {
+	info("Building image %s:%s", image, tag)
 
 	opts := docker.BuildImageOptions{
-		Name:                image,
+		Name:                image + ":" + tag,
 		NoCache:             false,
 		SuppressOutput:      false,
 		RmTmpContainer:      true,
@@ -24,10 +25,25 @@ func buildImage(dockerfile string, image string) {
 	client.BuildImage(opts)
 }
 
-func tagImage(target string, repo string, tag string) {
-	info("Tagging image as %s", target+":"+tag)
+func tagImage(repo string, origin string, tag string) {
+	info("Tagging image as %s:%s (%s)", repo, tag, origin)
+	var imageID = getImageID(repo, origin)
+	fmt.Println(imageID)
 	opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
-	client.TagImage(target, opts)
+	client.TagImage(repo, opts)
+}
+
+func getImageID(repo string, tag string) string {
+	images, _ := client.ListImages(docker.ListImagesOptions{})
+	for _, image := range images {
+		for _, b := range image.RepoTags {
+			if b == repo+":"+tag {
+				return image.ID
+			}
+		}
+	}
+	return ""
+}
 
 func imageExist(repo string, tag string) bool {
 	images, _ := client.ListImages(docker.ListImagesOptions{})
