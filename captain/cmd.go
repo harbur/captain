@@ -10,6 +10,7 @@ import (
 
 type Options struct {
 	debug  bool
+	force  bool
 	config string
 	images []string
 }
@@ -42,7 +43,7 @@ func handleCmd() {
 				dockerfile, image := s[0], s[1]
 
 				// Skip build if there are no local changes and the commit is already built
-				if !isDirty() && imageExist(image, rev) {
+				if !isDirty() && imageExist(image, rev) && !options.force {
 					info("Skipping build of %s:%s - image is already built", image, rev)
 
 					// Tag commit image
@@ -119,6 +120,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	}
 
 	captainCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "D", false, "Enable debug mode")
+	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdVersion)
 	captainCmd.Execute()
 }
