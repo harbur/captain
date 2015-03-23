@@ -16,6 +16,11 @@ type Options struct {
 
 var options Options
 
+var (
+	BUILD_FAILED = 1
+	TAG_FAILED   = 2
+)
+
 func handleCmd() {
 
 	var cmdBuild = &cobra.Command{
@@ -53,7 +58,10 @@ func handleCmd() {
 
 				} else {
 					// Build latest image
-					buildImage(dockerfile, image, "latest")
+					err := buildImage(dockerfile, image, "latest")
+					if err != nil {
+						os.Exit(BUILD_FAILED)
+					}
 					if isDirty() {
 						debug("Skipping tag of %s:%s - local changes exist", image, rev)
 					} else {
@@ -65,7 +73,10 @@ func handleCmd() {
 						if branch == "HEAD" {
 							debug("Skipping tag of %s in detached mode", image)
 						} else {
-							tagImage(image, "latest", branch)
+							err := tagImage(image, "latest", branch)
+							if err != nil {
+								os.Exit(TAG_FAILED)
+							}
 						}
 					}
 

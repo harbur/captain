@@ -10,7 +10,7 @@ import (
 var endpoint = "unix:///var/run/docker.sock"
 var client, _ = docker.NewClient(endpoint)
 
-func buildImage(dockerfile string, image string, tag string) {
+func buildImage(dockerfile string, image string, tag string) error {
 	info("Building image %s:%s", image, tag)
 
 	opts := docker.BuildImageOptions{
@@ -26,9 +26,10 @@ func buildImage(dockerfile string, image string, tag string) {
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
+	return err
 }
 
-func tagImage(repo string, origin string, tag string) {
+func tagImage(repo string, origin string, tag string) error {
 	info("Tagging image %s:%s as %s:%s", repo, origin, repo, tag)
 	// var imageID = getImageID(repo, origin)
 	opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
@@ -36,6 +37,7 @@ func tagImage(repo string, origin string, tag string) {
 	if err != nil {
 		fmt.Printf("%s", err)
 	}
+	return err
 }
 
 func getImageID(repo string, tag string) string {
