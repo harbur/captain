@@ -1,6 +1,7 @@
 package captain // import "github.com/harbur/captain/captain"
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/fsouza/go-dockerclient"
@@ -21,14 +22,20 @@ func buildImage(dockerfile string, image string, tag string) {
 		OutputStream:        os.Stdout,
 		ContextDir:          ".",
 	}
-	client.BuildImage(opts)
+	err := client.BuildImage(opts)
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
 }
 
 func tagImage(repo string, origin string, tag string) {
 	info("Tagging image %s:%s as %s:%s", repo, origin, repo, tag)
 	// var imageID = getImageID(repo, origin)
 	opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
-	client.TagImage(repo, opts)
+	err := client.TagImage(repo, opts)
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
 }
 
 func getImageID(repo string, tag string) string {
