@@ -15,6 +15,7 @@ func buildImage(dockerfile string, image string, tag string) error {
 
 	opts := docker.BuildImageOptions{
 		Name:                image + ":" + tag,
+		Dockerfile:          dockerfile,
 		NoCache:             false,
 		SuppressOutput:      false,
 		RmTmpContainer:      true,
