@@ -4,4 +4,4 @@ build:
     - Dockerfile.test=harbur/captain-test
 test:
   unit:
-    - docker run harbur/captain-test go test ./...
+    - docker run harbur/captain-test go test github.com/harbur/captain/captain
