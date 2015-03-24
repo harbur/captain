@@ -1,8 +1,8 @@
 # Introduction
 
-Captain, the CLI build tool for Docker made for Continuous Integration / Continuous Delivery
+Captain - Convert your Git workflow to Docker containers ready for Continuous Delivery
 
-Ditch your Makefiles and use a yaml format to describe your docker build process.
+Define your workflow in the `captain.yaml` and use captain to your Continuous Delivery service to create containers for each commit, test them and push them to your registry only when tests passes.
 
 ## Documentation
 
