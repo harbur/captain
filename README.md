@@ -4,9 +4,9 @@ Captain - Convert your Git workflow to Docker containers ready for Continuous De
 
 Define your workflow in the `captain.yaml` and use captain to your Continuous Delivery service to create containers for each commit, test them and push them to your registry only when tests passes.
 
-* Use `captain build` to build your Dockerfile(s) of your repository. If your repository has local changes the containers will only be tagged as `latest`, otherwise the containers will be tagged as *latest*, *COMMIT_ID* & *BRANCH_NAME*. Now your Git commit tree is reproduced in your local docker repository.
-* Define your test suites and run them with `captain test`.
-* Choose the images you want and use `captain push` to send the to the remote repository and you have a continuous delivery process.
+* Use `captain build` to build your Dockerfile(s) of your repository. If your repository has local changes the containers will only be tagged as *latest*, otherwise the containers will be tagged as *latest*, *COMMIT_ID* & *BRANCH_NAME*. Now your Git commit tree is reproduced in your local docker repository.
+* Use `captain test` to run your tests
+* Use `captain push` to send selected images to the remote repository
 
 From the other side, you can now pull the feature branch you want to test, or create distribution channels (such as 'alpha', 'beta', 'stable') using git tags that are propagated to container tags.
 
