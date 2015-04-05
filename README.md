@@ -10,6 +10,8 @@ Define your workflow in the `captain.yaml` and use captain to your Continuous De
 
 From the other side, you can now pull the feature branch you want to test, or create distribution channels (such as 'alpha', 'beta', 'stable') using git tags that are propagated to container tags.
 
+![intro](https://cloud.githubusercontent.com/assets/367397/6997822/c9aeadd8-dbcb-11e4-9901-dd62bcb33e5e.gif)
+
 ## Documentation
 
 Captain will automatically configure itself with sane values without the need for any pre-configuration, so that it will work in most cases. When it doesn't, the `captain.yml` file can be used to configure it properly. This is a simple YAML file placed on the root directory of your git repository. Captain will look for it and use it to be configured.
