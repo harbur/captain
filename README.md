@@ -21,7 +21,7 @@ Here is a full `captain.yml` example:
 ```yaml
 build:
   images:
-    - Dockerfile=harbur/hell-world
+    - Dockerfile=harbur/hello-world
     - Dockerfile.test=harbur/hello-world-test
 test:
   unit:
