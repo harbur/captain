@@ -12,3 +12,8 @@ func isDirty() bool {
 	var res = oneliner("git", "status", "--porcelain")
 	return len(res) > 0
 }
+
+func isGit() bool {
+	var res = getRevision()
+	return len(res) > 0
+}

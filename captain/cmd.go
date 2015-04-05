@@ -18,8 +18,10 @@ type Options struct {
 var options Options
 
 var (
-	BUILD_FAILED = 1
-	TAG_FAILED   = 2
+	BUILD_FAILED   = 1
+	TAG_FAILED     = 2
+	NONEXIST_IMAGE = 3
+	NO_CAPTAIN_YML = 4
 )
 
 func handleCmd() {
@@ -90,6 +92,6 @@ func filterImages(images []string, arg string) []string {
 		}
 	}
 	err("Build image %s is not defined", arg)
-	os.Exit(-1)
+	os.Exit(NONEXIST_IMAGE)
 	return []string{}
 }

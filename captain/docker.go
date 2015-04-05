@@ -31,14 +31,19 @@ func buildImage(dockerfile string, image string, tag string) error {
 }
 
 func tagImage(repo string, origin string, tag string) error {
-	info("Tagging image %s:%s as %s:%s", repo, origin, repo, tag)
-	// var imageID = getImageID(repo, origin)
-	opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
-	err := client.TagImage(repo, opts)
-	if err != nil {
-		fmt.Printf("%s", err)
+	if tag != "" {
+		info("Tagging image %s:%s as %s:%s", repo, origin, repo, tag)
+		// var imageID = getImageID(repo, origin)
+		opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
+		err := client.TagImage(repo, opts)
+		if err != nil {
+			fmt.Printf("%s", err)
+		}
+		return err
+	} else {
+		debug("Skipping tag of %s - no git repository", repo)
 	}
-	return err
+	return nil
 }
 
 func getImageID(repo string, tag string) string {

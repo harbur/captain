@@ -105,7 +105,8 @@ func NewConfig(options Options, forceOrder bool) Config {
 		}
 	}
 	if config == nil {
-		panic(StatusError{fmt.Errorf("No configuration found %v", configFiles(options)), 78})
+		err("No configuration found %v", configFiles(options))
+		os.Exit(NO_CAPTAIN_YML)
 	}
 
 	var err error
