@@ -36,7 +36,7 @@ func handleCmd() {
 				images = args[0]
 			}
 
-			Run(config, images)
+			Build(config, images)
 		},
 	}
 
@@ -46,6 +46,9 @@ func handleCmd() {
 		Long:  `It will execute the commands described on unit testing in order they appear on file.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			config := NewConfig(options, true)
+
+			// Build everything before testing
+			Build(config, "")
 
 			for _, value := range config.GetUnitTestCommands() {
 				info("Running unit test command: %s", value)

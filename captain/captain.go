@@ -13,7 +13,7 @@ func RealMain() {
 	handleCmd()
 }
 
-func Run(config Config, filter string) {
+func Build(config Config, filter string) {
 	var images = config.GetImageNames()
 
 	if filter != "" {
