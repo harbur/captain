@@ -1,5 +1,8 @@
 package captain // import "github.com/harbur/captain/captain"
-import "os"
+import (
+	"os"
+	"sort"
+)
 
 type StatusError struct {
 	error  error
@@ -18,7 +21,15 @@ func Build(config Config, filter string) {
 	}
 	var rev = getRevision()
 
-	for dockerfile, image := range images {
+	// Sort keys to iterate them deterministically
+	var keys []string
+	for k := range images {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, dockerfile := range keys {
+		image := images[dockerfile]
 		// If no Git repo exist
 		if !isGit() {
 			// Perfoming [build latest]
@@ -105,7 +116,16 @@ func Push(config Config, filter string) {
 	}
 
 	var images = config.GetImageNames()
-	for _, image := range images {
+
+	// Sort keys to iterate them deterministically
+	var keys []string
+	for k := range images {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, dockerfile := range keys {
+		image := images[dockerfile]
 		var branch = getBranch()
 
 		switch branch {
