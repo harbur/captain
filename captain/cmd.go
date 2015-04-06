@@ -3,7 +3,6 @@ package captain // import "github.com/harbur/captain/captain"
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -99,11 +98,9 @@ It works by reading captain.yaml file which describes how to build, test, push a
 }
 
 func filterImages(images map[string]string, arg string) map[string]string {
-	for _, value := range images {
-		s := strings.Split(value, "=")
-		_, image := s[0], s[1]
+	for key, image := range images {
 		if image == arg {
-			return map[string]string{}
+			return map[string]string{key: image}
 		}
 	}
 	err("Build image %s is not defined", arg)
