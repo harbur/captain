@@ -97,3 +97,31 @@ func Test(config Config, filter string) {
 		}
 	}
 }
+
+func Push(config Config, filter string) {
+	// If no Git repo exist
+	if !isGit() {
+		err("No local git repository found, cannot push")
+		os.Exit(NO_GIT)
+	}
+
+	if isDirty() {
+		err("Git repository has local changes, cannot push")
+		os.Exit(GIT_DIRTY)
+	}
+
+	var images = config.GetImageNames()
+	for _, value := range images {
+		s := strings.Split(value, "=")
+		_, image := s[0], s[1]
+		// for _, value := range config.GetUnitTestCommands() {
+		// info("Running unit test command: %s", value)
+		var branch = getBranch()
+		info("Pushing image %s:%s", image, branch)
+		execute("docker", "push", image+":"+branch)
+		// if res != nil {
+		// err("Test execution returned non-zero status")
+		// os.Exit(TEST_FAILED)
+		// }
+	}
+}

@@ -23,6 +23,8 @@ var (
 	NONEXIST_IMAGE = 3
 	NO_CAPTAIN_YML = 4
 	TEST_FAILED    = 5
+	NO_GIT         = 6
+	GIT_DIRTY      = 7
 )
 
 func handleCmd() {
@@ -56,6 +58,19 @@ func handleCmd() {
 		},
 	}
 
+	var cmdPush = &cobra.Command{
+		Use:   "push",
+		Short: "Pushes the images to remote registry",
+		Long:  `It will push the generated images to the remote registry.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			config := NewConfig(options, true)
+
+			// Build everything before pushing
+			Build(config, "")
+			Push(config, "")
+		},
+	}
+
 	var cmdVersion = &cobra.Command{
 		Use:   "version",
 		Short: "Display version",
@@ -76,7 +91,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 
 	captainCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "D", false, "Enable debug mode")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
-	captainCmd.AddCommand(cmdBuild, cmdTest, cmdVersion)
+	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdVersion)
 	captainCmd.Execute()
 }
 
