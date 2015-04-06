@@ -13,14 +13,18 @@ import (
 )
 
 type Config interface {
-	GetImageNames() []string
+	GetImageNames() map[string]string
 	GetUnitTestCommands() []string
 }
 
 type config struct {
-	Build  map[string][]string
+	Build  build
 	Test   map[string][]string
 	Images []string
+}
+
+type build struct {
+	Images map[string]string
 }
 
 type Target []string
@@ -77,17 +81,18 @@ func displaySyntaxError(data []byte, syntaxError error) (err error) {
 // or YAML into a config object.
 func unmarshal(data []byte, ext string) *config {
 	var config *config
-	var err error
+	var res error
 	if ext == ".json" {
-		err = json.Unmarshal(data, &config)
+		res = json.Unmarshal(data, &config)
 	} else if ext == ".yml" || ext == ".yaml" {
-		err = yaml.Unmarshal(data, &config)
+		res = yaml.Unmarshal(data, &config)
 	} else {
 		panic(StatusError{errors.New("Unrecognized file extension"), 65})
 	}
-	if err != nil {
-		err = displaySyntaxError(data, err)
-		panic(StatusError{err, 65})
+	if res != nil {
+		res = displaySyntaxError(data, res)
+		err("%s", res)
+		os.Exit(INVALID_CAPTAIN_YML)
 	}
 	return config
 }
@@ -97,14 +102,14 @@ func unmarshal(data []byte, ext string) *config {
 // Containers will be ordered so that they can be
 // brought up and down with Docker.
 func NewConfig(options Options, forceOrder bool) Config {
-	var config *config
+	var conf *config
 	for _, f := range configFiles(options) {
 		if _, err := os.Stat(f); err == nil {
-			config = readConfig(f)
+			conf = readConfig(f)
 			break
 		}
 	}
-	if config == nil {
+	if conf == nil {
 		err("No configuration found %v", configFiles(options))
 		os.Exit(NO_CAPTAIN_YML)
 	}
@@ -113,11 +118,11 @@ func NewConfig(options Options, forceOrder bool) Config {
 	if err != nil {
 		panic(StatusError{err, 78})
 	}
-	return config
+	return conf
 }
 
-func (c *config) GetImageNames() []string {
-	return c.Build["images"]
+func (c *config) GetImageNames() map[string]string {
+	return c.Build.Images
 }
 
 func (c *config) GetUnitTestCommands() []string {

@@ -18,13 +18,14 @@ type Options struct {
 var options Options
 
 var (
-	BUILD_FAILED   = 1
-	TAG_FAILED     = 2
-	NONEXIST_IMAGE = 3
-	NO_CAPTAIN_YML = 4
-	TEST_FAILED    = 5
-	NO_GIT         = 6
-	GIT_DIRTY      = 7
+	BUILD_FAILED        = 1
+	TAG_FAILED          = 2
+	NONEXIST_IMAGE      = 3
+	NO_CAPTAIN_YML      = 4
+	TEST_FAILED         = 5
+	NO_GIT              = 6
+	GIT_DIRTY           = 7
+	INVALID_CAPTAIN_YML = 8
 )
 
 func handleCmd() {
@@ -95,15 +96,15 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	captainCmd.Execute()
 }
 
-func filterImages(images []string, arg string) []string {
+func filterImages(images map[string]string, arg string) map[string]string {
 	for _, value := range images {
 		s := strings.Split(value, "=")
 		_, image := s[0], s[1]
 		if image == arg {
-			return []string{value}
+			return map[string]string{}
 		}
 	}
 	err("Build image %s is not defined", arg)
 	os.Exit(NONEXIST_IMAGE)
-	return []string{}
+	return map[string]string{}
 }

@@ -21,8 +21,8 @@ Here is a full `captain.yml` example:
 ```yaml
 build:
   images:
-    - Dockerfile=harbur/hello-world
-    - Dockerfile.test=harbur/hello-world-test
+    Dockerfile: harbur/hello-world
+    Dockerfile.test: harbur/hello-world-test
 test:
   unit:
     - docker run -e NODE_ENV=TEST harbur/hello-world-test node mochaTest
@@ -38,9 +38,9 @@ e.g.
 ```yaml
 build:
   images:
-    - Dockerfile=harbur/hello-world
-    - Dockerfile.dev=harbur/hello-world-dev
-    - test/Dockerfile=harbur/hello-world-test
+    Dockerfile: harbur/hello-world
+    Dockerfile.dev: harbur/hello-world-dev
+    test/Dockerfile: harbur/hello-world-test
 ```
 
 ## test section

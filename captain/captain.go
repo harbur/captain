@@ -21,10 +21,7 @@ func Build(config Config, filter string) {
 	}
 	var rev = getRevision()
 
-	for _, value := range images {
-		s := strings.Split(value, "=")
-		dockerfile, image := s[0], s[1]
-
+	for dockerfile, image := range images {
 		// If no Git repo exist
 		if !isGit() {
 			// Perfoming [build latest]
