@@ -9,10 +9,11 @@ import (
 )
 
 type Options struct {
-	debug  bool
-	force  bool
-	config string
-	images []string
+	debug     bool
+	force     bool
+	namespace string
+	config    string
+	images    []string
 }
 
 var options Options
@@ -91,6 +92,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	}
 
 	captainCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "D", false, "Enable debug mode")
+	captainCmd.PersistentFlags().StringVarP(&options.namespace, "namespace", "N", getNamespace(), "Set default image namespace")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdVersion)
 	captainCmd.Execute()
@@ -107,4 +109,8 @@ func filterImages(images map[string]string, arg string) map[string]string {
 	err("Build image %s is not defined", arg)
 	os.Exit(NONEXIST_IMAGE)
 	return map[string]string{}
+}
+
+func getNamespace() string {
+	return os.Getenv("USER")
 }

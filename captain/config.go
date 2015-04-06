@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"gopkg.in/v2/yaml"
 )
@@ -110,8 +111,11 @@ func NewConfig(options Options, forceOrder bool) Config {
 		}
 	}
 	if conf == nil {
-		err("No configuration found %v", configFiles(options))
-		os.Exit(NO_CAPTAIN_YML)
+		info("No configuration found %v - inferring values", configFiles(options))
+		conf = &config{}
+		conf.Build.Images = make(map[string]string)
+
+		conf.Build.Images = inferImagesMap()
 	}
 
 	var err error
@@ -127,4 +131,35 @@ func (c *config) GetImageNames() map[string]string {
 
 func (c *config) GetUnitTestCommands() []string {
 	return c.Test["unit"]
+}
+
+// Global list, how can I pass it to the visitor pattern?
+var list = []string{}
+
+func getDockerfiles() []string {
+	filepath.Walk(".", visit)
+	info("list %s", list)
+	return list
+}
+
+func visit(path string, f os.FileInfo, err error) error {
+	// Filename is "Dockerfile" or has "Dockerfile." prefix and is not a directory
+	if (f.Name() == "Dockerfile" || strings.HasPrefix(f.Name(), "Dockerfile.")) && !f.IsDir() {
+		list = append(list, path)
+	}
+	return nil
+}
+
+func inferImagesMap() map[string]string {
+	var imagesMap = make(map[string]string)
+	dockerfiles := getDockerfiles()
+
+	info("d %s", dockerfiles)
+	for _, dockerfile := range dockerfiles {
+		info("dockerfile %s", dockerfile)
+		var image = "captain-example"
+		imagesMap[dockerfile] = options.namespace + "/" + image
+	}
+
+	return imagesMap
 }
