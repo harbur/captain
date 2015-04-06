@@ -13,21 +13,28 @@ var client, _ = docker.NewClient(endpoint)
 func buildImage(dockerfile string, image string, tag string) error {
 	info("Building image %s:%s", image, tag)
 
-	opts := docker.BuildImageOptions{
-		Name:                image + ":" + tag,
-		Dockerfile:          dockerfile,
-		NoCache:             options.force,
-		SuppressOutput:      false,
-		RmTmpContainer:      true,
-		ForceRmTmpContainer: true,
-		OutputStream:        os.Stdout,
-		ContextDir:          ".",
+	// Nasty issue with CircleCI https://github.com/docker/docker/issues/4897
+	if os.Getenv("CIRCLECI") == "true" {
+		info("Running at %s environment...", "CIRCLECI")
+		execute("docker", "build", "-t", image+":"+tag, ".")
+		return nil
+	} else {
+		opts := docker.BuildImageOptions{
+			Name:                image + ":" + tag,
+			Dockerfile:          dockerfile,
+			NoCache:             options.force,
+			SuppressOutput:      false,
+			RmTmpContainer:      true,
+			ForceRmTmpContainer: true,
+			OutputStream:        os.Stdout,
+			ContextDir:          ".",
+		}
+		err := client.BuildImage(opts)
+		if err != nil {
+			fmt.Printf("%s", err)
+		}
+		return err
 	}
-	err := client.BuildImage(opts)
-	if err != nil {
-		fmt.Printf("%s", err)
-	}
-	return err
 }
 
 func tagImage(repo string, origin string, tag string) error {
