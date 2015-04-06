@@ -30,8 +30,8 @@ func Build(config Config, filter string) {
 			// Perfoming [build latest]
 			debug("No local git repository found, just building latest")
 			// Build latest image
-			err := buildImage(dockerfile, image, "latest")
-			if err != nil {
+			res := buildImage(dockerfile, image, "latest")
+			if res != nil {
 				os.Exit(BUILD_FAILED)
 			}
 
@@ -58,8 +58,8 @@ func Build(config Config, filter string) {
 			} else {
 				// Performing [build latest|tag latest@rev|tag latest@branch]
 				// Build latest image
-				err := buildImage(dockerfile, image, "latest")
-				if err != nil {
+				res := buildImage(dockerfile, image, "latest")
+				if res != nil {
 					os.Exit(BUILD_FAILED)
 				}
 				if isDirty() {
@@ -76,13 +76,24 @@ func Build(config Config, filter string) {
 					case "":
 						debug("Skipping tag of %s no git repository", image)
 					default:
-						err := tagImage(image, "latest", branch)
-						if err != nil {
+						res := tagImage(image, "latest", branch)
+						if res != nil {
 							os.Exit(TAG_FAILED)
 						}
 					}
 				}
 			}
+		}
+	}
+}
+
+func Test(config Config, filter string) {
+	for _, value := range config.GetUnitTestCommands() {
+		info("Running unit test command: %s", value)
+		res := execute("bash", "-c", value)
+		if res != nil {
+			err("Test execution returned non-zero status")
+			os.Exit(TEST_FAILED)
 		}
 	}
 }

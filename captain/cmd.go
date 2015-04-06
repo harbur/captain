@@ -22,6 +22,7 @@ var (
 	TAG_FAILED     = 2
 	NONEXIST_IMAGE = 3
 	NO_CAPTAIN_YML = 4
+	TEST_FAILED    = 5
 )
 
 func handleCmd() {
@@ -51,11 +52,7 @@ func handleCmd() {
 
 			// Build everything before testing
 			Build(config, "")
-
-			for _, value := range config.GetUnitTestCommands() {
-				info("Running unit test command: %s", value)
-				execute("bash", "-c", value)
-			}
+			Test(config, "")
 		},
 	}
 
