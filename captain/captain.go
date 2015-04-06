@@ -114,14 +114,14 @@ func Push(config Config, filter string) {
 	for _, value := range images {
 		s := strings.Split(value, "=")
 		_, image := s[0], s[1]
-		// for _, value := range config.GetUnitTestCommands() {
-		// info("Running unit test command: %s", value)
 		var branch = getBranch()
-		info("Pushing image %s:%s", image, branch)
-		execute("docker", "push", image+":"+branch)
-		// if res != nil {
-		// err("Test execution returned non-zero status")
-		// os.Exit(TEST_FAILED)
-		// }
+
+		switch branch {
+		case "HEAD":
+			err("Skipping push of %s in detached mode", image)
+		default:
+			info("Pushing image %s:%s", image, branch)
+			execute("docker", "push", image+":"+branch)
+		}
 	}
 }
