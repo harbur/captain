@@ -115,7 +115,7 @@ func NewConfig(options Options, forceOrder bool) Config {
 		conf = &config{}
 		conf.Build.Images = make(map[string]string)
 
-		conf.Build.Images = inferImagesMap()
+		conf.Build.Images = getDockerfiles()
 	}
 
 	var err error
@@ -134,32 +134,21 @@ func (c *config) GetUnitTestCommands() []string {
 }
 
 // Global list, how can I pass it to the visitor pattern?
-var list = []string{}
+var imagesMap = make(map[string]string)
 
-func getDockerfiles() []string {
+func getDockerfiles() map[string]string {
 	filepath.Walk(".", visit)
-	info("list %s", list)
-	return list
+	return imagesMap
 }
 
 func visit(path string, f os.FileInfo, err error) error {
 	// Filename is "Dockerfile" or has "Dockerfile." prefix and is not a directory
 	if (f.Name() == "Dockerfile" || strings.HasPrefix(f.Name(), "Dockerfile.")) && !f.IsDir() {
-		list = append(list, path)
+		// Get Parent Dirname
+		absolute_path, _ := filepath.Abs(path)
+		var image = filepath.Base(filepath.Dir(absolute_path))
+		imagesMap[path] = options.namespace + "/" + image + filepath.Ext(path)
+		debug("Located %s will be used to create %s", path, imagesMap[path])
 	}
 	return nil
-}
-
-func inferImagesMap() map[string]string {
-	var imagesMap = make(map[string]string)
-	dockerfiles := getDockerfiles()
-
-	info("d %s", dockerfiles)
-	for _, dockerfile := range dockerfiles {
-		info("dockerfile %s", dockerfile)
-		var image = "captain-example"
-		imagesMap[dockerfile] = options.namespace + "/" + image
-	}
-
-	return imagesMap
 }
