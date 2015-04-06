@@ -3,6 +3,7 @@ package captain // import "github.com/harbur/captain/captain"
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/fsouza/go-dockerclient"
 )
@@ -21,13 +22,13 @@ func buildImage(dockerfile string, image string, tag string) error {
 	} else {
 		opts := docker.BuildImageOptions{
 			Name:                image + ":" + tag,
-			Dockerfile:          dockerfile,
+			Dockerfile:          filepath.Base(dockerfile),
 			NoCache:             options.force,
 			SuppressOutput:      false,
 			RmTmpContainer:      true,
 			ForceRmTmpContainer: true,
 			OutputStream:        os.Stdout,
-			ContextDir:          ".",
+			ContextDir:          filepath.Dir(dockerfile),
 		}
 		err := client.BuildImage(opts)
 		if err != nil {
