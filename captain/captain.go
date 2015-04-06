@@ -1,8 +1,5 @@
 package captain // import "github.com/harbur/captain/captain"
-import (
-	"os"
-	"strings"
-)
+import "os"
 
 type StatusError struct {
 	error  error
@@ -108,9 +105,7 @@ func Push(config Config, filter string) {
 	}
 
 	var images = config.GetImageNames()
-	for _, value := range images {
-		s := strings.Split(value, "=")
-		_, image := s[0], s[1]
+	for _, image := range images {
 		var branch = getBranch()
 
 		switch branch {
