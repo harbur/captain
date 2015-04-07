@@ -12,6 +12,15 @@ From the other side, you can now pull the feature branch you want to test, or cr
 
 ![intro](https://cloud.githubusercontent.com/assets/367397/6997822/c9aeadd8-dbcb-11e4-9901-dd62bcb33e5e.gif)
 
+## Installation
+
+To install Captain, run the following commands:
+
+```
+curl -L https://github.com/harbur/captain/releases/download/v0.0.1/captain > /usr/local/bin/captain
+chmod +x /usr/local/bin/captain
+```
+
 ## Documentation
 
 Captain will automatically configure itself with sane values without the need for any pre-configuration, so that it will work in most cases. When it doesn't, the `captain.yml` file can be used to configure it properly. This is a simple YAML file placed on the root directory of your git repository. Captain will look for it and use it to be configured.
