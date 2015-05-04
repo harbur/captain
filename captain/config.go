@@ -146,8 +146,8 @@ func visit(path string, f os.FileInfo, err error) error {
 	if (f.Name() == "Dockerfile" || strings.HasPrefix(f.Name(), "Dockerfile.")) && !f.IsDir() {
 		// Get Parent Dirname
 		absolute_path, _ := filepath.Abs(path)
-		var image = filepath.Base(filepath.Dir(absolute_path))
-		imagesMap[path] = options.namespace + "/" + image + filepath.Ext(path)
+		var image = strings.ToLower(filepath.Base(filepath.Dir(absolute_path)))
+		imagesMap[path] = options.namespace + "/" + image + strings.ToLower(filepath.Ext(path))
 		debug("Located %s will be used to create %s", path, imagesMap[path])
 	}
 	return nil
