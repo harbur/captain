@@ -10,3 +10,6 @@ b:
 
 watch:
 	docker run -it --rm --name captain -v "$$PWD":/go/src/github.com/harbur/captain -w /go/src/github.com/harbur/captain golang:1.4 watch -n 1 make b
+
+goconvey:
+	goconvey
