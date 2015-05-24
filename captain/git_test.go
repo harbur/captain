@@ -7,17 +7,17 @@ import (
 )
 
 func TestGitGetRevision(t *testing.T) {
-	assert.Equal(t, 7, len(getRevision()), "Git revision has length 7 chars")
+	assert.Equal(t, 7, len(getRevision()), "Git revision should have length 7 chars")
 }
 
 func TestGitGetBranch(t *testing.T) {
-	assert.Equal(t, "master", getBranch(), "Git branch is master")
+	assert.Equal(t, "master", getBranch(), "Git branch should be master")
 }
 
 func TestGitIsDirty(t *testing.T) {
-	assert.Equal(t, false, isDirty(), "Git does not have local changes")
+	assert.Equal(t, false, isDirty(), "Git should not have local changes")
 }
 
 func TestGitIsGit(t *testing.T) {
-	assert.Equal(t, true, isGit(), "There is a git repository")
+	assert.Equal(t, true, isGit(), "There should be a git repository")
 }
