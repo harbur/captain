@@ -4,15 +4,18 @@ import (
 	"sort"
 )
 
+// StatusError provides error code and id
 type StatusError struct {
 	error  error
 	status int
 }
 
+// RealMain is the Captain entrypoint function
 func RealMain() {
 	handleCmd()
 }
 
+// Build function compiles the Containers of the project
 func Build(config Config, filter string) {
 	var images = config.GetImageNames()
 
@@ -92,6 +95,7 @@ func Build(config Config, filter string) {
 	}
 }
 
+// Test function executes the tests of the project
 func Test(config Config, filter string) {
 	for _, value := range config.GetUnitTestCommands() {
 		info("Running unit test command: %s", value)
@@ -103,6 +107,7 @@ func Test(config Config, filter string) {
 	}
 }
 
+// Push function pushes the containers to the remote registry
 func Push(config Config, filter string) {
 	// If no Git repo exist
 	if !isGit() {

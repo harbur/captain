@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Options that are passed by CLI are mapped here for consumption
 type Options struct {
 	debug     bool
 	force     bool
