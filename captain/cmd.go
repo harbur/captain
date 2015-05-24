@@ -18,17 +18,6 @@ type Options struct {
 
 var options Options
 
-var (
-	BuildFailed       = 1
-	TagFailed         = 2
-	NonexistImage     = 3
-	NoCaptainYML      = 4
-	TestFailed        = 5
-	NoGit             = 6
-	GitDirty          = 7
-	InvalidCaptainYML = 8
-)
-
 func handleCmd() {
 
 	var cmdBuild = &cobra.Command{
@@ -105,7 +94,7 @@ func filterImages(images map[string]string, arg string) map[string]string {
 		}
 	}
 	err("Build image %s is not defined", arg)
-	os.Exit(NonexistImage)
+	os.Exit(NonExistImage)
 	return map[string]string{}
 }
 

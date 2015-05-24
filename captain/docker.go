@@ -19,23 +19,23 @@ func buildImage(dockerfile string, image string, tag string) error {
 		info("Running at %s environment...", "CIRCLECI")
 		execute("docker", "build", "-t", image+":"+tag, ".")
 		return nil
-	} else {
-		opts := docker.BuildImageOptions{
-			Name:                image + ":" + tag,
-			Dockerfile:          filepath.Base(dockerfile),
-			NoCache:             options.force,
-			SuppressOutput:      false,
-			RmTmpContainer:      true,
-			ForceRmTmpContainer: true,
-			OutputStream:        os.Stdout,
-			ContextDir:          filepath.Dir(dockerfile),
-		}
-		err := client.BuildImage(opts)
-		if err != nil {
-			fmt.Printf("%s", err)
-		}
-		return err
 	}
+
+	opts := docker.BuildImageOptions{
+		Name:                image + ":" + tag,
+		Dockerfile:          filepath.Base(dockerfile),
+		NoCache:             options.force,
+		SuppressOutput:      false,
+		RmTmpContainer:      true,
+		ForceRmTmpContainer: true,
+		OutputStream:        os.Stdout,
+		ContextDir:          filepath.Dir(dockerfile),
+	}
+	err := client.BuildImage(opts)
+	if err != nil {
+		fmt.Printf("%s", err)
+	}
+	return err
 }
 
 func tagImage(repo string, origin string, tag string) error {
@@ -47,9 +47,10 @@ func tagImage(repo string, origin string, tag string) error {
 			fmt.Printf("%s", err)
 		}
 		return err
-	} else {
-		debug("Skipping tag of %s - no git repository", repo)
 	}
+
+	debug("Skipping tag of %s - no git repository", repo)
+
 	return nil
 }
 

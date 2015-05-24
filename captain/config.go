@@ -13,6 +13,7 @@ import (
 	"gopkg.in/v2/yaml"
 )
 
+// Config represents the information stored at captain.yml. It keeps information about images and unit tests.
 type Config interface {
 	GetImageNames() map[string]string
 	GetUnitTestCommands() []string
@@ -28,8 +29,6 @@ type build struct {
 	Images map[string]string
 }
 
-type Target []string
-
 // configFiles returns a slice of
 // files to read the config from.
 // If the --config option was given,
@@ -37,9 +36,8 @@ type Target []string
 func configFiles(options Options) []string {
 	if len(options.config) > 0 {
 		return []string{options.config}
-	} else {
-		return []string{"captain.json", "captain.yaml", "captain.yml"}
 	}
+	return []string{"captain.json", "captain.yaml", "captain.yml"}
 }
 
 // readConfig will read the config file
@@ -145,8 +143,8 @@ func visit(path string, f os.FileInfo, err error) error {
 	// Filename is "Dockerfile" or has "Dockerfile." prefix and is not a directory
 	if (f.Name() == "Dockerfile" || strings.HasPrefix(f.Name(), "Dockerfile.")) && !f.IsDir() {
 		// Get Parent Dirname
-		absolute_path, _ := filepath.Abs(path)
-		var image = strings.ToLower(filepath.Base(filepath.Dir(absolute_path)))
+		absolutePath, _ := filepath.Abs(path)
+		var image = strings.ToLower(filepath.Base(filepath.Dir(absolutePath)))
 		imagesMap[path] = options.namespace + "/" + image + strings.ToLower(filepath.Ext(path))
 		debug("Located %s will be used to create %s", path, imagesMap[path])
 	}
