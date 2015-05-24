@@ -7,11 +7,11 @@ import (
 )
 
 func TestImageExist(t *testing.T) {
-	exist := imageExist("golang","1.4")
-    assert.Equal(t, true, exist, "Docker image golang:1.4 should exist")
+	exist := imageExist("golang", "1.4")
+	assert.Equal(t, true, exist, "Docker image golang:1.4 should exist")
 }
 
 func TestImageDoesNotExist(t *testing.T) {
-	exist := imageExist("golang","nonexist")
-    assert.Equal(t, false, exist, "Docker image golang:nonexist should not exist")
+	exist := imageExist("golang", "nonexist")
+	assert.Equal(t, false, exist, "Docker image golang:nonexist should not exist")
 }
