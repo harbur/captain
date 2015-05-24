@@ -93,7 +93,7 @@ func unmarshal(data []byte, ext string) *config {
 	if res != nil {
 		res = displaySyntaxError(data, res)
 		err("%s", res)
-		os.Exit(INVALID_CAPTAIN_YML)
+		os.Exit(InvalidCaptainYML)
 	}
 	return config
 }

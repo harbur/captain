@@ -37,7 +37,7 @@ func Build(config Config, filter string) {
 			// Build latest image
 			res := buildImage(dockerfile, image, "latest")
 			if res != nil {
-				os.Exit(BUILD_FAILED)
+				os.Exit(BuildFailed)
 			}
 
 		} else {
@@ -65,7 +65,7 @@ func Build(config Config, filter string) {
 				// Build latest image
 				res := buildImage(dockerfile, image, "latest")
 				if res != nil {
-					os.Exit(BUILD_FAILED)
+					os.Exit(BuildFailed)
 				}
 				if isDirty() {
 					debug("Skipping tag of %s:%s - local changes exist", image, rev)
@@ -83,7 +83,7 @@ func Build(config Config, filter string) {
 					default:
 						res := tagImage(image, "latest", branch)
 						if res != nil {
-							os.Exit(TAG_FAILED)
+							os.Exit(TagFailed)
 						}
 					}
 				}
@@ -98,7 +98,7 @@ func Test(config Config, filter string) {
 		res := execute("bash", "-c", value)
 		if res != nil {
 			err("Test execution returned non-zero status")
-			os.Exit(TEST_FAILED)
+			os.Exit(TestFailed)
 		}
 	}
 }
@@ -107,12 +107,12 @@ func Push(config Config, filter string) {
 	// If no Git repo exist
 	if !isGit() {
 		err("No local git repository found, cannot push")
-		os.Exit(NO_GIT)
+		os.Exit(NoGit)
 	}
 
 	if isDirty() {
 		err("Git repository has local changes, cannot push")
-		os.Exit(GIT_DIRTY)
+		os.Exit(GitDirty)
 	}
 
 	var images = config.GetImageNames()
