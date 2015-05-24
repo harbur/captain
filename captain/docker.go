@@ -41,7 +41,6 @@ func buildImage(dockerfile string, image string, tag string) error {
 func tagImage(repo string, origin string, tag string) error {
 	if tag != "" {
 		info("Tagging image %s:%s as %s:%s", repo, origin, repo, tag)
-		// var imageID = getImageID(repo, origin)
 		opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
 		err := client.TagImage(repo, opts)
 		if err != nil {
@@ -52,18 +51,6 @@ func tagImage(repo string, origin string, tag string) error {
 		debug("Skipping tag of %s - no git repository", repo)
 	}
 	return nil
-}
-
-func getImageID(repo string, tag string) string {
-	images, _ := client.ListImages(docker.ListImagesOptions{})
-	for _, image := range images {
-		for _, b := range image.RepoTags {
-			if b == repo+":"+tag {
-				return image.ID
-			}
-		}
-	}
-	return ""
 }
 
 func imageExist(repo string, tag string) bool {
