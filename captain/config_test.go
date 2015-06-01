@@ -12,32 +12,32 @@ func TestConfigFiles(t *testing.T) {
 	assert.Equal(t, sl, c, "Should return possible config files")
 }
 
-func TestReadConfig (t *testing.T) {
+func TestReadConfig(t *testing.T) {
 	options.config = "../captain.yml"
 	c := readConfig(configFiles(options)[0])
 	assert.NotNil(t, c, "Should return configuration")
 }
 
-func TestNewConfig (t *testing.T) {
+func TestNewConfig(t *testing.T) {
 	options.config = "../captain.yml"
 	c := NewConfig(options,false)
 	assert.NotNil(t, c, "Should return captain.yml configuration")
 }
 
-func TestNewConfigInferringValues (t *testing.T) {
+func TestNewConfigInferringValues(t *testing.T) {
 	options.config = "./captain.yml"
 	c := NewConfig(options,false)
 	assert.NotNil(t, c, "Should return infered configuration")
 }
 
-func TestGetImageNames (t *testing.T) {
+func TestGetImageNames(t *testing.T) {
 	options.config = "../captain.yml"
 	c := NewConfig(options,false)
 	expected := map[string]string{"Dockerfile":"harbur/captain", "Dockerfile.test": "harbur/captain-test"}
 	assert.Equal(t, expected, c.GetImageNames(), "Should return image names")
 }
 
-func TestGetUnitTestCommands (t *testing.T) {
+func TestGetUnitTestCommands(t *testing.T) {
 	options.config = "../captain.yml"
 	c := NewConfig(options,false)
 	expected := []string{"docker run harbur/captain-test go test github.com/harbur/captain/captain"}
