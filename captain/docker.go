@@ -42,7 +42,7 @@ func tagImage(repo string, origin string, tag string) error {
 	if tag != "" {
 		info("Tagging image %s:%s as %s:%s", repo, origin, repo, tag)
 		opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
-		err := client.TagImage(repo, opts)
+		err := client.TagImage(repo + ":" + origin, opts)
 		if err != nil {
 			fmt.Printf("%s", err)
 		}
