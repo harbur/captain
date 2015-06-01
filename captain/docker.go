@@ -17,7 +17,7 @@ func buildImage(dockerfile string, image string, tag string) error {
 	// Nasty issue with CircleCI https://github.com/docker/docker/issues/4897
 	if os.Getenv("CIRCLECI") == "true" {
 		info("Running at %s environment...", "CIRCLECI")
-		execute("docker", "build", "-t", image+":"+tag, ".")
+		execute("docker", "build", "-t", image+":"+tag, filepath.Dir(dockerfile))
 		return nil
 	}
 
