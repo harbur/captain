@@ -3,7 +3,6 @@ package captain // import "github.com/harbur/captain/captain"
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -23,21 +22,21 @@ type config struct {
 	Build  build
 	Test   map[string][]string
 	Images []string
+	Root []string
 }
 
 type build struct {
 	Images map[string]string
 }
 
-// configFiles returns a slice of
-// files to read the config from.
+// configFile returns the file to read the config from.
 // If the --config option was given,
 // it will only use the given file.
-func configFiles(options Options) []string {
+func configFile(options Options) string {
 	if len(options.config) > 0 {
-		return []string{options.config}
+		return options.config
 	}
-	return []string{"captain.json", "captain.yaml", "captain.yml"}
+	return "captain.yml"
 }
 
 // readConfig will read the config file
@@ -47,9 +46,7 @@ func readConfig(filename string) *config {
 	if err != nil {
 		panic(StatusError{err, 74})
 	}
-
-	ext := filepath.Ext(filename)
-	return unmarshal(data, ext)
+	return unmarshal(data)
 }
 
 // displaySyntaxError will display more information
@@ -78,16 +75,9 @@ func displaySyntaxError(data []byte, syntaxError error) (err error) {
 
 // unmarshal converts either JSON
 // or YAML into a config object.
-func unmarshal(data []byte, ext string) *config {
+func unmarshal(data []byte) *config {
 	var config *config
-	var res error
-	if ext == ".json" {
-		res = json.Unmarshal(data, &config)
-	} else if ext == ".yml" || ext == ".yaml" {
-		res = yaml.Unmarshal(data, &config)
-	} else {
-		panic(StatusError{errors.New("Unrecognized file extension"), 65})
-	}
+	res := yaml.Unmarshal(data, &config)
 	if res != nil {
 		res = displaySyntaxError(data, res)
 		err("%s", res)
@@ -102,14 +92,13 @@ func unmarshal(data []byte, ext string) *config {
 // brought up and down with Docker.
 func NewConfig(options Options, forceOrder bool) Config {
 	var conf *config
-	for _, f := range configFiles(options) {
-		if _, err := os.Stat(f); err == nil {
-			conf = readConfig(f)
-			break
-		}
+	f := configFile(options)
+	if _, err := os.Stat(f); err == nil {
+		conf = readConfig(f)
 	}
+
 	if conf == nil {
-		info("No configuration found %v - inferring values", configFiles(options))
+		info("No configuration found %v - inferring values", configFile(options))
 		conf = &config{}
 		conf.Build.Images = make(map[string]string)
 
