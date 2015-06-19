@@ -21,4 +21,7 @@ const (
 
 	// InvalidCaptainYML represents an invalid captain.yml format
 	InvalidCaptainYML = 8
+
+	// NoDockerfiles represents lack of Dockerfile(s) on current and subdirectories.
+	NoDockerfiles = 9
 )

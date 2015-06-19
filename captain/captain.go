@@ -29,6 +29,10 @@ func Build(config Config, filter string) {
 	for k := range images {
 		keys = append(keys, k)
 	}
+	if (len(keys)==0) {
+		err("No Dockerfile(s) found on current or subdirectories, exiting");
+		os.Exit(NoDockerfiles)
+	}
 	sort.Strings(keys)
 
 	for _, dockerfile := range keys {
