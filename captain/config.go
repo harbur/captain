@@ -118,9 +118,12 @@ func NewConfig(options Options, forceOrder bool) Config {
 
 	if conf == nil {
 		info("No configuration found %v - inferring values", configFile(options))
-		conf = &config{}
-        // conf.Build.Images = make(map[string]string)
-        // conf.Build.Images = getDockerfiles()
+		autoconf := make(config)
+		conf = &autoconf
+		dockerfiles := getDockerfiles()
+		for build,image := range dockerfiles {
+			autoconf[image] = project{Build:build, Image: image }
+		}
 	}
 
 	var err error
