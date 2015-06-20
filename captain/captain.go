@@ -15,8 +15,33 @@ func RealMain() {
 	handleCmd()
 }
 
+// Pre function executes commands on pre section before build
+func Pre(config Config, filter string) {
+	for _, value := range config.GetPreCommands() {
+		info("Running pre command: %s", value)
+		res := execute("bash", "-c", value)
+		if res != nil {
+			err("Pre execution returned non-zero status")
+			os.Exit(TestFailed)
+		}
+	}
+}
+
+// Post function executes commands on pre section after build
+func Post(config Config, filter string) {
+	for _, value := range config.GetPostCommands() {
+		info("Running post command: %s", value)
+		res := execute("bash", "-c", value)
+		if res != nil {
+			err("Post execution returned non-zero status")
+			os.Exit(TestFailed)
+		}
+	}
+}
+
 // Build function compiles the Containers of the project
 func Build(config Config, filter string) {
+	Pre(config, filter)
 	var images = config.GetImageNames()
 
 	if filter != "" {

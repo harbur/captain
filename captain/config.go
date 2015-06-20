@@ -16,6 +16,8 @@ import (
 type Config interface {
 	GetImageNames() map[string]string
 	GetUnitTestCommands() []string
+	GetPreCommands() []string
+	GetPostCommands() []string
 }
 
 type configV1 struct {
@@ -34,8 +36,8 @@ type config map[string]project
 type project struct {
 	Build  string
 	Image  string
-	Pre    string
-	Post   string
+	Pre    []string
+	Post   []string
 	Test   []string
 }
 
@@ -157,6 +159,26 @@ func (c *config) GetUnitTestCommands() []string {
 		}
 	}
 	return tests
+}
+
+func (c *config) GetPreCommands() []string {
+	var pre  []string
+	for _,k := range *c {
+		for _,t := range k.Pre {
+			pre = append(pre, t)
+		}
+	}
+	return pre
+}
+
+func (c *config) GetPostCommands() []string {
+	var post  []string
+	for _,k := range *c {
+		for _,t := range k.Post {
+			post = append(post, t)
+		}
+	}
+	return post
 }
 
 // Global list, how can I pass it to the visitor pattern?
