@@ -18,15 +18,25 @@ type Config interface {
 	GetUnitTestCommands() []string
 }
 
-type config struct {
-	Build  build
-	Test   map[string][]string
-	Images []string
-	Root []string
+type configV1 struct {
+       Build  build
+       Test   map[string][]string
+       Images []string
+       Root []string
 }
 
 type build struct {
-	Images map[string]string
+       Images map[string]string
+}
+
+type config map[string]project
+
+type project struct {
+	Build  string
+	Image  string
+	Pre    string
+	Post   string
+	Test   []string
 }
 
 // configFile returns the file to read the config from.
@@ -76,13 +86,22 @@ func displaySyntaxError(data []byte, syntaxError error) (err error) {
 // unmarshal converts either JSON
 // or YAML into a config object.
 func unmarshal(data []byte) *config {
+	var configV1 *configV1
+	res := yaml.Unmarshal(data, &configV1)
+	if (len(configV1.Build.Images)>0) {
+		err("Old %s format detected! Please check the https://github.com/harbur/captain how to upgrade", "captain.yml")
+		os.Exit(-1)
+	}
+
 	var config *config
-	res := yaml.Unmarshal(data, &config)
+	res = yaml.Unmarshal(data, &config)
+
 	if res != nil {
 		res = displaySyntaxError(data, res)
 		err("%s", res)
 		os.Exit(InvalidCaptainYML)
 	}
+
 	return config
 }
 
@@ -100,9 +119,8 @@ func NewConfig(options Options, forceOrder bool) Config {
 	if conf == nil {
 		info("No configuration found %v - inferring values", configFile(options))
 		conf = &config{}
-		conf.Build.Images = make(map[string]string)
-
-		conf.Build.Images = getDockerfiles()
+        // conf.Build.Images = make(map[string]string)
+        // conf.Build.Images = getDockerfiles()
 	}
 
 	var err error
@@ -113,11 +131,29 @@ func NewConfig(options Options, forceOrder bool) Config {
 }
 
 func (c *config) GetImageNames() map[string]string {
-	return c.Build.Images
+	// Get Image Builds
+	var builds  []string
+	for _,k := range *c {
+		builds = append(builds, k.Build)
+	}
+
+	// Get Images
+	var images = make(map[string]string)
+	for _,k := range *c {
+		images[k.Build] = k.Image
+	}
+
+	return images
 }
 
 func (c *config) GetUnitTestCommands() []string {
-	return c.Test["unit"]
+	var tests  []string
+	for _,k := range *c {
+		for _,t := range k.Test {
+			tests = append(tests, t)
+		}
+	}
+	return tests
 }
 
 // Global list, how can I pass it to the visitor pattern?

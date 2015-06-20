@@ -24,4 +24,7 @@ const (
 
 	// NoDockerfiles represents lack of Dockerfile(s) on current and subdirectories.
 	NoDockerfiles = 9
+
+	// OldFormat represents old format of captain.yml
+	OldFormat = 10
 )
