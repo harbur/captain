@@ -1,7 +1,9 @@
-build:
-  images:
-    Dockerfile: harbur/captain
-    Dockerfile.test: harbur/captain-test
-test:
-  unit:
+captain:
+  build: Dockerfile
+  image: harbur/captain
+captain-test:
+  build: Dockerfile.test
+  image: harbur/captain-test
+  test:
     - docker run harbur/captain-test go test github.com/harbur/captain/captain
+
