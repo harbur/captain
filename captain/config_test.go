@@ -31,52 +31,34 @@ func TestNewConfigInferringValues(t *testing.T) {
 	assert.NotNil(t, c, "Should return infered configuration")
 }
 
-func TestGetImageNames(t *testing.T) {
-	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options,false)
-	expected := map[string]string{"Dockerfile":"harbur/test_web", "Dockerfile.backend": "harbur/test_backend"}
-	assert.Equal(t, expected, c.GetImageNames(), "Should return image names")
-}
-
-func TestGetUnitTestCommands(t *testing.T) {
-	options.config = "test/OneImage/captain.yml"
-	c := NewConfig(options,false)
-	expected := []string{"echo testing 1 web"}
-	assert.Equal(t,expected, c.GetUnitTestCommands(), "Should return unit tests")
-}
-
 func TestFilterConfigEmpty(t *testing.T) {
 	options.config = "test/Simple/captain.yml"
 	c := NewConfig(options,false)
-	expected := map[string]string{"Dockerfile":"harbur/test_web", "Dockerfile.backend": "harbur/test_backend"}
-	assert.Equal(t, expected, c.GetImageNames(), "Should return complete list of image names")
+	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	res := c.FilterConfig("")
 	assert.True(t, res, "Should return true")
-	assert.Equal(t, expected, c.GetImageNames(), "Should return complete list of image names")
+	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 }
 
 func TestFilterConfigNonExistent(t *testing.T) {
 	options.config = "test/Simple/captain.yml"
 	c := NewConfig(options,false)
-	expected := map[string]string{"Dockerfile":"harbur/test_web", "Dockerfile.backend": "harbur/test_backend"}
-	assert.Equal(t, expected, c.GetImageNames(), "Should return complete list of image names")
+	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	res := c.FilterConfig("nonexistent")
 	assert.False(t, res, "Should return false")
-	expected = map[string]string{}
-	assert.Equal(t, expected, c.GetImageNames(), "Should return empty list")
+	assert.Equal(t, 0, len(c.GetApps()), "Should return 0 apps")
 }
 
 func TestFilterConfigWeb(t *testing.T) {
 	options.config = "test/Simple/captain.yml"
 	c := NewConfig(options,false)
-	expected := map[string]string{"Dockerfile":"harbur/test_web", "Dockerfile.backend": "harbur/test_backend"}
-	assert.Equal(t, expected, c.GetImageNames(), "Should return complete list of image names")
+	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	c.FilterConfig("web")
-	expected = map[string]string{"Dockerfile":"harbur/test_web"}
-	assert.Equal(t, expected, c.GetImageNames(), "Should return filtered list of image names")
+	assert.Equal(t, 1, len(c.GetApps()), "Should return 1 app")
+	assert.Equal(t, "Dockerfile", c.GetApp("web").Build, "Should return web Build field")
 }
 
 func TestGetApp(t *testing.T) {
