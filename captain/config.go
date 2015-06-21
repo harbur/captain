@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"gopkg.in/v2/yaml"
+    "gopkg.in/yaml.v2"
 )
 
 // Config represents the information stored at captain.yml. It keeps information about images and unit tests.
