@@ -1,7 +1,6 @@
 package captain // import "github.com/harbur/captain/captain"
 import (
 	"os"
-	"sort"
 )
 
 // StatusError provides error code and id
@@ -137,25 +136,15 @@ func Push(config Config) {
 		os.Exit(GitDirty)
 	}
 
-	var images = config.GetImageNames()
+	for _, app := range config.GetApps() {
+			branch := getBranch()
 
-	// Sort keys to iterate them deterministically
-	var keys []string
-	for k := range images {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	for _, dockerfile := range keys {
-		image := images[dockerfile]
-		var branch = getBranch()
-
-		switch branch {
-		case "HEAD":
-			err("Skipping push of %s in detached mode", image)
-		default:
-			info("Pushing image %s:%s", image, branch)
-			execute("docker", "push", image+":"+branch)
-		}
+			switch branch {
+			case "HEAD":
+				err("Skipping push of %s in detached mode", app.Image)
+			default:
+				info("Pushing image %s:%s", app.Image, branch)
+				execute("docker", "push", app.Image+":"+branch)
+			}
 	}
 }
