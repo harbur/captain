@@ -56,15 +56,20 @@ func Build(config Config) {
 	}
 	sort.Strings(keys)
 
-	for _, dockerfile := range keys {
-		Pre(config, dockerfile)
-		image := images[dockerfile]
+	// For each App
+	for _, appname := range config.GetApps() {
+		app := config.GetApp(appname)
+
+		// Execute Pre commands
+		Pre(config, app.Build)
+
+		image := images[app.Build]
 		// If no Git repo exist
 		if !isGit() {
 			// Perfoming [build latest]
 			debug("No local git repository found, just building latest")
 			// Build latest image
-			res := buildImage(dockerfile, image, "latest")
+			res := buildImage(app.Build, image, "latest")
 			if res != nil {
 				os.Exit(BuildFailed)
 			}
@@ -92,7 +97,7 @@ func Build(config Config) {
 			} else {
 				// Performing [build latest|tag latest@rev|tag latest@branch]
 				// Build latest image
-				res := buildImage(dockerfile, image, "latest")
+				res := buildImage(app.Build, image, "latest")
 				if res != nil {
 					os.Exit(BuildFailed)
 				}
@@ -118,7 +123,7 @@ func Build(config Config) {
 				}
 			}
 		}
-		Post(config, dockerfile)
+		Post(config, app.Build)
 	}
 }
 

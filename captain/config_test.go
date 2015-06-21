@@ -78,3 +78,10 @@ func TestFilterConfigWeb(t *testing.T) {
 	expected = map[string]string{"Dockerfile":"harbur/test_web"}
 	assert.Equal(t, expected, c.GetImageNames(), "Should return filtered list of image names")
 }
+
+func TestGetApp(t *testing.T) {
+	options.config = "test/Simple/captain.yml"
+	c := NewConfig(options,false)
+	app := c.GetApp("web")
+	assert.Equal(t, "harbur/test_web", app.Image, "Should return web image")
+}

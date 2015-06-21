@@ -19,6 +19,8 @@ type Config interface {
 	GetPreCommands(image string) []string
 	GetPostCommands(image string) []string
 	FilterConfig(filter string) bool
+	GetApp(app string) App
+	GetApps() []string
 }
 
 type configV1 struct {
@@ -32,9 +34,10 @@ type build struct {
        Images map[string]string
 }
 
-type config map[string]project
+type config map[string]App
 
-type project struct {
+// App struct
+type App struct {
 	Build  string
 	Image  string
 	Pre    []string
@@ -125,7 +128,7 @@ func NewConfig(options Options, forceOrder bool) Config {
 		conf = &autoconf
 		dockerfiles := getDockerfiles()
 		for build,image := range dockerfiles {
-			autoconf[image] = project{Build:build, Image: image }
+			autoconf[image] = App{Build:build, Image: image }
 		}
 	}
 
@@ -150,6 +153,16 @@ func (c *config) GetImageNames() map[string]string {
 	}
 
 	return images
+}
+
+func (c *config) GetApps() []string {
+	// Get Image Builds
+	var apps  []string
+	for key := range *c {
+		apps = append(apps, key)
+	}
+
+	return apps
 }
 
 func (c *config) GetUnitTestCommands() []string {
@@ -201,6 +214,16 @@ func (c *config) FilterConfig(filter string) bool {
 		return res
 	}
 	return true
+}
+
+// GetApp returns App configuration
+func (c *config) GetApp(app string) App {
+	for key,k := range *c {
+		if (key == app) {
+			return k
+		}
+	}
+	return App{}
 }
 
 // Global list, how can I pass it to the visitor pattern?
