@@ -5,5 +5,5 @@ captain-test:
   build: Dockerfile.test
   image: harbur/captain-test
   test:
-    - docker run harbur/captain-test go test github.com/harbur/captain/captain
+    - docker run -v /var/run/docker.sock:/var/run/docker.sock harbur/captain-test go test github.com/harbur/captain/captain
 

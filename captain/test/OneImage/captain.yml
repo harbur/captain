@@ -1,0 +1,9 @@
+web:
+  build: Dockerfile
+  image: harbur/test_web
+  test:
+    - echo testing 1 web
+  pre:
+    - echo pre-action 1 web
+  post:
+    - echo post-action 1 web

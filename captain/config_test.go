@@ -39,9 +39,9 @@ func TestGetImageNames(t *testing.T) {
 }
 
 func TestGetUnitTestCommands(t *testing.T) {
-	options.config = "test/Simple/captain.yml"
+	options.config = "test/OneImage/captain.yml"
 	c := NewConfig(options,false)
-	expected := []string{"echo testing 1 web", "echo testing 2 web", "echo testing 1 backend", "echo testing 2 backend"}
+	expected := []string{"echo testing 1 web"}
 	assert.Equal(t,expected, c.GetUnitTestCommands(), "Should return unit tests")
 }
 
