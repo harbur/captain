@@ -14,9 +14,6 @@ import (
 
 // Config represents the information stored at captain.yml. It keeps information about images and unit tests.
 type Config interface {
-	GetUnitTestCommands() []string
-	GetPreCommands(image string) []string
-	GetPostCommands(image string) []string
 	FilterConfig(filter string) bool
 	GetApp(app string) App
 	GetApps() []App
@@ -157,42 +154,6 @@ func (c *config) GetApps() []App {
 	// sort.Strings(keys)
 
 	return apps
-}
-
-func (c *config) GetUnitTestCommands() []string {
-	var tests  []string
-	for _,k := range *c {
-		for _,t := range k.Test {
-			tests = append(tests, t)
-		}
-	}
-	return tests
-}
-
-func (c *config) GetPreCommands(image string) []string {
-	var pre  []string
-
-	for _,k := range *c {
-		if (k.Build == image) {
-			for _,t := range k.Pre {
-				pre = append(pre, t)
-			}
-		}
-	}
-	return pre
-}
-
-func (c *config) GetPostCommands(image string) []string {
-	var post  []string
-
-	for _,k := range *c {
-		if (k.Build == image) {
-			for _,t := range k.Post {
-				post = append(post, t)
-			}
-		}
-	}
-	return post
 }
 
 func (c *config) FilterConfig(filter string) bool {

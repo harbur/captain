@@ -15,8 +15,8 @@ func RealMain() {
 }
 
 // Pre function executes commands on pre section before build
-func Pre(config Config, image string) {
-	for _, value := range config.GetPreCommands(image) {
+func Pre(config Config, app App) {
+	for _, value := range app.Pre {
 		info("Running pre command: %s", value)
 		res := execute("bash", "-c", value)
 		if res != nil {
@@ -27,8 +27,8 @@ func Pre(config Config, image string) {
 }
 
 // Post function executes commands on pre section after build
-func Post(config Config, image string) {
-	for _, value := range config.GetPostCommands(image) {
+func Post(config Config, app App) {
+	for _, value := range app.Post {
 		info("Running post command: %s", value)
 		res := execute("bash", "-c", value)
 		if res != nil {
@@ -45,9 +45,8 @@ func Build(config Config) {
 	// For each App
 	for _, app := range config.GetApps() {
 		// Execute Pre commands
-		Pre(config, app.Build)
+		Pre(config, app)
 
-		// image := images[app.Build]
 		// If no Git repo exist
 		if !isGit() {
 			// Perfoming [build latest]
@@ -107,18 +106,20 @@ func Build(config Config) {
 				}
 			}
 		}
-		Post(config, app.Build)
+		Post(config, app)
 	}
 }
 
 // Test function executes the tests of the project
 func Test(config Config) {
-	for _, value := range config.GetUnitTestCommands() {
-		info("Running test command: %s", value)
-		res := execute("bash", "-c", value)
-		if res != nil {
-			err("Test execution returned non-zero status")
-			os.Exit(TestFailed)
+	for _,app := range config.GetApps() {
+		for _, value := range app.Test {
+			info("Running test command: %s", value)
+			res := execute("bash", "-c", value)
+			if res != nil {
+				err("Test execution returned non-zero status")
+				os.Exit(TestFailed)
+			}
 		}
 	}
 }
