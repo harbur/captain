@@ -16,7 +16,7 @@ func RealMain() {
 }
 
 // Pre function executes commands on pre section before build
-func Pre(config Config, filter string) {
+func Pre(config Config) {
 	for _, value := range config.GetPreCommands() {
 		info("Running pre command: %s", value)
 		res := execute("bash", "-c", value)
@@ -28,7 +28,7 @@ func Pre(config Config, filter string) {
 }
 
 // Post function executes commands on pre section after build
-func Post(config Config, filter string) {
+func Post(config Config) {
 	for _, value := range config.GetPostCommands() {
 		info("Running post command: %s", value)
 		res := execute("bash", "-c", value)
@@ -40,13 +40,10 @@ func Post(config Config, filter string) {
 }
 
 // Build function compiles the Containers of the project
-func Build(config Config, filter string) {
-	Pre(config, filter)
+func Build(config Config) {
+	Pre(config)
 	var images = config.GetImageNames()
 
-	if filter != "" {
-		images = filterImages(images, filter)
-	}
 	var rev = getRevision()
 
 	// Sort keys to iterate them deterministically
@@ -125,7 +122,7 @@ func Build(config Config, filter string) {
 }
 
 // Test function executes the tests of the project
-func Test(config Config, filter string) {
+func Test(config Config) {
 	for _, value := range config.GetUnitTestCommands() {
 		info("Running unit test command: %s", value)
 		res := execute("bash", "-c", value)
@@ -137,7 +134,7 @@ func Test(config Config, filter string) {
 }
 
 // Push function pushes the containers to the remote registry
-func Push(config Config, filter string) {
+func Push(config Config) {
 	// If no Git repo exist
 	if !isGit() {
 		err("No local git repository found, cannot push")

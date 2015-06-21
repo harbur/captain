@@ -39,9 +39,9 @@ func TestGetImageNames(t *testing.T) {
 }
 
 func TestGetUnitTestCommands(t *testing.T) {
-	options.config = "../captain.yml"
+	options.config = "test/Simple/captain.yml"
 	c := NewConfig(options,false)
-	expected := []string{"docker run harbur/captain-test go test github.com/harbur/captain/captain"}
+	expected := []string{"echo testing 1 web", "echo testing 2 web", "echo testing 1 backend", "echo testing 2 backend"}
 	assert.Equal(t,expected, c.GetUnitTestCommands(), "Should return unit tests")
 }
 

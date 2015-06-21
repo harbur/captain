@@ -27,12 +27,11 @@ func handleCmd() {
 		Run: func(cmd *cobra.Command, args []string) {
 			config := NewConfig(options, true)
 
-			var images string
 			if len(args) == 1 {
-				images = args[0]
+				config.FilterConfig(args[0])
 			}
 
-			Build(config, images)
+			Build(config)
 		},
 	}
 
@@ -43,9 +42,13 @@ func handleCmd() {
 		Run: func(cmd *cobra.Command, args []string) {
 			config := NewConfig(options, true)
 
+			if len(args) == 1 {
+				config.FilterConfig(args[0])
+			}
+
 			// Build everything before testing
-			Build(config, "")
-			Test(config, "")
+			Build(config)
+			Test(config)
 		},
 	}
 
@@ -56,9 +59,13 @@ func handleCmd() {
 		Run: func(cmd *cobra.Command, args []string) {
 			config := NewConfig(options, true)
 
+			if len(args) == 1 {
+				config.FilterConfig(args[0])
+			}
+
 			// Build everything before pushing
-			Build(config, "")
-			Push(config, "")
+			Build(config)
+			Push(config)
 		},
 	}
 
