@@ -18,6 +18,7 @@ type Config interface {
 	GetUnitTestCommands() []string
 	GetPreCommands() []string
 	GetPostCommands() []string
+	FilterConfig(filter string) bool
 }
 
 type configV1 struct {
@@ -179,6 +180,21 @@ func (c *config) GetPostCommands() []string {
 		}
 	}
 	return post
+}
+
+func (c *config) FilterConfig(filter string) bool {
+	if (filter != "") {
+		res := false
+		for key := range *c {
+			if (key==filter) {
+				res = true
+			} else {
+				delete(*c, key)
+			}
+		}
+		return res
+	}
+	return true
 }
 
 // Global list, how can I pass it to the visitor pattern?
