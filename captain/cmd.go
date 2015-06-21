@@ -94,17 +94,6 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	captainCmd.Execute()
 }
 
-func filterImages(images map[string]string, arg string) map[string]string {
-	for key, image := range images {
-		if image == arg {
-			return map[string]string{key: image}
-		}
-	}
-	err("Build image %s is not defined", arg)
-	os.Exit(NonExistImage)
-	return map[string]string{}
-}
-
 func getNamespace() string {
 	return os.Getenv("USER")
 }
