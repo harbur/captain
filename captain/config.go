@@ -16,8 +16,8 @@ import (
 type Config interface {
 	GetImageNames() map[string]string
 	GetUnitTestCommands() []string
-	GetPreCommands() []string
-	GetPostCommands() []string
+	GetPreCommands(image string) []string
+	GetPostCommands(image string) []string
 	FilterConfig(filter string) bool
 }
 
@@ -162,21 +162,27 @@ func (c *config) GetUnitTestCommands() []string {
 	return tests
 }
 
-func (c *config) GetPreCommands() []string {
+func (c *config) GetPreCommands(image string) []string {
 	var pre  []string
+
 	for _,k := range *c {
-		for _,t := range k.Pre {
-			pre = append(pre, t)
+		if (k.Build == image) {
+			for _,t := range k.Pre {
+				pre = append(pre, t)
+			}
 		}
 	}
 	return pre
 }
 
-func (c *config) GetPostCommands() []string {
+func (c *config) GetPostCommands(image string) []string {
 	var post  []string
+
 	for _,k := range *c {
-		for _,t := range k.Post {
-			post = append(post, t)
+		if (k.Build == image) {
+			for _,t := range k.Post {
+				post = append(post, t)
+			}
 		}
 	}
 	return post

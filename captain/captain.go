@@ -16,8 +16,8 @@ func RealMain() {
 }
 
 // Pre function executes commands on pre section before build
-func Pre(config Config) {
-	for _, value := range config.GetPreCommands() {
+func Pre(config Config, image string) {
+	for _, value := range config.GetPreCommands(image) {
 		info("Running pre command: %s", value)
 		res := execute("bash", "-c", value)
 		if res != nil {
@@ -28,8 +28,8 @@ func Pre(config Config) {
 }
 
 // Post function executes commands on pre section after build
-func Post(config Config) {
-	for _, value := range config.GetPostCommands() {
+func Post(config Config, image string) {
+	for _, value := range config.GetPostCommands(image) {
 		info("Running post command: %s", value)
 		res := execute("bash", "-c", value)
 		if res != nil {
@@ -41,7 +41,6 @@ func Post(config Config) {
 
 // Build function compiles the Containers of the project
 func Build(config Config) {
-	Pre(config)
 	var images = config.GetImageNames()
 
 	var rev = getRevision()
@@ -58,6 +57,7 @@ func Build(config Config) {
 	sort.Strings(keys)
 
 	for _, dockerfile := range keys {
+		Pre(config, dockerfile)
 		image := images[dockerfile]
 		// If no Git repo exist
 		if !isGit() {
@@ -118,13 +118,14 @@ func Build(config Config) {
 				}
 			}
 		}
+		Post(config, dockerfile)
 	}
 }
 
 // Test function executes the tests of the project
 func Test(config Config) {
 	for _, value := range config.GetUnitTestCommands() {
-		info("Running unit test command: %s", value)
+		info("Running test command: %s", value)
 		res := execute("bash", "-c", value)
 		if res != nil {
 			err("Test execution returned non-zero status")
