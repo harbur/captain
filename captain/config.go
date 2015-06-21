@@ -20,7 +20,7 @@ type Config interface {
 	GetPostCommands(image string) []string
 	FilterConfig(filter string) bool
 	GetApp(app string) App
-	GetApps() []string
+	GetApps() []App
 }
 
 type configV1 struct {
@@ -155,12 +155,23 @@ func (c *config) GetImageNames() map[string]string {
 	return images
 }
 
-func (c *config) GetApps() []string {
-	// Get Image Builds
-	var apps  []string
-	for key := range *c {
-		apps = append(apps, key)
+// GetApps returns a list of Apps
+func (c *config) GetApps() []App {
+	var apps  []App
+	for _,app := range *c {
+		apps = append(apps, app)
 	}
+
+	// // Sort keys to iterate them deterministically
+	// var keys []string
+	// for k := range images {
+	// 	keys = append(keys, k)
+	// }
+	// if (len(keys)==0) {
+	// 	err("No Dockerfile(s) found on current or subdirectories, exiting");
+	// 	os.Exit(NoDockerfiles)
+	// }
+	// sort.Strings(keys)
 
 	return apps
 }

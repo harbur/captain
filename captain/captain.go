@@ -41,81 +41,66 @@ func Post(config Config, image string) {
 
 // Build function compiles the Containers of the project
 func Build(config Config) {
-	var images = config.GetImageNames()
-
 	var rev = getRevision()
 
-	// Sort keys to iterate them deterministically
-	var keys []string
-	for k := range images {
-		keys = append(keys, k)
-	}
-	if (len(keys)==0) {
-		err("No Dockerfile(s) found on current or subdirectories, exiting");
-		os.Exit(NoDockerfiles)
-	}
-	sort.Strings(keys)
-
 	// For each App
-	for _, appname := range config.GetApps() {
-		app := config.GetApp(appname)
-
+	for _, app := range config.GetApps() {
 		// Execute Pre commands
 		Pre(config, app.Build)
 
-		image := images[app.Build]
+		// image := images[app.Build]
 		// If no Git repo exist
 		if !isGit() {
 			// Perfoming [build latest]
 			debug("No local git repository found, just building latest")
 			// Build latest image
-			res := buildImage(app.Build, image, "latest")
+			res := buildImage(app.Build, app.Image, "latest")
 			if res != nil {
 				os.Exit(BuildFailed)
 			}
 
 		} else {
 			// Skip build if there are no local changes and the commit is already built
-			if !isDirty() && imageExist(image, rev) && !options.force {
+			if !isDirty() && imageExist(app.Image, rev) && !options.force {
 				// Performing [skip rev|tag rev@latest|tag rev@branch]
-				info("Skipping build of %s:%s - image is already built", image, rev)
+				info("Skipping build of %s:%s - image is already built", app.Image, rev)
 
 				// Tag commit image
-				tagImage(image, rev, "latest")
+				tagImage(app.Image, rev, "latest")
 
 				// Tag branch image
 				var branch = getBranch()
 				switch branch {
 				case "HEAD":
-					debug("Skipping tag of %s in detached mode", image)
+					debug("Skipping tag of %s in detached mode", app.Image)
 				case "":
-					debug("Skipping tag of %s no git repository", image)
+					debug("Skipping tag of %s no git repository", app.Image)
 				default:
-					tagImage(image, rev, branch)
+					tagImage(app.Image, rev, branch)
 				}
 
 			} else {
 				// Performing [build latest|tag latest@rev|tag latest@branch]
 				// Build latest image
-				res := buildImage(app.Build, image, "latest")
+				res := buildImage(app.Build, app.Image, "latest")
 				if res != nil {
 					os.Exit(BuildFailed)
 				}
 				if isDirty() {
-					debug("Skipping tag of %s:%s - local changes exist", image, rev)
+					debug("Skipping tag of %s:%s - local changes exist", app.Image, rev)
 				} else {
 					// Tag commit image
-					tagImage(image, "latest", rev)
+					tagImage(app.Image, "latest", rev)
 
 					// Tag branch image
 					var branch = getBranch()
 					switch branch {
 					case "HEAD":
-						debug("Skipping tag of %s in detached mode", image)
+						debug("Skipping tag of %s in detached mode", app.Image)
 					case "":
-						debug("Skipping tag of %s no git repository", image)
+						debug("Skipping tag of %s no git repository", app.Image)
 					default:
-						res := tagImage(image, "latest", branch)
+						res := tagImage(app.Image, "latest", branch)
 						if res != nil {
 							os.Exit(TagFailed)
 						}
