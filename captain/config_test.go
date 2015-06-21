@@ -7,33 +7,33 @@ import (
 )
 
 func TestConfigFiles(t *testing.T) {
-	c := configFiles(options)
-	sl := []string{"captain.json", "captain.yaml", "captain.yml"}
+	c := configFile(options)
+	sl := "captain.yml"
 	assert.Equal(t, sl, c, "Should return possible config files")
 }
 
 func TestReadConfig(t *testing.T) {
-	options.config = "../captain.yml"
-	c := readConfig(configFiles(options)[0])
+	options.config = "test/Simple/captain.yml"
+	c := readConfig(configFile(options))
 	assert.NotNil(t, c, "Should return configuration")
 }
 
 func TestNewConfig(t *testing.T) {
-	options.config = "../captain.yml"
+	options.config = "test/Simple/captain.yml"
 	c := NewConfig(options,false)
 	assert.NotNil(t, c, "Should return captain.yml configuration")
 }
 
 func TestNewConfigInferringValues(t *testing.T) {
-	options.config = "./captain.yml"
+	options.config = "test/noCaptainYML/captain.yml"
 	c := NewConfig(options,false)
 	assert.NotNil(t, c, "Should return infered configuration")
 }
 
 func TestGetImageNames(t *testing.T) {
-	options.config = "../captain.yml"
+	options.config = "test/Simple/captain.yml"
 	c := NewConfig(options,false)
-	expected := map[string]string{"Dockerfile":"harbur/captain", "Dockerfile.test": "harbur/captain-test"}
+	expected := map[string]string{"Dockerfile":"harbur/test_web", "Dockerfile.backend": "harbur/test_backend"}
 	assert.Equal(t, expected, c.GetImageNames(), "Should return image names")
 }
 

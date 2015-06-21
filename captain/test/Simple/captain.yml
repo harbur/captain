@@ -1,9 +1,24 @@
 web:
   build: Dockerfile
-  image: harbur/test_captain
+  image: harbur/test_web
   test:
-    - echo test
+    - echo testing 1 web
+    - echo testing 2 web
   pre:
-    - echo pre
+    - echo pre-action 1 web
+    - echo pre-action 2 web
   post:
-    - echo post
+    - echo post-action 1 web
+    - echo post-action 2 web
+backend:
+  build: Dockerfile.backend
+  image: harbur/test_backend
+  test:
+    - echo testing 1 backend
+    - echo testing 2 backend
+  pre:
+    - echo pre-action 1 backend
+    - echo pre-action 2 backend
+  post:
+    - echo post-action 1 backend
+    - echo post-action 2 backend
