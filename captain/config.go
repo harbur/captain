@@ -149,9 +149,15 @@ func NewConfig(options Options, forceOrder bool) Config {
 func (c *config) GetApps() []App {
 	var cc = *c
 	var	apps []App
-	for _,v := range *configOrder {
-		if val, ok := cc[v.Key.(string)]; ok {
-			apps = append(apps, val)
+	if (configOrder !=nil){
+		for _,v := range *configOrder {
+			if val, ok := cc[v.Key.(string)]; ok {
+				apps = append(apps, val)
+			}
+		}
+	} else {
+		for _,v := range *c {
+			apps = append(apps, v)
 		}
 	}
 
