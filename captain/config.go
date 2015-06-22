@@ -150,22 +150,27 @@ func (c *config) GetApps() []App {
 	var cc = *c
 	var	apps []App
 	for _,v := range *configOrder {
-		apps = append(apps, cc[v.Key.(string)])
+		if val, ok := cc[v.Key.(string)]; ok {
+			apps = append(apps, val)
+		}
 	}
 
 	return apps
 }
 
 func (c *config) FilterConfig(filter string) bool {
-	res := false
-	for key := range *c {
-		if (key==filter) {
-			res = true
-		} else {
-			delete(*c, key)
+	if (filter != "") {
+		res := false
+		for key := range *c {
+			if (key==filter) {
+				res = true
+			} else {
+				delete(*c, key)
+			}
 		}
+		return res
 	}
-	return res
+	return true
 }
 
 // GetApp returns App configuration
