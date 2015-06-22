@@ -31,6 +31,7 @@ type build struct {
 }
 
 type config map[string]App
+var configOrder *yaml.MapSlice
 
 // App struct
 type App struct {
@@ -104,6 +105,15 @@ func unmarshal(data []byte) *config {
 		os.Exit(InvalidCaptainYML)
 	}
 
+	// We re-import it as MapSlice to keep order of apps
+	res = yaml.Unmarshal(data, &configOrder)
+
+	if res != nil {
+		res = displaySyntaxError(data, res)
+		err("%s", res)
+		os.Exit(InvalidCaptainYML)
+	}
+
 	return config
 }
 
@@ -137,21 +147,11 @@ func NewConfig(options Options, forceOrder bool) Config {
 
 // GetApps returns a list of Apps
 func (c *config) GetApps() []App {
-	var apps  []App
-	for _,app := range *c {
-		apps = append(apps, app)
+	var cc = *c
+	var	apps []App
+	for _,v := range *configOrder {
+		apps = append(apps, cc[v.Key.(string)])
 	}
-
-	// // Sort keys to iterate them deterministically
-	// var keys []string
-	// for k := range images {
-	// 	keys = append(keys, k)
-	// }
-	// if (len(keys)==0) {
-	// 	err("No Dockerfile(s) found on current or subdirectories, exiting");
-	// 	os.Exit(NoDockerfiles)
-	// }
-	// sort.Strings(keys)
 
 	return apps
 }
