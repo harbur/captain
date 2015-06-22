@@ -157,18 +157,15 @@ func (c *config) GetApps() []App {
 }
 
 func (c *config) FilterConfig(filter string) bool {
-	if (filter != "") {
-		res := false
-		for key := range *c {
-			if (key==filter) {
-				res = true
-			} else {
-				delete(*c, key)
-			}
+	res := false
+	for key := range *c {
+		if (key==filter) {
+			res = true
+		} else {
+			delete(*c, key)
 		}
-		return res
 	}
-	return true
+	return res
 }
 
 // GetApp returns App configuration
