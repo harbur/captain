@@ -52,8 +52,8 @@ hello-world-test:
 The location of the Dockerfile to be compiled.
 
 When auto-detecting, the image will be re-constructed by the following rules:
-- Dockerfile: `username`/`parent_dir`
-- Dockerfile.*: `username`/`parent_dir`.`parsed_suffix`
+- `Dockerfile`: `username`/`parent_dir`
+- `Dockerfile.*`: `username`/`parent_dir`.`parsed_suffix`
 
 Where
 
@@ -72,8 +72,8 @@ The relative path of the Dockerfile to be used to compile the image. The Dockerf
 
 When auto-detecting it will walk current directory and all subdirectories to locate Dockerfiles of the following format:
 
-- Dockerfile
-- Dockerfile.*
+- `Dockerfile`
+- `Dockerfile.*`
 
 The build path will be reconstructed automatically to compile the Dockerfile. The build context will be the directory where the Dockerfile is located.
 
