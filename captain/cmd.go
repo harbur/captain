@@ -37,8 +37,8 @@ func handleCmd() {
 
 	var cmdTest = &cobra.Command{
 		Use:   "test",
-		Short: "Runs the unit tests",
-		Long:  `It will execute the commands described on unit testing in order they appear on file.`,
+		Short: "Runs the tests",
+		Long:  `It will execute the commands described on test section in order they appear on file.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			config := NewConfig(options, true)
 

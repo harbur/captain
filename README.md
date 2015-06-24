@@ -21,7 +21,7 @@ curl -L https://github.com/harbur/captain/releases/download/v0.1.0/captain > /us
 chmod +x /usr/local/bin/captain
 ```
 
-## Documentation
+## Captain.yml Format
 
 Captain will automatically configure itself with sane values without the need for any pre-configuration, so that it will work in most cases. When it doesn't, the `captain.yml` file can be used to configure it properly. This is a simple YAML file placed on the root directory of your git repository. Captain will look for it and use it to be configured.
 
@@ -53,7 +53,7 @@ The location of the Dockerfile to be compiled.
 
 When auto-detecting, the image will be re-constructed by the following rules:
 - Dockerfile: `username`/`parent_dir`
-- Dockerfile.suffix: `username`/`parent_dir`.`parsed_suffix`
+- Dockerfile.*: `username`/`parent_dir`.`parsed_suffix`
 
 Where
 
@@ -62,7 +62,6 @@ Where
 - `parsed_suffix`: is the suffix of the Dockerfile parsed with the following rules:
   - Lower-cased to avoid invalid repository names (Repository names support only lowercase letters, digits and _ - . characters are allowed)
 
-
 ```yaml
 image: harbur/hello-world
 ```
@@ -70,6 +69,15 @@ image: harbur/hello-world
 ### build
 
 The relative path of the Dockerfile to be used to compile the image. The Dockerfile's directory is also the build context that is sent to the Docker daemon.
+
+When auto-detecting it will walk current directory and all subdirectories to locate Dockerfiles of the following format:
+
+- Dockerfile
+- Dockerfile.*
+
+The build path will be reconstructed automatically to compile the Dockerfile. The build context will be the directory where the Dockerfile is located.
+
+Note: If more than one Dockerfiles are needed on specific directory, suffix can be used to separate them and share the same build context.
 
 ```yaml
 build: Dockerfile
@@ -105,3 +113,24 @@ A list of commands that are run as post-execution after the compilation of the s
 post:
   - echo "Reporting after compilation"
 ```
+
+## CLI Commands
+
+### build
+
+Builds the docker image(s) of your repository
+
+It will build the docker image(s) described on captain.yml in order they appear on file
+
+### test
+
+Runs the tests
+
+It will execute the commands described on test section in order they appear on file
+
+### push
+
+Pushes the images to remote registry
+
+It will push the generated images to the remote registry
+
