@@ -122,6 +122,12 @@ Builds the docker image(s) of your repository
 
 It will build the docker image(s) described on captain.yml in order they appear on file
 
+Flags:
+
+```
+-f, --force=false: Force build even if image is already built
+```
+
 ### test
 
 Runs the tests
@@ -134,3 +140,22 @@ Pushes the images to remote registry
 
 It will push the generated images to the remote registry
 
+## version
+
+Display version
+
+Displays the version of Captain
+
+## help
+
+Help provides help for any command in the application.
+
+Simply type `captain help [path to command]` for full details.
+
+## Global CLI Flags
+
+```
+-D, --debug=false: Enable debug mode
+-h, --help=false: help for captain
+-N, --namespace="username": Set default image namespace
+```
