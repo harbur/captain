@@ -174,7 +174,7 @@ Here are some of the features pending to be implemented:
 
 * Environment variables to set captain flags
 * Implementation of `captain detect` that outputs the generated `captain.yml` with auto-detected content.
-* Implementation of `captain ci [travis|circle|etc.] to output configuration wrappers for each CI service
+* Implementation of `captain ci [travis|circle|etc.]` to output configuration wrappers for each CI service
 * Configure which images are to be pushed (e.g. to exclude test images)
 * Configure which tag regex are to be pushed (e.g. to exclude development sandbox branches)
 
