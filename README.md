@@ -17,7 +17,7 @@ From the other side, you can now pull the feature branch you want to test, or cr
 To install Captain, run the following commands:
 
 ```
-curl -L https://github.com/harbur/captain/releases/download/v0.0.2/captain > /usr/local/bin/captain
+curl -L https://github.com/harbur/captain/releases/download/v0.1.0/captain > /usr/local/bin/captain
 chmod +x /usr/local/bin/captain
 ```
 
@@ -28,39 +28,80 @@ Captain will automatically configure itself with sane values without the need fo
 Here is a full `captain.yml` example:
 
 ```yaml
-build:
-  images:
-    Dockerfile: harbur/hello-world
-    Dockerfile.test: harbur/hello-world-test
-test:
-  unit:
+hello-world:
+  build: Dockerfile
+  image: harbur/hello-world
+  pre:
+    - echo "Preparing hello-world"
+  post:
+    - echo "Finished hello-world"
+hello-world-test:
+  build: Dockerfile.test
+  image: harbur/hello-world-test
+  pre:
+    - echo "Preparing hello-world-test"
+  post:
+    - echo "Finished hello-world-test"
+  test:
     - docker run -e NODE_ENV=TEST harbur/hello-world-test node mochaTest
     - docker run -e NODE_ENV=TEST harbur/hello-world-test node karmaTest
 ```
 
-## build section
+### image
 
-**images**: A list of the Dockerfiles to be compiled accompanied by their docker image namespace.
+The location of the Dockerfile to be compiled.
 
-e.g.
+When auto-detecting, the image will be re-constructed by the following rules:
+- Dockerfile: `username`/`parent_dir`
+- Dockerfile.suffix: `username`/`parent_dir`.`parsed_suffix`
+
+Where
+
+- `username` is the host's username
+- `parent_dir` is the Dockerfile's parent directory name
+- `parsed_suffix`: is the suffix of the Dockerfile parsed with the following rules:
+  - Lower-cased to avoid invalid repository names (Repository names support only lowercase letters, digits and _ - . characters are allowed)
+
 
 ```yaml
-build:
-  images:
-    Dockerfile: harbur/hello-world
-    Dockerfile.dev: harbur/hello-world-dev
-    test/Dockerfile: harbur/hello-world-test
+image: harbur/hello-world
 ```
 
-## test section
+### build
 
-**unit**: List of commands that run unit tests
+The relative path of the Dockerfile to be used to compile the image. The Dockerfile's directory is also the build context that is sent to the Docker daemon.
 
-e.g.
+```yaml
+build: Dockerfile
+build: Dockerfile.custom
+build: path/to/file/Dockerfile
+build: path/to/file/Dockerfile.custom
+```
+
+### test
+
+A list of commands that are run as tests after the compilation of the specific image. If any command fail, then captain stops and reports a non-zero exit status.
 
 ```yaml
 test:
-  unit:
-    - docker run -e NODE_ENV=TEST harbur/hello-world-test node mochaTest
-    - docker run -e NODE_ENV=TEST harbur/hello-world-test node karmaTest
+  - docker run -e NODE_ENV=TEST harbur/hello-world-test node mochaTest
+  - docker run -e NODE_ENV=TEST harbur/hello-world-test node karmaTest
+```
+
+### pre
+
+A list of commands that are run as preparation before the compilation of the specific image. If any command fail, then captain stops and reports a non-zero exit status.
+
+```yaml
+pre:
+  - echo "Preparing compilation"
+```
+
+### post
+
+A list of commands that are run as post-execution after the compilation of the specific image. If any command fail, then captain stops and reports a non-zero exit status.
+
+```yaml
+post:
+  - echo "Reporting after compilation"
 ```
