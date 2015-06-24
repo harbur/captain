@@ -159,3 +159,22 @@ Simply type `captain help [path to command]` for full details.
 -h, --help=false: help for captain
 -N, --namespace="username": Set default image namespace
 ```
+
+## Docker Tags Lifecycle
+
+The following is the workflow of tagging Docker images according to git state.
+
+- If you're in non-git repository, captain will tag the built images with `latest`.
+- If you're in dirty-git repository, captain will tag the built images with `latest`.
+- If you're in pristine-git repository, captain will tag the built images with `latest`, `commit-id`, `branch-name`
+
+## Roadmap
+
+Here are some of the features pending to be implemented:
+
+* Environment variables to set captain flags
+* Implementation of `captain detect` that outputs the generated `captain.yml` with auto-detected content.
+* Implementation of `captain ci [travis|circle|etc.] to output configuration wrappers for each CI service
+* Configure which images are to be pushed (e.g. to exclude test images)
+* Configure which tag regex are to be pushed (e.g. to exclude development sandbox branches)
+
