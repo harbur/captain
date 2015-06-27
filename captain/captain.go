@@ -44,19 +44,19 @@ func Build(config Config) {
 
 	// For each App
 	for _, app := range config.GetApps() {
-		// Execute Pre commands
-		Pre(config, app)
-
 		// If no Git repo exist
 		if !isGit() {
 			// Perfoming [build latest]
 			debug("No local git repository found, just building latest")
+
+			// Execute Pre commands
+			Pre(config, app)
+
 			// Build latest image
 			res := buildImage(app.Build, app.Image, "latest")
 			if res != nil {
 				os.Exit(BuildFailed)
 			}
-
 		} else {
 			// Skip build if there are no local changes and the commit is already built
 			if !isDirty() && imageExist(app.Image, rev) && !options.force {
@@ -79,6 +79,10 @@ func Build(config Config) {
 
 			} else {
 				// Performing [build latest|tag latest@rev|tag latest@branch]
+
+				// Execute Pre commands
+				Pre(config, app)
+
 				// Build latest image
 				res := buildImage(app.Build, app.Image, "latest")
 				if res != nil {
