@@ -64,7 +64,7 @@ func Build(config Config) {
 				info("Skipping build of %s:%s - image is already built", app.Image, rev)
 
 				// Tag commit image
-				tagImage(app.Image, rev, "latest")
+				tagImage(app, rev, "latest")
 
 				// Tag branch image
 				var branch = getBranch()
@@ -74,7 +74,7 @@ func Build(config Config) {
 				case "":
 					debug("Skipping tag of %s no git repository", app.Image)
 				default:
-					tagImage(app.Image, rev, branch)
+					tagImage(app, rev, branch)
 				}
 
 			} else {
@@ -92,7 +92,7 @@ func Build(config Config) {
 					debug("Skipping tag of %s:%s - local changes exist", app.Image, rev)
 				} else {
 					// Tag commit image
-					tagImage(app.Image, "latest", rev)
+					tagImage(app, "latest", rev)
 
 					// Tag branch image
 					var branch = getBranch()
@@ -102,7 +102,7 @@ func Build(config Config) {
 					case "":
 						debug("Skipping tag of %s no git repository", app.Image)
 					default:
-						res := tagImage(app.Image, "latest", branch)
+						res := tagImage(app, "latest", branch)
 						if res != nil {
 							os.Exit(TagFailed)
 						}

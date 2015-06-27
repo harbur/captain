@@ -38,18 +38,18 @@ func buildImage(dockerfile string, image string, tag string) error {
 	return err
 }
 
-func tagImage(repo string, origin string, tag string) error {
+func tagImage(app App, origin string, tag string) error {
 	if tag != "" {
-		info("Tagging image %s:%s as %s:%s", repo, origin, repo, tag)
-		opts := docker.TagImageOptions{Repo: repo, Tag: tag, Force: true}
-		err := client.TagImage(repo + ":" + origin, opts)
+		info("Tagging image %s:%s as %s:%s", app.Image, origin, app.Image, tag)
+		opts := docker.TagImageOptions{Repo: app.Image, Tag: tag, Force: true}
+		err := client.TagImage(app.Image + ":" + origin, opts)
 		if err != nil {
 			fmt.Printf("%s", err)
 		}
 		return err
 	}
 
-	debug("Skipping tag of %s - no git repository", repo)
+	debug("Skipping tag of %s - no git repository", app.Image)
 
 	return nil
 }

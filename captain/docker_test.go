@@ -25,12 +25,14 @@ func TestBuildImageCircleCI(t *testing.T) {
 }
 
 func TestTagImage(t *testing.T) {
-	res := tagImage("golang","1.4","testing")
+	app := App{Image: "golang"}
+	res := tagImage(app,"1.4","testing")
 	assert.Nil(t, res, "Docker tag should not return any error")
 }
 
 func TestTagNonexistingImage(t *testing.T) {
-	res := tagImage("golang","nonexist","testing")
+	app := App{Image: "golang"}
+	res := tagImage(app,"nonexist","testing")
 	expected := errors.New("no such image")
 	assert.Equal(t, expected, res, "Docker tag should return an error")
 	println()
