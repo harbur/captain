@@ -55,13 +55,10 @@ func tagImage(app App, origin string, tag string) error {
 }
 
 func imageExist(app App, tag string) bool {
-	images, _ := client.ListImages(docker.ListImagesOptions{})
-	for _, image := range images {
-		for _, b := range image.RepoTags {
-			if b == app.Image+":"+tag {
-				return true
-			}
-		}
+	repo:=app.Image+":"+tag
+	image, _ := client.InspectImage(repo)
+	if image!=nil {
+		return true
 	}
 	return false
 }
