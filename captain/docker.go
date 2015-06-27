@@ -11,25 +11,25 @@ import (
 var endpoint = "unix:///var/run/docker.sock"
 var client, _ = docker.NewClient(endpoint)
 
-func buildImage(dockerfile string, image string, tag string) error {
-	info("Building image %s:%s", image, tag)
+func buildImage(app App, tag string) error {
+	info("Building image %s:%s", app.Image, tag)
 
 	// Nasty issue with CircleCI https://github.com/docker/docker/issues/4897
 	if os.Getenv("CIRCLECI") == "true" {
 		info("Running at %s environment...", "CIRCLECI")
-		execute("docker", "build", "-t", image+":"+tag, filepath.Dir(dockerfile))
+		execute("docker", "build", "-t", app.Image+":"+tag, filepath.Dir(app.Build))
 		return nil
 	}
 
 	opts := docker.BuildImageOptions{
-		Name:                image + ":" + tag,
-		Dockerfile:          filepath.Base(dockerfile),
+		Name:                app.Image + ":" + tag,
+		Dockerfile:          filepath.Base(app.Build),
 		NoCache:             options.force,
 		SuppressOutput:      false,
 		RmTmpContainer:      true,
 		ForceRmTmpContainer: true,
 		OutputStream:        os.Stdout,
-		ContextDir:          filepath.Dir(dockerfile),
+		ContextDir:          filepath.Dir(app.Build),
 	}
 	err := client.BuildImage(opts)
 	if err != nil {

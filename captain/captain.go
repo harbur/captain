@@ -53,7 +53,7 @@ func Build(config Config) {
 			Pre(config, app)
 
 			// Build latest image
-			res := buildImage(app.Build, app.Image, "latest")
+			res := buildImage(app, "latest")
 			if res != nil {
 				os.Exit(BuildFailed)
 			}
@@ -84,7 +84,7 @@ func Build(config Config) {
 				Pre(config, app)
 
 				// Build latest image
-				res := buildImage(app.Build, app.Image, "latest")
+				res := buildImage(app, "latest")
 				if res != nil {
 					os.Exit(BuildFailed)
 				}
