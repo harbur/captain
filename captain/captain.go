@@ -59,7 +59,7 @@ func Build(config Config) {
 			}
 		} else {
 			// Skip build if there are no local changes and the commit is already built
-			if !isDirty() && imageExist(app.Image, rev) && !options.force {
+			if !isDirty() && imageExist(app, rev) && !options.force {
 				// Performing [skip rev|tag rev@latest|tag rev@branch]
 				info("Skipping build of %s:%s - image is already built", app.Image, rev)
 

@@ -42,11 +42,13 @@ func TestTagNonexistingImage(t *testing.T) {
 }
 
 func TestImageExist(t *testing.T) {
-	exist := imageExist("golang", "1.4")
+	app := App{Image: "golang"}
+	exist := imageExist(app, "1.4")
 	assert.Equal(t, true, exist, "Docker image golang:1.4 should exist")
 }
 
 func TestImageDoesNotExist(t *testing.T) {
-	exist := imageExist("golang", "nonexist")
+	app := App{Image: "golang"}
+	exist := imageExist(app, "nonexist")
 	assert.Equal(t, false, exist, "Docker image golang:nonexist should not exist")
 }
