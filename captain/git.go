@@ -16,8 +16,13 @@ func getBranch() string {
 	if (err ==nil && tag != "") {
 		branch = tag
 	}
+
 	// Remove start of "heads/origin" if exist
 	r := regexp.MustCompile("^heads\\/origin\\/")
+	branch = r.ReplaceAllString(branch, "")
+
+	// Remove start of "remotes/origin" if exist
+	r = regexp.MustCompile("^remotes\\/origin\\/")
 	branch = r.ReplaceAllString(branch, "")
 
 	// Replace all "/" with "."
