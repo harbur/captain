@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+	"github.com/fatih/color"
 )
 
 // Options that are passed by CLI are mapped here for consumption
@@ -89,6 +90,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 
 	captainCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "D", false, "Enable debug mode")
 	captainCmd.PersistentFlags().StringVarP(&options.namespace, "namespace", "N", getNamespace(), "Set default image namespace")
+	captainCmd.PersistentFlags().BoolVarP(&color.NoColor, "no-color", "n", false, "Disable color output")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdVersion)
 	captainCmd.Execute()
