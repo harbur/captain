@@ -12,7 +12,7 @@ func getRevision() string {
 
 func getBranch() string {
 	branch,_ := oneliner("git", "name-rev", "--name-only", "HEAD")
-	tag,err := oneliner("git", "describe", "--exact-match","HEAD")
+	tag,err := oneliner("git", "tag", "--points-at", "HEAD")
 	if (err ==nil) {
 		branch = tag
 	}
