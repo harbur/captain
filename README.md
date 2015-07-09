@@ -140,6 +140,16 @@ Pushes the images to remote registry
 
 It will push the generated images to the remote registry
 
+By default it pushes the 'latest' and the 'branch' docker tags.
+
+## pull
+
+Pulls the images from remote registry
+
+It will pull the images from the remote registry
+
+By default it pulls the 'latest' and the 'branch' docker tags.
+
 ## version
 
 Display version
