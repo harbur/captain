@@ -70,6 +70,22 @@ func handleCmd() {
 		},
 	}
 
+	var cmdPull = &cobra.Command{
+		Use:   "pull",
+		Short: "Pulls the images from remote registry",
+		Long:  `It will pull the images from the remote registry.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			config := NewConfig(options, true)
+
+			if len(args) == 1 {
+				config.FilterConfig(args[0])
+			}
+
+			// Build everything before pushing
+			Pull(config)
+		},
+	}
+
 	var cmdVersion = &cobra.Command{
 		Use:   "version",
 		Short: "Display version",
@@ -92,7 +108,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	captainCmd.PersistentFlags().StringVarP(&options.namespace, "namespace", "N", getNamespace(), "Set default image namespace")
 	captainCmd.PersistentFlags().BoolVarP(&color.NoColor, "no-color", "n", false, "Disable color output")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
-	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdVersion)
+	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion)
 	captainCmd.Execute()
 }
 
