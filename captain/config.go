@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-    "gopkg.in/yaml.v2"
+	"github.com/harbur/captain/Godeps/_workspace/src/gopkg.in/yaml.v2"
 )
 
 // Config represents the information stored at captain.yml. It keeps information about images and unit tests.
@@ -20,26 +20,27 @@ type Config interface {
 }
 
 type configV1 struct {
-       Build  build
-       Test   map[string][]string
-       Images []string
-       Root []string
+	Build  build
+	Test   map[string][]string
+	Images []string
+	Root   []string
 }
 
 type build struct {
-       Images map[string]string
+	Images map[string]string
 }
 
 type config map[string]App
+
 var configOrder *yaml.MapSlice
 
 // App struct
 type App struct {
-	Build  string
-	Image  string
-	Pre    []string
-	Post   []string
-	Test   []string
+	Build string
+	Image string
+	Pre   []string
+	Post  []string
+	Test  []string
 }
 
 // configFile returns the file to read the config from.
@@ -91,7 +92,7 @@ func displaySyntaxError(data []byte, syntaxError error) (err error) {
 func unmarshal(data []byte) *config {
 	var configV1 *configV1
 	res := yaml.Unmarshal(data, &configV1)
-	if (len(configV1.Build.Images)>0) {
+	if len(configV1.Build.Images) > 0 {
 		err("Old %s format detected! Please check the https://github.com/harbur/captain how to upgrade", "captain.yml")
 		os.Exit(-1)
 	}
@@ -133,8 +134,8 @@ func NewConfig(options Options, forceOrder bool) Config {
 		autoconf := make(config)
 		conf = &autoconf
 		dockerfiles := getDockerfiles()
-		for build,image := range dockerfiles {
-			autoconf[image] = App{Build:build, Image: image }
+		for build, image := range dockerfiles {
+			autoconf[image] = App{Build: build, Image: image}
 		}
 	}
 
@@ -148,15 +149,15 @@ func NewConfig(options Options, forceOrder bool) Config {
 // GetApps returns a list of Apps
 func (c *config) GetApps() []App {
 	var cc = *c
-	var	apps []App
-	if (configOrder !=nil){
-		for _,v := range *configOrder {
+	var apps []App
+	if configOrder != nil {
+		for _, v := range *configOrder {
 			if val, ok := cc[v.Key.(string)]; ok {
 				apps = append(apps, val)
 			}
 		}
 	} else {
-		for _,v := range *c {
+		for _, v := range *c {
 			apps = append(apps, v)
 		}
 	}
@@ -165,10 +166,10 @@ func (c *config) GetApps() []App {
 }
 
 func (c *config) FilterConfig(filter string) bool {
-	if (filter != "") {
+	if filter != "" {
 		res := false
 		for key := range *c {
-			if (key==filter) {
+			if key == filter {
 				res = true
 			} else {
 				delete(*c, key)
@@ -181,8 +182,8 @@ func (c *config) FilterConfig(filter string) bool {
 
 // GetApp returns App configuration
 func (c *config) GetApp(app string) App {
-	for key,k := range *c {
-		if (key == app) {
+	for key, k := range *c {
+		if key == app {
 			return k
 		}
 	}

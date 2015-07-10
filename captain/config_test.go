@@ -3,7 +3,7 @@ package captain // import "github.com/harbur/captain/captain"
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/harbur/captain/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 )
 
 func TestConfigFiles(t *testing.T) {
@@ -21,19 +21,19 @@ func TestReadConfig(t *testing.T) {
 
 func TestNewConfig(t *testing.T) {
 	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options,false)
+	c := NewConfig(options, false)
 	assert.NotNil(t, c, "Should return captain.yml configuration")
 }
 
 func TestNewConfigInferringValues(t *testing.T) {
 	options.config = "test/noCaptainYML/captain.yml"
-	c := NewConfig(options,false)
+	c := NewConfig(options, false)
 	assert.NotNil(t, c, "Should return infered configuration")
 }
 
 func TestFilterConfigEmpty(t *testing.T) {
 	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options,false)
+	c := NewConfig(options, false)
 	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	res := c.FilterConfig("")
@@ -43,7 +43,7 @@ func TestFilterConfigEmpty(t *testing.T) {
 
 func TestFilterConfigNonExistent(t *testing.T) {
 	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options,false)
+	c := NewConfig(options, false)
 	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	res := c.FilterConfig("nonexistent")
@@ -53,7 +53,7 @@ func TestFilterConfigNonExistent(t *testing.T) {
 
 func TestFilterConfigWeb(t *testing.T) {
 	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options,false)
+	c := NewConfig(options, false)
 	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	c.FilterConfig("web")
@@ -63,7 +63,7 @@ func TestFilterConfigWeb(t *testing.T) {
 
 func TestGetApp(t *testing.T) {
 	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options,false)
+	c := NewConfig(options, false)
 	app := c.GetApp("web")
 	assert.Equal(t, "harbur/test_web", app.Image, "Should return web image")
 }

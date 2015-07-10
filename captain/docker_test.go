@@ -3,9 +3,9 @@ package captain // import "github.com/harbur/captain/captain"
 import (
 	"testing"
 
-	"os"
 	"errors"
-	"github.com/stretchr/testify/assert"
+	"github.com/harbur/captain/Godeps/_workspace/src/github.com/stretchr/testify/assert"
+	"os"
 )
 
 func TestBuildImage(t *testing.T) {
@@ -17,7 +17,7 @@ func TestBuildImage(t *testing.T) {
 func TestBuildImageError(t *testing.T) {
 	app := App{Build: "test/noCaptainYML/Dockerfile.error", Image: "captain_test"}
 	res := buildImage(app, "latest")
-	assert.NotNil(t,res, "Docker build should return an error")
+	assert.NotNil(t, res, "Docker build should return an error")
 }
 
 func TestBuildImageCircleCI(t *testing.T) {
@@ -29,13 +29,13 @@ func TestBuildImageCircleCI(t *testing.T) {
 
 func TestTagImage(t *testing.T) {
 	app := App{Image: "golang"}
-	res := tagImage(app,"1.4","testing")
+	res := tagImage(app, "1.4", "testing")
 	assert.Nil(t, res, "Docker tag should not return any error")
 }
 
 func TestTagNonexistingImage(t *testing.T) {
 	app := App{Image: "golang"}
-	res := tagImage(app,"nonexist","testing")
+	res := tagImage(app, "nonexist", "testing")
 	expected := errors.New("no such image")
 	assert.Equal(t, expected, res, "Docker tag should return an error")
 	println()
