@@ -8,8 +8,17 @@ import (
 	"github.com/fsouza/go-dockerclient"
 )
 
-var endpoint = "unix:///var/run/docker.sock"
-var client, _ = docker.NewClient(endpoint)
+const defaultEndpoint = "unix:///var/run/docker.sock"
+
+var client *docker.Client
+
+func init() {
+	var err error
+	client, err = newDockerClientFromEnv()
+	if err != nil {
+		panic(err)
+	}
+}
 
 func buildImage(app App, tag string) error {
 	info("Building image %s:%s", app.Image, tag)
@@ -42,7 +51,7 @@ func tagImage(app App, origin string, tag string) error {
 	if tag != "" {
 		info("Tagging image %s:%s as %s:%s", app.Image, origin, app.Image, tag)
 		opts := docker.TagImageOptions{Repo: app.Image, Tag: tag, Force: true}
-		err := client.TagImage(app.Image + ":" + origin, opts)
+		err := client.TagImage(app.Image+":"+origin, opts)
 		if err != nil {
 			fmt.Printf("%s", err)
 		}
@@ -55,10 +64,29 @@ func tagImage(app App, origin string, tag string) error {
 }
 
 func imageExist(app App, tag string) bool {
-	repo:=app.Image+":"+tag
+	repo := app.Image + ":" + tag
 	image, _ := client.InspectImage(repo)
-	if image!=nil {
+	if image != nil {
 		return true
 	}
 	return false
+}
+
+func newDockerClient(socket, certPath string) (*docker.Client, error) {
+	if certPath != "" {
+		cert := certPath + "/cert.pem"
+		key := certPath + "/key.pem"
+		ca := certPath + "/ca.pem"
+		return docker.NewTLSClient(socket, cert, key, ca)
+	}
+
+	if socket == "" {
+		socket = defaultEndpoint
+	}
+
+	return docker.NewClient(socket)
+}
+
+func newDockerClientFromEnv() (*docker.Client, error) {
+	return newDockerClient(os.Getenv("DOCKER_HOST"), os.Getenv("DOCKER_CERT_PATH"))
 }
