@@ -13,3 +13,7 @@ watch:
 
 goconvey:
 	goconvey -timeout 10s
+
+
+cross:
+	docker run --rm -v "$$PWD":/usr/src/myapp -w /usr/src/myapp -e GOOS=windows -e GOARCH=386 golang:1.4.2-cross sh -c 'go get ./...; go build -v'
