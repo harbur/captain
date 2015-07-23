@@ -116,7 +116,7 @@ func Build(config Config) {
 
 // Test function executes the tests of the project
 func Test(config Config) {
-	for _,app := range config.GetApps() {
+	for _, app := range config.GetApps() {
 		for _, value := range app.Test {
 			info("Running test command: %s", value)
 			res := execute("bash", "-c", value)
@@ -142,33 +142,33 @@ func Push(config Config) {
 	}
 
 	for _, app := range config.GetApps() {
-			branch := getBranch()
+		branch := getBranch()
 
-			switch branch {
-			case "HEAD":
-				err("Skipping push of %s in detached mode", app.Image)
-			default:
-				info("Pushing image %s:%s", app.Image, branch)
-				execute("docker", "push", app.Image+":"+branch)
-				info("Pushing image %s:%s", app.Image, "latest")
-				execute("docker", "push", app.Image+":"+"latest")
-			}
+		switch branch {
+		case "HEAD":
+			err("Skipping push of %s in detached mode", app.Image)
+		default:
+			info("Pushing image %s:%s", app.Image, branch)
+			execute("docker", "push", app.Image+":"+branch)
+			info("Pushing image %s:%s", app.Image, "latest")
+			execute("docker", "push", app.Image+":"+"latest")
+		}
 	}
 }
 
 // Pull function pulls the containers from the remote registry
 func Pull(config Config) {
 	for _, app := range config.GetApps() {
-			branch := getBranch()
+		branch := getBranch()
 
-			switch branch {
-			case "HEAD":
-				err("Skipping pull of %s in detached mode", app.Image)
-			default:
-				info("Pulling image %s:%s", app.Image, "latest")
-				execute("docker", "pull", app.Image+":"+"latest")
-				info("Pulling image %s:%s", app.Image, branch)
-				execute("docker", "pull", app.Image+":"+branch)
-			}
+		switch branch {
+		case "HEAD":
+			err("Skipping pull of %s in detached mode", app.Image)
+		default:
+			info("Pulling image %s:%s", app.Image, "latest")
+			execute("docker", "pull", app.Image+":"+"latest")
+			info("Pulling image %s:%s", app.Image, branch)
+			execute("docker", "pull", app.Image+":"+branch)
+		}
 	}
 }
