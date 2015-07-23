@@ -1,4 +1,5 @@
 package captain // import "github.com/harbur/captain/captain"
+
 import "fmt"
 
 func info(text string, arg ...interface{}) {

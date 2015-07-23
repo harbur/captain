@@ -25,8 +25,8 @@ func execute(name string, arg ...string) error {
 
 func oneliner(name string, arg ...string) (string, error) {
 	var buff bytes.Buffer
-	gitCmd:= exec.Command(name, arg...)
+	gitCmd := exec.Command(name, arg...)
 	gitCmd.Stdout = &buff
 	err := gitCmd.Run()
-	return strings.TrimSpace(buff.String()),err
+	return strings.TrimSpace(buff.String()), err
 }

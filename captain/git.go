@@ -1,19 +1,19 @@
 package captain // import "github.com/harbur/captain/captain"
 
 import (
-    "strings"
-    "regexp"
+	"regexp"
+	"strings"
 )
 
 func getRevision() string {
-	res,_ := oneliner("git", "rev-parse", "--short", "HEAD")
+	res, _ := oneliner("git", "rev-parse", "--short", "HEAD")
 	return res
 }
 
 func getBranch() string {
-	branch,_ := oneliner("git", "name-rev", "--name-only", "HEAD")
-	tag,err := oneliner("git", "tag", "--points-at", "HEAD")
-	if (err ==nil && tag != "") {
+	branch, _ := oneliner("git", "name-rev", "--name-only", "HEAD")
+	tag, err := oneliner("git", "tag", "--points-at", "HEAD")
+	if err == nil && tag != "" {
 		branch = tag
 	}
 
@@ -35,7 +35,7 @@ func getBranch() string {
 }
 
 func isDirty() bool {
-	res,_ := oneliner("git", "status", "--porcelain")
+	res, _ := oneliner("git", "status", "--porcelain")
 	return len(res) > 0
 }
 
