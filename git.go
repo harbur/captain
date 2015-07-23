@@ -1,4 +1,4 @@
-package captain // import "github.com/harbur/captain/captain"
+package captain // import "github.com/harbur/captain"
 
 import (
 	"regexp"
