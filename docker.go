@@ -20,7 +20,7 @@ func init() {
 	}
 }
 
-func buildImage(app App, tag string) error {
+func buildImage(app App, tag string, force bool) error {
 	info("Building image %s:%s", app.Image, tag)
 
 	// Nasty issue with CircleCI https://github.com/docker/docker/issues/4897
@@ -33,7 +33,7 @@ func buildImage(app App, tag string) error {
 	opts := docker.BuildImageOptions{
 		Name:                app.Image + ":" + tag,
 		Dockerfile:          filepath.Base(app.Build),
-		NoCache:             options.force,
+		NoCache:             force,
 		SuppressOutput:      false,
 		RmTmpContainer:      true,
 		ForceRmTmpContainer: true,

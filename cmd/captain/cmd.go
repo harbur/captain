@@ -1,9 +1,10 @@
-package captain // import "github.com/harbur/captain"
+package main
 
 import (
 	"fmt"
 	"os"
 
+	"github.com/harbur/captain"
 	"github.com/harbur/captain/Godeps/_workspace/src/github.com/fatih/color"
 	"github.com/harbur/captain/Godeps/_workspace/src/github.com/spf13/cobra"
 )
@@ -26,13 +27,16 @@ func handleCmd() {
 		Short: "Builds the docker image(s) of your repository",
 		Long:  `It will build the docker image(s) described on captain.yml in order they appear on file.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			config := NewConfig(options, true)
+			config := captain.NewConfig(options.namespace, options.config, true)
 
 			if len(args) == 1 {
 				config.FilterConfig(args[0])
 			}
 
-			Build(config)
+			captain.Build(captain.BuildOptions{
+				Config: config,
+				Force:  options.force,
+			})
 		},
 	}
 
@@ -41,15 +45,18 @@ func handleCmd() {
 		Short: "Runs the tests",
 		Long:  `It will execute the commands described on test section in order they appear on file.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			config := NewConfig(options, true)
+			config := captain.NewConfig(options.namespace, options.config, true)
 
 			if len(args) == 1 {
 				config.FilterConfig(args[0])
 			}
 
 			// Build everything before testing
-			Build(config)
-			Test(config)
+			captain.Build(captain.BuildOptions{
+				Config: config,
+				Force:  options.force,
+			})
+			captain.Test(config)
 		},
 	}
 
@@ -58,15 +65,18 @@ func handleCmd() {
 		Short: "Pushes the images to remote registry",
 		Long:  `It will push the generated images to the remote registry.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			config := NewConfig(options, true)
+			config := captain.NewConfig(options.namespace, options.config, true)
 
 			if len(args) == 1 {
 				config.FilterConfig(args[0])
 			}
 
 			// Build everything before pushing
-			Build(config)
-			Push(config)
+			captain.Build(captain.BuildOptions{
+				Config: config,
+				Force:  options.force,
+			})
+			captain.Push(config)
 		},
 	}
 
@@ -75,14 +85,14 @@ func handleCmd() {
 		Short: "Pulls the images from remote registry",
 		Long:  `It will pull the images from the remote registry.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			config := NewConfig(options, true)
+			config := captain.NewConfig(options.namespace, options.config, true)
 
 			if len(args) == 1 {
 				config.FilterConfig(args[0])
 			}
 
 			// Build everything before pushing
-			Pull(config)
+			captain.Pull(config)
 		},
 	}
 
@@ -104,7 +114,7 @@ Captain, the CLI build tool for Docker made for Continuous Integration / Continu
 It works by reading captain.yaml file which describes how to build, test, push and release the docker image(s) of your repository.`,
 	}
 
-	captainCmd.PersistentFlags().BoolVarP(&options.debug, "debug", "D", false, "Enable debug mode")
+	captainCmd.PersistentFlags().BoolVarP(&captain.Debug, "debug", "D", false, "Enable debug mode")
 	captainCmd.PersistentFlags().StringVarP(&options.namespace, "namespace", "N", getNamespace(), "Set default image namespace")
 	captainCmd.PersistentFlags().BoolVarP(&color.NoColor, "no-color", "n", false, "Disable color output")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")

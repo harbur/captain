@@ -13,6 +13,7 @@ func TestPrintErr(t *testing.T) {
 }
 
 func TestPrintDebug(t *testing.T) {
-	options.debug = true
+	Debug = true
+	defer func() { Debug = false }()
 	debug("test debug %s", "message")
 }

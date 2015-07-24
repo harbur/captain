@@ -21,7 +21,7 @@ func err(text string, arg ...interface{}) {
 }
 
 func debug(text string, arg ...interface{}) {
-	if options.debug {
+	if Debug {
 		text = colorDebug("[") + colorPrefix("CAPTAIN") + colorDebug("]") + " " + text + "\n"
 		s := arg
 		for i := range s {

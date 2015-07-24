@@ -1,17 +1,16 @@
 package captain // import "github.com/harbur/captain"
+
 import (
 	"os"
 )
+
+// Debug can be turned on to enable debug mode.
+var Debug bool
 
 // StatusError provides error code and id
 type StatusError struct {
 	error  error
 	status int
-}
-
-// RealMain is the Captain entrypoint function
-func RealMain() {
-	handleCmd()
 }
 
 // Pre function executes commands on pre section before build
@@ -38,8 +37,15 @@ func Post(config Config, app App) {
 	}
 }
 
+type BuildOptions struct {
+	Config Config
+	Force  bool
+}
+
 // Build function compiles the Containers of the project
-func Build(config Config) {
+func Build(opts BuildOptions) {
+	config := opts.Config
+
 	var rev = getRevision()
 
 	// For each App
@@ -53,13 +59,13 @@ func Build(config Config) {
 			Pre(config, app)
 
 			// Build latest image
-			res := buildImage(app, "latest")
+			res := buildImage(app, "latest", opts.Force)
 			if res != nil {
 				os.Exit(BuildFailed)
 			}
 		} else {
 			// Skip build if there are no local changes and the commit is already built
-			if !isDirty() && imageExist(app, rev) && !options.force {
+			if !isDirty() && imageExist(app, rev) && !opts.Force {
 				// Performing [skip rev|tag rev@latest|tag rev@branch]
 				info("Skipping build of %s:%s - image is already built", app.Image, rev)
 
@@ -84,7 +90,7 @@ func Build(config Config) {
 				Pre(config, app)
 
 				// Build latest image
-				res := buildImage(app, "latest")
+				res := buildImage(app, "latest", opts.Force)
 				if res != nil {
 					os.Exit(BuildFailed)
 				}
