@@ -176,7 +176,7 @@ The following is the workflow of tagging Docker images according to git state.
 
 - If you're in non-git repository, captain will tag the built images with `latest`.
 - If you're in dirty-git repository, captain will tag the built images with `latest`.
-- If you're in pristine-git repository, captain will tag the built images with `latest`, `commit-id`, `branch-name`
+- If you're in pristine-git repository, captain will tag the built images with `latest`, `commit-id`, `branch-name`, `tag-name`. A maximum of one tag per commid id is supported.
 
 ## Roadmap
 
