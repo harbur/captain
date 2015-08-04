@@ -17,8 +17,8 @@ sed -i.bak 's/fmt\.Println("v[0-9]*\.[0-9]*\.[0-9]*")/fmt.Println("v'$version'")
 sed -i.bak 's/captain\/releases\/download\/v[0-9]*\.[0-9]*\.[0-9]*\/captain/captain\/releases\/download\/v'$version'\/captain/' README.md
 rm captain/cmd.go.bak README.md.bak
 
-echo "Build binary..."
-make b
+echo "Build binaries..."
+make cross
 
 echo "Update repository..."
 git add captain/cmd.go README.md
