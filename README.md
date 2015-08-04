@@ -17,7 +17,7 @@ From the other side, you can now pull the feature branch you want to test, or cr
 To install Captain, run the following commands:
 
 ```
-curl -L https://github.com/harbur/captain/releases/download/v0.6.0/captain > /usr/local/bin/captain
+curl -L https://github.com/harbur/captain/releases/download/v0.6.0/captain-`uname -s`-`uname -m` > /usr/local/bin/captain
 chmod +x /usr/local/bin/captain
 ```
 
