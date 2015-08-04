@@ -1,4 +1,4 @@
-package captain // import "github.com/harbur/captain/captain"
+package captain // import "github.com/harbur/captain"
 
 import (
 	"testing"
@@ -7,33 +7,28 @@ import (
 )
 
 func TestConfigFiles(t *testing.T) {
-	options.config = "captain.yml"
-	c := configFile(options)
+	c := configFile("captain.yml")
 	sl := "captain.yml"
 	assert.Equal(t, sl, c, "Should return possible config files")
 }
 
 func TestReadConfig(t *testing.T) {
-	options.config = "test/Simple/captain.yml"
-	c := readConfig(configFile(options))
+	c := readConfig(configFile("test/Simple/captain.yml"))
 	assert.NotNil(t, c, "Should return configuration")
 }
 
 func TestNewConfig(t *testing.T) {
-	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options, false)
+	c := NewConfig("", "test/Simple/captain.yml", false)
 	assert.NotNil(t, c, "Should return captain.yml configuration")
 }
 
 func TestNewConfigInferringValues(t *testing.T) {
-	options.config = "test/noCaptainYML/captain.yml"
-	c := NewConfig(options, false)
+	c := NewConfig("", "test/noCaptainYML/captain.yml", false)
 	assert.NotNil(t, c, "Should return infered configuration")
 }
 
 func TestFilterConfigEmpty(t *testing.T) {
-	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options, false)
+	c := NewConfig("", "test/Simple/captain.yml", false)
 	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	res := c.FilterConfig("")
@@ -42,8 +37,7 @@ func TestFilterConfigEmpty(t *testing.T) {
 }
 
 func TestFilterConfigNonExistent(t *testing.T) {
-	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options, false)
+	c := NewConfig("", "test/Simple/captain.yml", false)
 	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	res := c.FilterConfig("nonexistent")
@@ -52,8 +46,7 @@ func TestFilterConfigNonExistent(t *testing.T) {
 }
 
 func TestFilterConfigWeb(t *testing.T) {
-	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options, false)
+	c := NewConfig("", "test/Simple/captain.yml", false)
 	assert.Equal(t, 2, len(c.GetApps()), "Should return 2 apps")
 
 	c.FilterConfig("web")
@@ -62,8 +55,7 @@ func TestFilterConfigWeb(t *testing.T) {
 }
 
 func TestGetApp(t *testing.T) {
-	options.config = "test/Simple/captain.yml"
-	c := NewConfig(options, false)
+	c := NewConfig("", "test/Simple/captain.yml", false)
 	app := c.GetApp("web")
 	assert.Equal(t, "harbur/test_web", app.Image, "Should return web image")
 }

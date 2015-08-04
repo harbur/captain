@@ -1,29 +1,30 @@
-package captain // import "github.com/harbur/captain/captain"
+package captain // import "github.com/harbur/captain"
 
 import (
 	"testing"
 
 	"errors"
-	"github.com/harbur/captain/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 	"os"
+
+	"github.com/harbur/captain/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 )
 
 func TestBuildImage(t *testing.T) {
 	app := App{Build: "test/noCaptainYML/Dockerfile", Image: "captain_test"}
-	res := buildImage(app, "latest")
+	res := buildImage(app, "latest", false)
 	assert.Nil(t, res, "Docker build should not return any error")
 }
 
 func TestBuildImageError(t *testing.T) {
 	app := App{Build: "test/noCaptainYML/Dockerfile.error", Image: "captain_test"}
-	res := buildImage(app, "latest")
+	res := buildImage(app, "latest", false)
 	assert.NotNil(t, res, "Docker build should return an error")
 }
 
 func TestBuildImageCircleCI(t *testing.T) {
 	os.Setenv("CIRCLECI", "true")
 	app := App{Build: "test/noCaptainYML/Dockerfile", Image: "captain_test"}
-	res := buildImage(app, "latest")
+	res := buildImage(app, "latest", false)
 	assert.Nil(t, res, "Docker build should not return any error")
 }
 

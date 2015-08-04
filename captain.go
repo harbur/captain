@@ -1,17 +1,16 @@
-package captain // import "github.com/harbur/captain/captain"
+package captain // import "github.com/harbur/captain"
+
 import (
 	"os"
 )
+
+// Debug can be turned on to enable debug mode.
+var Debug bool
 
 // StatusError provides error code and id
 type StatusError struct {
 	error  error
 	status int
-}
-
-// RealMain is the Captain entrypoint function
-func RealMain() {
-	handleCmd()
 }
 
 // Pre function executes commands on pre section before build
@@ -38,8 +37,15 @@ func Post(config Config, app App) {
 	}
 }
 
+type BuildOptions struct {
+	Config Config
+	Force  bool
+}
+
 // Build function compiles the Containers of the project
-func Build(config Config) {
+func Build(opts BuildOptions) {
+	config := opts.Config
+
 	var rev = getRevision()
 
 	// For each App
@@ -53,13 +59,13 @@ func Build(config Config) {
 			Pre(config, app)
 
 			// Build latest image
-			res := buildImage(app, "latest")
+			res := buildImage(app, "latest", opts.Force)
 			if res != nil {
 				os.Exit(BuildFailed)
 			}
 		} else {
 			// Skip build if there are no local changes and the commit is already built
-			if !isDirty() && imageExist(app, rev) && !options.force {
+			if !isDirty() && imageExist(app, rev) && !opts.Force {
 				// Performing [skip rev|tag rev@latest|tag rev@branch]
 				info("Skipping build of %s:%s - image is already built", app.Image, rev)
 
@@ -84,7 +90,7 @@ func Build(config Config) {
 				Pre(config, app)
 
 				// Build latest image
-				res := buildImage(app, "latest")
+				res := buildImage(app, "latest", opts.Force)
 				if res != nil {
 					os.Exit(BuildFailed)
 				}
@@ -116,7 +122,7 @@ func Build(config Config) {
 
 // Test function executes the tests of the project
 func Test(config Config) {
-	for _,app := range config.GetApps() {
+	for _, app := range config.GetApps() {
 		for _, value := range app.Test {
 			info("Running test command: %s", value)
 			res := execute("bash", "-c", value)
@@ -142,33 +148,33 @@ func Push(config Config) {
 	}
 
 	for _, app := range config.GetApps() {
-			branch := getBranch()
+		branch := getBranch()
 
-			switch branch {
-			case "HEAD":
-				err("Skipping push of %s in detached mode", app.Image)
-			default:
-				info("Pushing image %s:%s", app.Image, branch)
-				execute("docker", "push", app.Image+":"+branch)
-				info("Pushing image %s:%s", app.Image, "latest")
-				execute("docker", "push", app.Image+":"+"latest")
-			}
+		switch branch {
+		case "HEAD":
+			err("Skipping push of %s in detached mode", app.Image)
+		default:
+			info("Pushing image %s:%s", app.Image, branch)
+			execute("docker", "push", app.Image+":"+branch)
+			info("Pushing image %s:%s", app.Image, "latest")
+			execute("docker", "push", app.Image+":"+"latest")
+		}
 	}
 }
 
 // Pull function pulls the containers from the remote registry
 func Pull(config Config) {
 	for _, app := range config.GetApps() {
-			branch := getBranch()
+		branch := getBranch()
 
-			switch branch {
-			case "HEAD":
-				err("Skipping pull of %s in detached mode", app.Image)
-			default:
-				info("Pulling image %s:%s", app.Image, "latest")
-				execute("docker", "pull", app.Image+":"+"latest")
-				info("Pulling image %s:%s", app.Image, branch)
-				execute("docker", "pull", app.Image+":"+branch)
-			}
+		switch branch {
+		case "HEAD":
+			err("Skipping pull of %s in detached mode", app.Image)
+		default:
+			info("Pulling image %s:%s", app.Image, "latest")
+			execute("docker", "pull", app.Image+":"+"latest")
+			info("Pulling image %s:%s", app.Image, branch)
+			execute("docker", "pull", app.Image+":"+branch)
+		}
 	}
 }
