@@ -13,15 +13,15 @@ echo "Running tests..."
 go test ./...
 
 echo "Update version..."
-sed -i.bak 's/fmt\.Println("v[0-9]*\.[0-9]*\.[0-9]*")/fmt.Println("v'$version'")/' captain/cmd.go
+sed -i.bak 's/fmt\.Println("v[0-9]*\.[0-9]*\.[0-9]*")/fmt.Println("v'$version'")/' cmd/captain/cmd.go
 sed -i.bak 's/captain\/releases\/download\/v[0-9]*\.[0-9]*\.[0-9]*\/captain/captain\/releases\/download\/v'$version'\/captain/' README.md
-rm captain/cmd.go.bak README.md.bak
+rm cmd/captain/cmd.go.bak README.md.bak
 
 echo "Build binaries..."
 make cross
 
 echo "Update repository..."
-git add captain/cmd.go README.md
+git add cmd/captain/cmd.go README.md
 git commit -m "Preparing version ${version}"
 git tag --message="v$version" "v$version"
 
