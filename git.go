@@ -36,8 +36,6 @@ func getBranches() []string {
 		branches[key] = strings.Replace(branches[key], "~", ".", -1)
 	}
 
-	info("Branches list: %s", branches)
-
 	return branches
 }
 
