@@ -11,7 +11,7 @@ func getRevision() string {
 }
 
 func getBranches() []string {
-	branch, _ := oneliner("git", "name-rev", "--name-only", "HEAD")
+	branch, _ := oneliner("git", "rev-parse", "--abbrev-ref", "HEAD")
 	tag, err := oneliner("git", "tag", "--points-at", "HEAD")
 	if err == nil && tag != "" {
 		branch = tag
