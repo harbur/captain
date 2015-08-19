@@ -73,14 +73,18 @@ func Build(opts BuildOptions) {
 				tagImage(app, rev, "latest")
 
 				// Tag branch image
-				var branch = getBranch()
-				switch branch {
-				case "HEAD":
-					debug("Skipping tag of %s in detached mode", app.Image)
-				case "":
-					debug("Skipping tag of %s no git repository", app.Image)
-				default:
-					tagImage(app, rev, branch)
+				for _,branch := range getBranches() {
+					switch branch {
+					case "HEAD":
+						debug("Skipping tag of %s in detached mode", app.Image)
+					case "":
+						debug("Skipping tag of %s no git repository", app.Image)
+					default:
+						res := tagImage(app, rev, branch)
+						if res != nil {
+							os.Exit(TagFailed)
+						}
+					}
 				}
 
 			} else {
@@ -101,16 +105,17 @@ func Build(opts BuildOptions) {
 					tagImage(app, "latest", rev)
 
 					// Tag branch image
-					var branch = getBranch()
+					for _,branch := range getBranches() {
 					switch branch {
-					case "HEAD":
-						debug("Skipping tag of %s in detached mode", app.Image)
-					case "":
-						debug("Skipping tag of %s no git repository", app.Image)
-					default:
-						res := tagImage(app, "latest", branch)
-						if res != nil {
-							os.Exit(TagFailed)
+						case "HEAD":
+							debug("Skipping tag of %s in detached mode", app.Image)
+						case "":
+							debug("Skipping tag of %s no git repository", app.Image)
+						default:
+							res := tagImage(app, "latest", branch)
+							if res != nil {
+								os.Exit(TagFailed)
+							}
 						}
 					}
 				}
@@ -148,16 +153,17 @@ func Push(config Config) {
 	}
 
 	for _, app := range config.GetApps() {
-		branch := getBranch()
+		for _,branch := range getBranches() {
 
-		switch branch {
-		case "HEAD":
-			err("Skipping push of %s in detached mode", app.Image)
-		default:
-			info("Pushing image %s:%s", app.Image, branch)
-			execute("docker", "push", app.Image+":"+branch)
-			info("Pushing image %s:%s", app.Image, "latest")
-			execute("docker", "push", app.Image+":"+"latest")
+			switch branch {
+			case "HEAD":
+        	    err("Skipping push of %s in detached mode", app.Image)
+			default:
+				info("Pushing image %s:%s", app.Image, branch)
+				execute("docker", "push", app.Image+":"+branch)
+				info("Pushing image %s:%s", app.Image, "latest")
+				execute("docker", "push", app.Image+":"+"latest")
+			}
 		}
 	}
 }
@@ -165,16 +171,17 @@ func Push(config Config) {
 // Pull function pulls the containers from the remote registry
 func Pull(config Config) {
 	for _, app := range config.GetApps() {
-		branch := getBranch()
+		for _,branch := range getBranches() {
 
-		switch branch {
-		case "HEAD":
-			err("Skipping pull of %s in detached mode", app.Image)
-		default:
-			info("Pulling image %s:%s", app.Image, "latest")
-			execute("docker", "pull", app.Image+":"+"latest")
-			info("Pulling image %s:%s", app.Image, branch)
-			execute("docker", "pull", app.Image+":"+branch)
+			switch branch {
+			case "HEAD":
+				err("Skipping pull of %s in detached mode", app.Image)
+			default:
+				info("Pulling image %s:%s", app.Image, "latest")
+				execute("docker", "pull", app.Image+":"+"latest")
+				info("Pulling image %s:%s", app.Image, branch)
+				execute("docker", "pull", app.Image+":"+branch)
+			}
 		}
 	}
 }
