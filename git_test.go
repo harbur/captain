@@ -11,7 +11,7 @@ func TestGitGetRevision(t *testing.T) {
 }
 
 func TestGitGetBranch(t *testing.T) {
-	assert.Equal(t, "master", getBranch(), "Git branch should be master")
+	assert.Equal(t, "[master]", getBranches(), "Git branch should be master")
 }
 
 func TestGitIsDirty(t *testing.T) {

@@ -74,16 +74,9 @@ func Build(opts BuildOptions) {
 
 				// Tag branch image
 				for _,branch := range getBranches() {
-					switch branch {
-					case "HEAD":
-						debug("Skipping tag of %s in detached mode", app.Image)
-					case "":
-						debug("Skipping tag of %s no git repository", app.Image)
-					default:
-						res := tagImage(app, rev, branch)
-						if res != nil {
-							os.Exit(TagFailed)
-						}
+					res := tagImage(app, rev, branch)
+					if res != nil {
+						os.Exit(TagFailed)
 					}
 				}
 
@@ -106,16 +99,9 @@ func Build(opts BuildOptions) {
 
 					// Tag branch image
 					for _,branch := range getBranches() {
-					switch branch {
-						case "HEAD":
-							debug("Skipping tag of %s in detached mode", app.Image)
-						case "":
-							debug("Skipping tag of %s no git repository", app.Image)
-						default:
-							res := tagImage(app, "latest", branch)
-							if res != nil {
-								os.Exit(TagFailed)
-							}
+						res := tagImage(app, "latest", branch)
+						if res != nil {
+							os.Exit(TagFailed)
 						}
 					}
 				}
@@ -154,16 +140,10 @@ func Push(config Config) {
 
 	for _, app := range config.GetApps() {
 		for _,branch := range getBranches() {
-
-			switch branch {
-			case "HEAD":
-        	    err("Skipping push of %s in detached mode", app.Image)
-			default:
-				info("Pushing image %s:%s", app.Image, branch)
-				execute("docker", "push", app.Image+":"+branch)
-				info("Pushing image %s:%s", app.Image, "latest")
-				execute("docker", "push", app.Image+":"+"latest")
-			}
+			info("Pushing image %s:%s", app.Image, branch)
+			execute("docker", "push", app.Image+":"+branch)
+			info("Pushing image %s:%s", app.Image, "latest")
+			execute("docker", "push", app.Image+":"+"latest")
 		}
 	}
 }
@@ -172,16 +152,10 @@ func Push(config Config) {
 func Pull(config Config) {
 	for _, app := range config.GetApps() {
 		for _,branch := range getBranches() {
-
-			switch branch {
-			case "HEAD":
-				err("Skipping pull of %s in detached mode", app.Image)
-			default:
-				info("Pulling image %s:%s", app.Image, "latest")
-				execute("docker", "pull", app.Image+":"+"latest")
-				info("Pulling image %s:%s", app.Image, branch)
-				execute("docker", "pull", app.Image+":"+branch)
-			}
+			info("Pulling image %s:%s", app.Image, "latest")
+			execute("docker", "pull", app.Image+":"+"latest")
+			info("Pulling image %s:%s", app.Image, branch)
+			execute("docker", "pull", app.Image+":"+branch)
 		}
 	}
 }

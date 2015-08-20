@@ -17,8 +17,13 @@ func getBranches() []string {
 		branch = tag
 	}
 
-	// Git tag list is separated in multi-lines. Let's put it in an array
-	branches := strings.Split(branch, "\n")
+	// If branch string is empty return an empty list
+	var branches =[]string{}
+
+	if (branch != "") {
+		// Git tag list is separated in multi-lines. Let's put it in an array
+		branches = strings.Split(branch, "\n")
+	}
 
 	for key := range branches {
 		// Remove start of "heads/origin" if exist
