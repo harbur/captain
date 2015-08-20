@@ -10,28 +10,38 @@ func getRevision() string {
 	return res
 }
 
-func getBranch() string {
-	branch, _ := oneliner("git", "name-rev", "--name-only", "HEAD")
+func getBranches() []string {
+	branch, _ := oneliner("git", "symbolic-ref", "--short", "-q", "HEAD")
 	tag, err := oneliner("git", "tag", "--points-at", "HEAD")
 	if err == nil && tag != "" {
 		branch = tag
 	}
 
-	// Remove start of "heads/origin" if exist
-	r := regexp.MustCompile("^heads\\/origin\\/")
-	branch = r.ReplaceAllString(branch, "")
+	// If branch string is empty return an empty list
+	var branches =[]string{}
 
-	// Remove start of "remotes/origin" if exist
-	r = regexp.MustCompile("^remotes\\/origin\\/")
-	branch = r.ReplaceAllString(branch, "")
+	if (branch != "") {
+		// Git tag list is separated in multi-lines. Let's put it in an array
+		branches = strings.Split(branch, "\n")
+	}
 
-	// Replace all "/" with "."
-	branch = strings.Replace(branch, "/", ".", -1)
+	for key := range branches {
+		// Remove start of "heads/origin" if exist
+		r := regexp.MustCompile("^heads\\/origin\\/")
+		branches[key] = r.ReplaceAllString(branches[key], "")
 
-	// Replace all "~" with "."
-	branch = strings.Replace(branch, "~", ".", -1)
+		// Remove start of "remotes/origin" if exist
+		r = regexp.MustCompile("^remotes\\/origin\\/")
+		branches[key] = r.ReplaceAllString(branches[key], "")
 
-	return branch
+		// Replace all "/" with "."
+		branches[key] = strings.Replace(branches[key], "/", ".", -1)
+
+		// Replace all "~" with "."
+		branches[key] = strings.Replace(branches[key], "~", ".", -1)
+	}
+
+	return branches
 }
 
 func isDirty() bool {
