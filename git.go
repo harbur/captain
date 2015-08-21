@@ -11,37 +11,42 @@ func getRevision() string {
 }
 
 func getBranches() []string {
-	branch, _ := oneliner("git", "symbolic-ref", "--short", "-q", "HEAD")
-	tag, err := oneliner("git", "tag", "--points-at", "HEAD")
-	if err == nil && tag != "" {
-		branch = tag
+	// Labels (branches + tags)
+	var labels =[]string{}
+
+	branches,_ := oneliner("git", "branch", "--no-column", "--contains", "HEAD")
+	if (branches != "") {
+		// Remove asterisk from branches list
+		r := regexp.MustCompile("[\\* ] ")
+		branches = r.ReplaceAllString(branches, "")
+		// Branches list is separated by spaces. Let's put it in an array
+		labels=append(labels,strings.Split(branches, "\n")...)
 	}
 
-	// If branch string is empty return an empty list
-	var branches =[]string{}
+	tags, _ := oneliner("git", "tag", "--points-at", "HEAD")
 
-	if (branch != "") {
-		// Git tag list is separated in multi-lines. Let's put it in an array
-		branches = strings.Split(branch, "\n")
+	if (tags != "") {
+		// Git tag list is separated by multi-lines. Let's put it in an array
+		labels=append(labels,strings.Split(tags, "\n")...)
 	}
 
-	for key := range branches {
+	for key := range labels {
 		// Remove start of "heads/origin" if exist
 		r := regexp.MustCompile("^heads\\/origin\\/")
-		branches[key] = r.ReplaceAllString(branches[key], "")
+		labels[key] = r.ReplaceAllString(labels[key], "")
 
 		// Remove start of "remotes/origin" if exist
 		r = regexp.MustCompile("^remotes\\/origin\\/")
-		branches[key] = r.ReplaceAllString(branches[key], "")
+		labels[key] = r.ReplaceAllString(labels[key], "")
 
 		// Replace all "/" with "."
-		branches[key] = strings.Replace(branches[key], "/", ".", -1)
+		labels[key] = strings.Replace(labels[key], "/", ".", -1)
 
 		// Replace all "~" with "."
-		branches[key] = strings.Replace(branches[key], "~", ".", -1)
+		labels[key] = strings.Replace(labels[key], "~", ".", -1)
 	}
 
-	return branches
+	return labels
 }
 
 func isDirty() bool {
