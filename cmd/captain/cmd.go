@@ -11,11 +11,12 @@ import (
 
 // Options that are passed by CLI are mapped here for consumption
 type Options struct {
-	debug     bool
-	force     bool
-	namespace string
-	config    string
-	images    []string
+	debug        bool
+	force        bool
+	all_branches bool
+	namespace    string
+	config       string
+	images       []string
 }
 
 var options Options
@@ -33,10 +34,13 @@ func handleCmd() {
 				config.FilterConfig(args[0])
 			}
 
-			captain.Build(captain.BuildOptions{
+			buildOpts := captain.BuildOptions{
 				Config: config,
 				Force:  options.force,
-			})
+				All_branches:  options.all_branches,
+			}
+
+			captain.Build(buildOpts)
 		},
 	}
 
@@ -51,12 +55,15 @@ func handleCmd() {
 				config.FilterConfig(args[0])
 			}
 
-			// Build everything before testing
-			captain.Build(captain.BuildOptions{
+			buildOpts := captain.BuildOptions{
 				Config: config,
 				Force:  options.force,
-			})
-			captain.Test(config)
+				All_branches:  options.all_branches,
+			}
+
+			// Build everything before testing
+			captain.Build(buildOpts)
+			captain.Test(buildOpts)
 		},
 	}
 
@@ -71,12 +78,15 @@ func handleCmd() {
 				config.FilterConfig(args[0])
 			}
 
-			// Build everything before pushing
-			captain.Build(captain.BuildOptions{
+			buildOpts := captain.BuildOptions{
 				Config: config,
 				Force:  options.force,
-			})
-			captain.Push(config)
+				All_branches:  options.all_branches,
+			}
+
+			// Build everything before pushing
+			captain.Build(buildOpts)
+			captain.Push(buildOpts)
 		},
 	}
 
@@ -91,8 +101,13 @@ func handleCmd() {
 				config.FilterConfig(args[0])
 			}
 
-			// Build everything before pushing
-			captain.Pull(config)
+			buildOpts := captain.BuildOptions{
+				Config: config,
+				Force:  options.force,
+				All_branches:  options.all_branches,
+			}
+
+			captain.Pull(buildOpts)
 		},
 	}
 
@@ -117,6 +132,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	captainCmd.PersistentFlags().BoolVarP(&captain.Debug, "debug", "D", false, "Enable debug mode")
 	captainCmd.PersistentFlags().StringVarP(&options.namespace, "namespace", "N", getNamespace(), "Set default image namespace")
 	captainCmd.PersistentFlags().BoolVarP(&color.NoColor, "no-color", "n", false, "Disable color output")
+	captainCmd.PersistentFlags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Build all branches on specific commit instead of just working branch")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion)
 	captainCmd.Execute()

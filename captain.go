@@ -40,6 +40,7 @@ func Post(config Config, app App) {
 type BuildOptions struct {
 	Config Config
 	Force  bool
+	All_branches bool
 }
 
 // Build function compiles the Containers of the project
@@ -73,7 +74,7 @@ func Build(opts BuildOptions) {
 				tagImage(app, rev, "latest")
 
 				// Tag branch image
-				for _,branch := range getBranches() {
+				for _,branch := range getBranches(opts.All_branches) {
 					res := tagImage(app, rev, branch)
 					if res != nil {
 						os.Exit(TagFailed)
@@ -98,7 +99,7 @@ func Build(opts BuildOptions) {
 					tagImage(app, "latest", rev)
 
 					// Tag branch image
-					for _,branch := range getBranches() {
+					for _,branch := range getBranches(opts.All_branches) {
 						res := tagImage(app, "latest", branch)
 						if res != nil {
 							os.Exit(TagFailed)
@@ -112,7 +113,9 @@ func Build(opts BuildOptions) {
 }
 
 // Test function executes the tests of the project
-func Test(config Config) {
+func Test(opts BuildOptions) {
+	config := opts.Config
+
 	for _, app := range config.GetApps() {
 		for _, value := range app.Test {
 			info("Running test command: %s", value)
@@ -126,7 +129,9 @@ func Test(config Config) {
 }
 
 // Push function pushes the containers to the remote registry
-func Push(config Config) {
+func Push(opts BuildOptions) {
+	config := opts.Config
+
 	// If no Git repo exist
 	if !isGit() {
 		err("No local git repository found, cannot push")
@@ -139,7 +144,7 @@ func Push(config Config) {
 	}
 
 	for _, app := range config.GetApps() {
-		for _,branch := range getBranches() {
+		for _,branch := range getBranches(opts.All_branches) {
 			info("Pushing image %s:%s", app.Image, branch)
 			execute("docker", "push", app.Image+":"+branch)
 			info("Pushing image %s:%s", app.Image, "latest")
@@ -149,9 +154,11 @@ func Push(config Config) {
 }
 
 // Pull function pulls the containers from the remote registry
-func Pull(config Config) {
+func Pull(opts BuildOptions) {
+	config := opts.Config
+
 	for _, app := range config.GetApps() {
-		for _,branch := range getBranches() {
+		for _,branch := range getBranches(opts.All_branches) {
 			info("Pulling image %s:%s", app.Image, "latest")
 			execute("docker", "pull", app.Image+":"+"latest")
 			info("Pulling image %s:%s", app.Image, branch)

@@ -10,24 +10,33 @@ func getRevision() string {
 	return res
 }
 
-func getBranches() []string {
+func getBranches(all_branches bool) []string {
 	// Labels (branches + tags)
 	var labels =[]string{}
 
-	branches,_ := oneliner("git", "branch", "--no-column", "--contains", "HEAD")
-	if (branches != "") {
-		// Remove asterisk from branches list
-		r := regexp.MustCompile("[\\* ] ")
-		branches = r.ReplaceAllString(branches, "")
-		// Branches list is separated by spaces. Let's put it in an array
-		labels=append(labels,strings.Split(branches, "\n")...)
+	branches_str, _ := oneliner("git", "symbolic-ref", "--short", "-q", "HEAD")
+	if (all_branches) {
+		branches_str,_ = oneliner("git", "branch", "--no-column", "--contains", "HEAD")
 	}
 
-	tags, _ := oneliner("git", "tag", "--points-at", "HEAD")
+	var branches = make([]string, 5)
+	if (branches_str != "") {
+		// Remove asterisk from branches list
+		r := regexp.MustCompile("[\\* ] ")
+		branches_str = r.ReplaceAllString(branches_str, "")
+		branches = strings.Split(branches_str, "\n")
+		
+		// Branches list is separated by spaces. Let's put it in an array
+		labels=append(labels,branches...)
+	}
 
-	if (tags != "") {
+	tags_str, _ := oneliner("git", "tag", "--points-at", "HEAD")
+
+	if (tags_str != "") {
+		tags := strings.Split(tags_str, "\n")
+		debug("Active branches %s and tags %s", branches, tags)
 		// Git tag list is separated by multi-lines. Let's put it in an array
-		labels=append(labels,strings.Split(tags, "\n")...)
+		labels=append(labels,tags...)
 	}
 
 	for key := range labels {
@@ -45,7 +54,7 @@ func getBranches() []string {
 		// Replace all "~" with "."
 		labels[key] = strings.Replace(labels[key], "~", ".", -1)
 	}
-
+	
 	return labels
 }
 
