@@ -165,6 +165,7 @@ Simply type `captain help [path to command]` for full details.
 ## Global CLI Flags
 
 ```
+-B, --all-branches=false: Build all branches on specific commit instead of just working branch
 -D, --debug=false: Enable debug mode
 -h, --help=false: help for captain
 -N, --namespace="username": Set default image namespace
