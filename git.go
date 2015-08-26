@@ -14,7 +14,7 @@ func getBranches(all_branches bool) []string {
 	// Labels (branches + tags)
 	var labels =[]string{}
 
-	branches_str, _ := oneliner("git", "symbolic-ref", "--short", "-q", "HEAD")
+	branches_str, _ := oneliner("git", "name-rev", "--name-only", "HEAD")
 	if (all_branches) {
 		branches_str,_ = oneliner("git", "branch", "--no-column", "--contains", "HEAD")
 	}
