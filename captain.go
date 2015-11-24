@@ -166,3 +166,17 @@ func Pull(opts BuildOptions) {
 		}
 	}
 }
+
+// Purge function purges the stale images
+func Purge(opts BuildOptions) {
+	config := opts.Config
+
+	for _, app := range config.GetApps() {
+		for _,branch := range getBranches(opts.All_branches) {
+			info("Purging image %s:%s", app.Image, branch)
+			// execute("docker", "pull", app.Image+":"+"latest")
+			// info("Pulling image %s:%s", app.Image, branch)
+			// execute("docker", "pull", app.Image+":"+branch)
+		}
+	}
+}

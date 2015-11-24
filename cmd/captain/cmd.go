@@ -111,12 +111,33 @@ func handleCmd() {
 		},
 	}
 
+	var cmdPurge = &cobra.Command{
+		Use:   "purge",
+		Short: "Purges the stale images",
+		Long:  `It will purge the stale images. Stale image is an image that is not the latest of at least one branch.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			config := captain.NewConfig(options.namespace, options.config, true)
+
+			if len(args) == 1 {
+				config.FilterConfig(args[0])
+			}
+
+			buildOpts := captain.BuildOptions{
+				Config: config,
+				Force:  options.force,
+				All_branches:  options.all_branches,
+			}
+
+			captain.Purge(buildOpts)
+		},
+	}
+
 	var cmdVersion = &cobra.Command{
 		Use:   "version",
 		Short: "Display version",
 		Long:  `Displays the version of Captain.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("v0.7.0")
+			fmt.Println("v0.8.0")
 		},
 	}
 
@@ -134,7 +155,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	captainCmd.PersistentFlags().BoolVarP(&color.NoColor, "no-color", "n", false, "Disable color output")
 	captainCmd.PersistentFlags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Build all branches on specific commit instead of just working branch")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
-	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion)
+	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion, cmdPurge)
 	captainCmd.Execute()
 }
 
