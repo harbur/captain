@@ -27,4 +27,7 @@ const (
 
 	// OldFormat represents old format of captain.yml
 	OldFormat = 10
+
+	// DeleteImageFailed represents failure during image deletion
+	DeleteImageFailed = 11
 )

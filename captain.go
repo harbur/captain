@@ -171,12 +171,34 @@ func Pull(opts BuildOptions) {
 func Purge(opts BuildOptions) {
 	config := opts.Config
 
+	// For each App
 	for _, app := range config.GetApps() {
+		var tags =[]string{}
+
+		// Retrieve the list of the existing Image tags
+		for _,img := range getImages(app) {
+			tags=append(tags,img.RepoTags...)
+		}
+
+		// Remove from the list: The latest image
+		for key,tag := range tags { if (tag == app.Image+":latest") { tags=append(tags[:key], tags[key+1:]...) } }
+
+		// Remove from the list: The current commit-id
+		for key,tag := range tags { if (tag == app.Image+":"+getRevision()) { tags=append(tags[:key], tags[key+1:]...) } }
+
+		// Remove from the list: The working-dir git branches
 		for _,branch := range getBranches(opts.All_branches) {
-			info("Purging image %s:%s", app.Image, branch)
-			// execute("docker", "pull", app.Image+":"+"latest")
-			// info("Pulling image %s:%s", app.Image, branch)
-			// execute("docker", "pull", app.Image+":"+branch)
+			for key,tag := range tags { if (tag == app.Image+":"+branch) { tags=append(tags[:key], tags[key+1:]...) } }
+		}
+
+		// Proceed with deletion of Images
+		for _,tag := range tags {
+			info ("Deleting image %s", tag)
+			res := removeImage(tag)
+			if (res != nil) {
+				err("Deleting image failed: %s", res)
+				os.Exit(DeleteImageFailed)
+			}
 		}
 	}
 }

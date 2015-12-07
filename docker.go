@@ -63,6 +63,19 @@ func tagImage(app App, origin string, tag string) error {
 	return nil
 }
 
+func removeImage(name string) error {
+	return client.RemoveImage(name)
+}
+
+/**
+ * Retrieves a list of existing Images for the specific App.
+ */
+func getImages(app App) ([]docker.APIImages) {
+	debug("Getting images %s", app.Image)
+    imgs, _ := client.ListImages(docker.ListImagesOptions{All: false, Filter: app.Image})
+	return imgs
+}
+
 func imageExist(app App, tag string) bool {
 	repo := app.Image + ":" + tag
 	image, _ := client.InspectImage(repo)
