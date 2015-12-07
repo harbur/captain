@@ -3,7 +3,6 @@ package captain // import "github.com/harbur/captain"
 import (
 	"testing"
 
-	"errors"
 	"os"
 
 	"github.com/harbur/captain/Godeps/_workspace/src/github.com/stretchr/testify/assert"
@@ -30,22 +29,21 @@ func TestBuildImageCircleCI(t *testing.T) {
 
 func TestTagImage(t *testing.T) {
 	app := App{Image: "golang"}
-	res := tagImage(app, "1.4", "testing")
+	res := tagImage(app, "1.4.2", "testing")
 	assert.Nil(t, res, "Docker tag should not return any error")
 }
 
 func TestTagNonexistingImage(t *testing.T) {
 	app := App{Image: "golang"}
 	res := tagImage(app, "nonexist", "testing")
-	expected := errors.New("no such image")
-	assert.Equal(t, expected, res, "Docker tag should return an error")
+	assert.NotNil(t, res, "Docker tag should return an error")
 	println()
 }
 
 func TestImageExist(t *testing.T) {
 	app := App{Image: "golang"}
-	exist := imageExist(app, "1.4")
-	assert.Equal(t, true, exist, "Docker image golang:1.4 should exist")
+	exist := imageExist(app, "1.4.2")
+	assert.Equal(t, true, exist, "Docker image golang:1.4.2 should exist")
 }
 
 func TestImageDoesNotExist(t *testing.T) {
