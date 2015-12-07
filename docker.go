@@ -14,7 +14,7 @@ var client *docker.Client
 
 func init() {
 	var err error
-	client, err = newDockerClientFromEnv()
+	client, err = docker.NewClientFromEnv()
 	if err != nil {
 		panic(err)
 	}
@@ -70,23 +70,4 @@ func imageExist(app App, tag string) bool {
 		return true
 	}
 	return false
-}
-
-func newDockerClient(socket, certPath string) (*docker.Client, error) {
-	if certPath != "" {
-		cert := certPath + "/cert.pem"
-		key := certPath + "/key.pem"
-		ca := certPath + "/ca.pem"
-		return docker.NewTLSClient(socket, cert, key, ca)
-	}
-
-	if socket == "" {
-		socket = defaultEndpoint
-	}
-
-	return docker.NewClient(socket)
-}
-
-func newDockerClientFromEnv() (*docker.Client, error) {
-	return newDockerClient(os.Getenv("DOCKER_HOST"), os.Getenv("DOCKER_CERT_PATH"))
 }
