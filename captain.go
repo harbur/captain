@@ -41,13 +41,14 @@ type BuildOptions struct {
 	Config Config
 	Force  bool
 	All_branches bool
+	Full_sha bool
 }
 
 // Build function compiles the Containers of the project
 func Build(opts BuildOptions) {
 	config := opts.Config
 
-	var rev = getRevision()
+	var rev = getRevision(opts.Full_sha)
 
 	// For each App
 	for _, app := range config.GetApps() {
@@ -184,7 +185,7 @@ func Purge(opts BuildOptions) {
 		for key,tag := range tags { if (tag == app.Image+":latest") { tags=append(tags[:key], tags[key+1:]...) } }
 
 		// Remove from the list: The current commit-id
-		for key,tag := range tags { if (tag == app.Image+":"+getRevision()) { tags=append(tags[:key], tags[key+1:]...) } }
+		for key,tag := range tags { if (tag == app.Image+":"+getRevision(opts.Full_sha)) { tags=append(tags[:key], tags[key+1:]...) } }
 
 		// Remove from the list: The working-dir git branches
 		for _,branch := range getBranches(opts.All_branches) {

@@ -7,7 +7,11 @@ import (
 )
 
 func TestGitGetRevision(t *testing.T) {
-	assert.Equal(t, 7, len(getRevision()), "Git revision should have length 7 chars")
+	assert.Equal(t, 7, len(getRevision(false)), "Git revision should have length 7 chars")
+}
+
+func TestGitGetRevisionFullSha(t *testing.T) {
+	assert.Equal(t, 40, len(getRevision(true)), "Git revision should have a length of 40 chars")
 }
 
 func TestGitGetBranch(t *testing.T) {

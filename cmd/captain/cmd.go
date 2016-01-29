@@ -14,6 +14,7 @@ type Options struct {
 	debug        bool
 	force        bool
 	all_branches bool
+	full_sha     bool
 	namespace    string
 	config       string
 	images       []string
@@ -38,6 +39,7 @@ func handleCmd() {
 				Config: config,
 				Force:  options.force,
 				All_branches:  options.all_branches,
+				Full_sha: options.full_sha,
 			}
 
 			captain.Build(buildOpts)
@@ -59,6 +61,7 @@ func handleCmd() {
 				Config: config,
 				Force:  options.force,
 				All_branches:  options.all_branches,
+				Full_sha: options.full_sha,
 			}
 
 			// Build everything before testing
@@ -82,6 +85,7 @@ func handleCmd() {
 				Config: config,
 				Force:  options.force,
 				All_branches:  options.all_branches,
+				Full_sha: options.full_sha,
 			}
 
 			// Build everything before pushing
@@ -105,6 +109,7 @@ func handleCmd() {
 				Config: config,
 				Force:  options.force,
 				All_branches:  options.all_branches,
+				Full_sha: options.full_sha,
 			}
 
 			captain.Pull(buildOpts)
@@ -126,6 +131,7 @@ func handleCmd() {
 				Config: config,
 				Force:  options.force,
 				All_branches:  options.all_branches,
+				Full_sha: options.full_sha,
 			}
 
 			captain.Purge(buildOpts)
@@ -154,6 +160,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	captainCmd.PersistentFlags().StringVarP(&options.namespace, "namespace", "N", getNamespace(), "Set default image namespace")
 	captainCmd.PersistentFlags().BoolVarP(&color.NoColor, "no-color", "n", false, "Disable color output")
 	captainCmd.PersistentFlags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Build all branches on specific commit instead of just working branch")
+	captainCmd.PersistentFlags().BoolVarP(&options.full_sha, "full-sha", "B", false, "Use the full git commit SHA when referencing revisions")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
 	cmdPurge.Flags().BoolVarP(&options.force, "dangling", "d", false, "Remove dangling images")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion, cmdPurge)
