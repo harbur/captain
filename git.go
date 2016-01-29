@@ -5,9 +5,9 @@ import (
 	"strings"
 )
 
-func getRevision(full_sha bool) string {
+func getRevision(long_sha bool) string {
 	params := []string{"rev-parse"}
-	if !full_sha {
+	if !long_sha {
 		params = append(params, "--short")
 	}
 
