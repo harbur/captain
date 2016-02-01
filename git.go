@@ -5,8 +5,14 @@ import (
 	"strings"
 )
 
-func getRevision() string {
-	res, _ := oneliner("git", "rev-parse", "--short", "HEAD")
+func getRevision(long_sha bool) string {
+	params := []string{"rev-parse"}
+	if !long_sha {
+		params = append(params, "--short")
+	}
+
+	params = append(params, "HEAD")
+	res, _ := oneliner("git", params...)
 	return res
 }
 
@@ -64,6 +70,6 @@ func isDirty() bool {
 }
 
 func isGit() bool {
-	res := getRevision()
+	res := getRevision(false)
 	return len(res) > 0
 }
