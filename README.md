@@ -150,6 +150,12 @@ It will pull the images from the remote registry
 
 By default it pulls the 'latest' and the 'branch' docker tags.
 
+Flags:
+
+```
+--pull-branch-tags=true: Pull the 'branch' docker tags
+```
+
 ## version
 
 Display version
