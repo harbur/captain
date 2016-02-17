@@ -154,16 +154,22 @@ func Push(opts BuildOptions) {
 	}
 }
 
+type PullOptions struct {
+	Pull_branch_tags bool
+}
+
 // Pull function pulls the containers from the remote registry
-func Pull(opts BuildOptions) {
+func Pull(opts BuildOptions, pullOpts PullOptions) {
 	config := opts.Config
 
 	for _, app := range config.GetApps() {
 		for _,branch := range getBranches(opts.All_branches) {
 			info("Pulling image %s:%s", app.Image, "latest")
 			execute("docker", "pull", app.Image+":"+"latest")
-			info("Pulling image %s:%s", app.Image, branch)
-			execute("docker", "pull", app.Image+":"+branch)
+			if pullOpts.Pull_branch_tags == true {
+				info("Pulling image %s:%s", app.Image, branch)
+				execute("docker", "pull", app.Image+":"+branch)
+			}
 		}
 	}
 }
