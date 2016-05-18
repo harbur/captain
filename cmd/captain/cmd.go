@@ -24,6 +24,7 @@ var options Options
 
 type PullOptions struct {
 	pull_branch_tags bool
+	enable_commit_id bool
 }
 
 var pullOptions PullOptions
@@ -130,6 +131,7 @@ func handleCmd() {
 
 			pullOpts := captain.PullOptions{
 				Pull_branch_tags: pullOptions.pull_branch_tags,
+				Enable_commit_id: pullOptions.enable_commit_id,
 			}
 
 			captain.Pull(buildOpts, pullOpts)
@@ -184,6 +186,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
 	cmdPurge.Flags().BoolVarP(&options.force, "dangling", "d", false, "Remove dangling images")
 	cmdPull.Flags().BoolVar(&pullOptions.pull_branch_tags, "pull-branch-tags", true, "Pull the 'branch' docker tags")
+	cmdPull.Flags().BoolVar(&pullOptions.enable_commit_id, "enable-commit-id", false, "Enable pulling commit-id tag image")
 	cmdPush.Flags().BoolVar(&pushOptions.enable_commit_id, "enable-commit-id", false, "Enable pushing commit-id tag image")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion, cmdPurge)
 	captainCmd.Execute()

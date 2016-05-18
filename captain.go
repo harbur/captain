@@ -165,6 +165,7 @@ func Push(opts BuildOptions, pushOpts PushOptions) {
 
 type PullOptions struct {
 	Pull_branch_tags bool
+	Enable_commit_id bool
 }
 
 // Pull function pulls the containers from the remote registry
@@ -178,6 +179,11 @@ func Pull(opts BuildOptions, pullOpts PullOptions) {
 			if pullOpts.Pull_branch_tags == true {
 				info("Pulling image %s:%s", app.Image, branch)
 				execute("docker", "pull", app.Image+":"+branch)
+			}
+			if pullOpts.Enable_commit_id == true {
+				commit_id := getRevision(opts.Long_sha)
+				info("Pulling image %s:%s", app.Image, commit_id)
+				execute("docker", "pull", app.Image+":"+commit_id)
 			}
 		}
 	}
