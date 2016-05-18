@@ -30,4 +30,7 @@ const (
 
 	// DeleteImageFailed represents failure during image deletion
 	DeleteImageFailed = 11
+
+	// ExecuteFailed represents an execution failure
+	ExecuteFailed = 12
 )
