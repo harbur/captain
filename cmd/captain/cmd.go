@@ -28,6 +28,12 @@ type PullOptions struct {
 
 var pullOptions PullOptions
 
+type PushOptions struct {
+	enable_commit_id bool
+}
+
+var pushOptions PushOptions
+
 func handleCmd() {
 
 	var cmdBuild = &cobra.Command{
@@ -94,9 +100,13 @@ func handleCmd() {
 				Long_sha: options.long_sha,
 			}
 
+			pushOpts := captain.PushOptions{
+				Enable_commit_id: pushOptions.enable_commit_id,
+			}
+
 			// Build everything before pushing
 			captain.Build(buildOpts)
-			captain.Push(buildOpts)
+			captain.Push(buildOpts, pushOpts)
 		},
 	}
 
@@ -174,6 +184,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
 	cmdPurge.Flags().BoolVarP(&options.force, "dangling", "d", false, "Remove dangling images")
 	cmdPull.Flags().BoolVar(&pullOptions.pull_branch_tags, "pull-branch-tags", true, "Pull the 'branch' docker tags")
+	cmdPush.Flags().BoolVar(&pushOptions.enable_commit_id, "enable-commit-id", false, "Enable pushing commit-id tag image")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion, cmdPurge)
 	captainCmd.Execute()
 }

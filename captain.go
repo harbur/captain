@@ -129,8 +129,12 @@ func Test(opts BuildOptions) {
 	}
 }
 
+type PushOptions struct {
+	Enable_commit_id bool
+}
+
 // Push function pushes the containers to the remote registry
-func Push(opts BuildOptions) {
+func Push(opts BuildOptions, pushOpts PushOptions) {
 	config := opts.Config
 
 	// If no Git repo exist
@@ -150,6 +154,11 @@ func Push(opts BuildOptions) {
 			execute("docker", "push", app.Image+":"+branch)
 			info("Pushing image %s:%s", app.Image, "latest")
 			execute("docker", "push", app.Image+":"+"latest")
+			if (pushOpts.Enable_commit_id) {
+				commit_id := getRevision(opts.Long_sha)
+				info("Pushing image %s:%s", app.Image, commit_id)
+				execute("docker", "push", app.Image+":"+commit_id)
+			}
 		}
 	}
 }
