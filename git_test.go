@@ -3,7 +3,7 @@ package captain // import "github.com/harbur/captain"
 import (
 	"testing"
 
-	"github.com/harbur/captain/Godeps/_workspace/src/github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestGitGetRevision(t *testing.T) {

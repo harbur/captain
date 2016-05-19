@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/harbur/captain/Godeps/_workspace/src/github.com/fsouza/go-dockerclient"
+	"github.com/fsouza/go-dockerclient"
 )
 
 const defaultEndpoint = "unix:///var/run/docker.sock"
