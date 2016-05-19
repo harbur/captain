@@ -42,6 +42,8 @@ type BuildOptions struct {
 	Force  bool
 	All_branches bool
 	Long_sha bool
+	Branch_tags bool
+	Commit_tags bool
 }
 
 // Build function compiles the Containers of the project
@@ -129,12 +131,8 @@ func Test(opts BuildOptions) {
 	}
 }
 
-type PushOptions struct {
-	Enable_commit_id bool
-}
-
 // Push function pushes the containers to the remote registry
-func Push(opts BuildOptions, pushOpts PushOptions) {
+func Push(opts BuildOptions) {
 	config := opts.Config
 
 	// If no Git repo exist
@@ -154,36 +152,31 @@ func Push(opts BuildOptions, pushOpts PushOptions) {
 			execute("docker", "push", app.Image+":"+branch)
 			info("Pushing image %s:%s", app.Image, "latest")
 			execute("docker", "push", app.Image+":"+"latest")
-			if (pushOpts.Enable_commit_id) {
-				commit_id := getRevision(opts.Long_sha)
-				info("Pushing image %s:%s", app.Image, commit_id)
-				execute("docker", "push", app.Image+":"+commit_id)
+			if opts.Commit_tags {
+				rev := getRevision(opts.Long_sha)
+				info("Pushing image %s:%s", app.Image, rev)
+				execute("docker", "push", app.Image+":"+rev)
 			}
 		}
 	}
 }
 
-type PullOptions struct {
-	Pull_branch_tags bool
-	Enable_commit_id bool
-}
-
 // Pull function pulls the containers from the remote registry
-func Pull(opts BuildOptions, pullOpts PullOptions) {
+func Pull(opts BuildOptions) {
 	config := opts.Config
 
 	for _, app := range config.GetApps() {
 		for _,branch := range getBranches(opts.All_branches) {
 			info("Pulling image %s:%s", app.Image, "latest")
 			execute("docker", "pull", app.Image+":"+"latest")
-			if pullOpts.Pull_branch_tags == true {
+			if opts.Branch_tags {
 				info("Pulling image %s:%s", app.Image, branch)
 				execute("docker", "pull", app.Image+":"+branch)
 			}
-			if pullOpts.Enable_commit_id == true {
-				commit_id := getRevision(opts.Long_sha)
-				info("Pulling image %s:%s", app.Image, commit_id)
-				execute("docker", "pull", app.Image+":"+commit_id)
+			if opts.Commit_tags {
+				rev := getRevision(opts.Long_sha)
+				info("Pulling image %s:%s", app.Image, rev)
+				execute("docker", "pull", app.Image+":"+rev)
 			}
 		}
 	}

@@ -13,27 +13,18 @@ import (
 type Options struct {
 	debug        bool
 	force        bool
-	all_branches bool
 	long_sha     bool
 	namespace    string
 	config       string
 	images       []string
+
+	// Options to define the docker tags context
+	all_branches bool
+	branch_tags bool
+	commit_tags bool
 }
 
 var options Options
-
-type PullOptions struct {
-	pull_branch_tags bool
-	enable_commit_id bool
-}
-
-var pullOptions PullOptions
-
-type PushOptions struct {
-	enable_commit_id bool
-}
-
-var pushOptions PushOptions
 
 func handleCmd() {
 
@@ -53,6 +44,8 @@ func handleCmd() {
 				Force:  options.force,
 				All_branches:  options.all_branches,
 				Long_sha: options.long_sha,
+				Branch_tags: options.branch_tags,
+				Commit_tags: options.commit_tags,
 			}
 
 			captain.Build(buildOpts)
@@ -75,6 +68,8 @@ func handleCmd() {
 				Force:  options.force,
 				All_branches:  options.all_branches,
 				Long_sha: options.long_sha,
+				Branch_tags: options.branch_tags,
+				Commit_tags: options.commit_tags,
 			}
 
 			// Build everything before testing
@@ -99,15 +94,13 @@ func handleCmd() {
 				Force:  options.force,
 				All_branches:  options.all_branches,
 				Long_sha: options.long_sha,
-			}
-
-			pushOpts := captain.PushOptions{
-				Enable_commit_id: pushOptions.enable_commit_id,
+				Branch_tags: options.branch_tags,
+				Commit_tags: options.commit_tags,
 			}
 
 			// Build everything before pushing
 			captain.Build(buildOpts)
-			captain.Push(buildOpts, pushOpts)
+			captain.Push(buildOpts)
 		},
 	}
 
@@ -127,14 +120,11 @@ func handleCmd() {
 				Force:  options.force,
 				All_branches:  options.all_branches,
 				Long_sha: options.long_sha,
+				Branch_tags: options.branch_tags,
+				Commit_tags: options.commit_tags,
 			}
 
-			pullOpts := captain.PullOptions{
-				Pull_branch_tags: pullOptions.pull_branch_tags,
-				Enable_commit_id: pullOptions.enable_commit_id,
-			}
-
-			captain.Pull(buildOpts, pullOpts)
+			captain.Pull(buildOpts)
 		},
 	}
 
@@ -181,13 +171,16 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	captainCmd.PersistentFlags().BoolVarP(&captain.Debug, "debug", "D", false, "Enable debug mode")
 	captainCmd.PersistentFlags().StringVarP(&options.namespace, "namespace", "N", getNamespace(), "Set default image namespace")
 	captainCmd.PersistentFlags().BoolVarP(&color.NoColor, "no-color", "n", false, "Disable color output")
-	captainCmd.PersistentFlags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Build all branches on specific commit instead of just working branch")
 	captainCmd.PersistentFlags().BoolVarP(&options.long_sha, "long-sha", "l", false, "Use the long git commit SHA when referencing revisions")
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
+	cmdBuild.Flags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Build all branches on specific commit instead of just working branch")
+	cmdPull.Flags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Pull all branches on specific commit instead of just working branch")
+	cmdPush.Flags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Push all branches on specific commit instead of just working branch")
 	cmdPurge.Flags().BoolVarP(&options.force, "dangling", "d", false, "Remove dangling images")
-	cmdPull.Flags().BoolVar(&pullOptions.pull_branch_tags, "pull-branch-tags", true, "Pull the 'branch' docker tags")
-	cmdPull.Flags().BoolVar(&pullOptions.enable_commit_id, "enable-commit-id", false, "Enable pulling commit-id tag image")
-	cmdPush.Flags().BoolVar(&pushOptions.enable_commit_id, "enable-commit-id", false, "Enable pushing commit-id tag image")
+	cmdPull.Flags().BoolVarP(&options.branch_tags, "branch-tags", "b", true, "Pull the 'branch' docker tags")
+	cmdPush.Flags().BoolVarP(&options.branch_tags, "branch-tags", "b", true, "Push the 'branch' docker tags")
+	cmdPull.Flags().BoolVarP(&options.commit_tags, "commit-tags", "c", false, "Pull the 'commit' docker tags")
+	cmdPush.Flags().BoolVarP(&options.commit_tags, "commit-tags", "c", false, "Push the 'commit' docker tags")
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion, cmdPurge)
 	captainCmd.Execute()
 }
