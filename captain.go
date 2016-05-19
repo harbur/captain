@@ -1,7 +1,11 @@
 package captain // import "github.com/harbur/captain"
 
 import (
+	"fmt"
+	"io"
+	"net/http"
 	"os"
+	"runtime"
 )
 
 // Debug can be turned on to enable debug mode.
@@ -230,4 +234,64 @@ func Purge(opts BuildOptions) {
 			}
 		}
 	}
+}
+
+func SelfUpdate() {
+	captainDir := os.Getenv("HOME") + "/.captain"
+	binariesDir := captainDir + "/binaries"
+	binDir := captainDir + "/bin"
+	version := findLastVersion()
+	kernel := runtime.GOOS
+	arch := runtime.GOARCH
+	// downloadUrl := fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, kernel, arch)
+	downloadUrl := fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, "Darwin", "x86_64")
+	versionPath := binariesDir + "/" + version
+
+	info("Self update called!")
+	info("captainDir %s", captainDir)
+	info("binariesDir %s", binariesDir)
+	info("binDir %s", binDir)
+	info("version %s", version)
+	info("kernel %s", kernel)
+	info("arch %s", arch)
+	info("downloadUrl %s", downloadUrl)
+
+	err := downloadFile(versionPath, downloadUrl)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = os.Chmod(versionPath, 0755)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func findLastVersion() string {
+	return "v0.8.0"
+}
+
+func downloadFile(filepath string, url string) error {
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// Writer the body to file
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
