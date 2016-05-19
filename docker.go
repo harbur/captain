@@ -70,9 +70,9 @@ func removeImage(name string) error {
 /**
  * Retrieves a list of existing Images for the specific App.
  */
-func getImages(app App) ([]docker.APIImages) {
+func getImages(app App) []docker.APIImages {
 	debug("Getting images %s", app.Image)
-    imgs, _ := client.ListImages(docker.ListImagesOptions{All: false, Filter: app.Image})
+	imgs, _ := client.ListImages(docker.ListImagesOptions{All: false, Filter: app.Image})
 	return imgs
 }
 

@@ -11,17 +11,17 @@ import (
 
 // Options that are passed by CLI are mapped here for consumption
 type Options struct {
-	debug        bool
-	force        bool
-	long_sha     bool
-	namespace    string
-	config       string
-	images       []string
+	debug     bool
+	force     bool
+	long_sha  bool
+	namespace string
+	config    string
+	images    []string
 
 	// Options to define the docker tags context
 	all_branches bool
-	branch_tags bool
-	commit_tags bool
+	branch_tags  bool
+	commit_tags  bool
 }
 
 var options Options
@@ -40,12 +40,12 @@ func handleCmd() {
 			}
 
 			buildOpts := captain.BuildOptions{
-				Config: config,
-				Force:  options.force,
-				All_branches:  options.all_branches,
-				Long_sha: options.long_sha,
-				Branch_tags: options.branch_tags,
-				Commit_tags: options.commit_tags,
+				Config:       config,
+				Force:        options.force,
+				All_branches: options.all_branches,
+				Long_sha:     options.long_sha,
+				Branch_tags:  options.branch_tags,
+				Commit_tags:  options.commit_tags,
 			}
 
 			captain.Build(buildOpts)
@@ -64,12 +64,12 @@ func handleCmd() {
 			}
 
 			buildOpts := captain.BuildOptions{
-				Config: config,
-				Force:  options.force,
-				All_branches:  options.all_branches,
-				Long_sha: options.long_sha,
-				Branch_tags: options.branch_tags,
-				Commit_tags: options.commit_tags,
+				Config:       config,
+				Force:        options.force,
+				All_branches: options.all_branches,
+				Long_sha:     options.long_sha,
+				Branch_tags:  options.branch_tags,
+				Commit_tags:  options.commit_tags,
 			}
 
 			// Build everything before testing
@@ -90,12 +90,12 @@ func handleCmd() {
 			}
 
 			buildOpts := captain.BuildOptions{
-				Config: config,
-				Force:  options.force,
-				All_branches:  options.all_branches,
-				Long_sha: options.long_sha,
-				Branch_tags: options.branch_tags,
-				Commit_tags: options.commit_tags,
+				Config:       config,
+				Force:        options.force,
+				All_branches: options.all_branches,
+				Long_sha:     options.long_sha,
+				Branch_tags:  options.branch_tags,
+				Commit_tags:  options.commit_tags,
 			}
 
 			// Build everything before pushing
@@ -116,12 +116,12 @@ func handleCmd() {
 			}
 
 			buildOpts := captain.BuildOptions{
-				Config: config,
-				Force:  options.force,
-				All_branches:  options.all_branches,
-				Long_sha: options.long_sha,
-				Branch_tags: options.branch_tags,
-				Commit_tags: options.commit_tags,
+				Config:       config,
+				Force:        options.force,
+				All_branches: options.all_branches,
+				Long_sha:     options.long_sha,
+				Branch_tags:  options.branch_tags,
+				Commit_tags:  options.commit_tags,
 			}
 
 			captain.Pull(buildOpts)
@@ -140,10 +140,10 @@ func handleCmd() {
 			}
 
 			buildOpts := captain.BuildOptions{
-				Config: config,
-				Force:  options.force,
-				All_branches:  options.all_branches,
-				Long_sha: options.long_sha,
+				Config:       config,
+				Force:        options.force,
+				All_branches: options.all_branches,
+				Long_sha:     options.long_sha,
 			}
 
 			captain.Purge(buildOpts)
