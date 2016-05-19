@@ -148,10 +148,12 @@ func Push(opts BuildOptions) {
 
 	for _, app := range config.GetApps() {
 		for _,branch := range getBranches(opts.All_branches) {
-			info("Pushing image %s:%s", app.Image, branch)
-			execute("docker", "push", app.Image+":"+branch)
 			info("Pushing image %s:%s", app.Image, "latest")
 			execute("docker", "push", app.Image+":"+"latest")
+			if opts.Branch_tags {
+				info("Pushing image %s:%s", app.Image, branch)
+				execute("docker", "push", app.Image+":"+branch)
+			}
 			if opts.Commit_tags {
 				rev := getRevision(opts.Long_sha)
 				info("Pushing image %s:%s", app.Image, rev)
