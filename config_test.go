@@ -1,9 +1,8 @@
 package captain // import "github.com/harbur/captain"
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
-
-	"github.com/harbur/captain/Godeps/_workspace/src/github.com/stretchr/testify/assert"
 )
 
 func TestConfigFiles(t *testing.T) {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/harbur/captain"
-	"github.com/harbur/captain/Godeps/_workspace/src/github.com/fatih/color"
-	"github.com/harbur/captain/Godeps/_workspace/src/github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
 // Options that are passed by CLI are mapped here for consumption

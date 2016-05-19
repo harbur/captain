@@ -1,7 +1,7 @@
 package captain // import "github.com/harbur/captain"
 
 import (
-	"github.com/harbur/captain/Godeps/_workspace/src/github.com/fatih/color"
+	"github.com/fatih/color"
 )
 
 var colorPrefix = color.New(color.FgWhite, color.Bold).SprintFunc()
