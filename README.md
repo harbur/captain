@@ -125,6 +125,7 @@ It will build the docker image(s) described on captain.yml in order they appear 
 Flags:
 
 ```
+-B, --all-branches=false: Build all branches on specific commit instead of just working branch
 -f, --force=false: Force build even if image is already built
 ```
 
@@ -142,6 +143,14 @@ It will push the generated images to the remote registry
 
 By default it pushes the 'latest' and the 'branch' docker tags.
 
+Flags:
+
+```
+-B, --all-branches=false: Push all branches on specific commit instead of just working branch
+-b, --branch-tags=true: Push the 'branch' docker tags
+-c, --commit-tags=false: Push the 'commit' docker tags
+```
+
 ## pull
 
 Pulls the images from remote registry
@@ -153,7 +162,9 @@ By default it pulls the 'latest' and the 'branch' docker tags.
 Flags:
 
 ```
---pull-branch-tags=true: Pull the 'branch' docker tags
+-B, --all-branches=false: Pull all branches on specific commit instead of just working branch
+-b, --branch-tags=true: Pull the 'branch' docker tags
+-c, --commit-tags=false: Pull the 'commit' docker tags
 ```
 
 ## version
@@ -171,7 +182,6 @@ Simply type `captain help [path to command]` for full details.
 ## Global CLI Flags
 
 ```
--B, --all-branches=false: Build all branches on specific commit instead of just working branch
 -D, --debug=false: Enable debug mode
 -h, --help=false: help for captain
 -N, --namespace="username": Set default image namespace
