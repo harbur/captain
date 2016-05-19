@@ -38,12 +38,12 @@ func Post(config Config, app App) {
 }
 
 type BuildOptions struct {
-	Config Config
-	Force  bool
+	Config       Config
+	Force        bool
 	All_branches bool
-	Long_sha bool
-	Branch_tags bool
-	Commit_tags bool
+	Long_sha     bool
+	Branch_tags  bool
+	Commit_tags  bool
 }
 
 // Build function compiles the Containers of the project
@@ -77,7 +77,7 @@ func Build(opts BuildOptions) {
 				tagImage(app, rev, "latest")
 
 				// Tag branch image
-				for _,branch := range getBranches(opts.All_branches) {
+				for _, branch := range getBranches(opts.All_branches) {
 					res := tagImage(app, rev, branch)
 					if res != nil {
 						os.Exit(TagFailed)
@@ -102,7 +102,7 @@ func Build(opts BuildOptions) {
 					tagImage(app, "latest", rev)
 
 					// Tag branch image
-					for _,branch := range getBranches(opts.All_branches) {
+					for _, branch := range getBranches(opts.All_branches) {
 						res := tagImage(app, "latest", branch)
 						if res != nil {
 							os.Exit(TagFailed)
@@ -147,7 +147,7 @@ func Push(opts BuildOptions) {
 	}
 
 	for _, app := range config.GetApps() {
-		for _,branch := range getBranches(opts.All_branches) {
+		for _, branch := range getBranches(opts.All_branches) {
 			info("Pushing image %s:%s", app.Image, "latest")
 			execute("docker", "push", app.Image+":"+"latest")
 			if opts.Branch_tags {
@@ -168,7 +168,7 @@ func Pull(opts BuildOptions) {
 	config := opts.Config
 
 	for _, app := range config.GetApps() {
-		for _,branch := range getBranches(opts.All_branches) {
+		for _, branch := range getBranches(opts.All_branches) {
 			info("Pulling image %s:%s", app.Image, "latest")
 			execute("docker", "pull", app.Image+":"+"latest")
 			if opts.Branch_tags {
@@ -190,29 +190,41 @@ func Purge(opts BuildOptions) {
 
 	// For each App
 	for _, app := range config.GetApps() {
-		var tags =[]string{}
+		var tags = []string{}
 
 		// Retrieve the list of the existing Image tags
-		for _,img := range getImages(app) {
-			tags=append(tags,img.RepoTags...)
+		for _, img := range getImages(app) {
+			tags = append(tags, img.RepoTags...)
 		}
 
 		// Remove from the list: The latest image
-		for key,tag := range tags { if (tag == app.Image+":latest") { tags=append(tags[:key], tags[key+1:]...) } }
+		for key, tag := range tags {
+			if tag == app.Image+":latest" {
+				tags = append(tags[:key], tags[key+1:]...)
+			}
+		}
 
 		// Remove from the list: The current commit-id
-		for key,tag := range tags { if (tag == app.Image+":"+getRevision(opts.Long_sha)) { tags=append(tags[:key], tags[key+1:]...) } }
+		for key, tag := range tags {
+			if tag == app.Image+":"+getRevision(opts.Long_sha) {
+				tags = append(tags[:key], tags[key+1:]...)
+			}
+		}
 
 		// Remove from the list: The working-dir git branches
-		for _,branch := range getBranches(opts.All_branches) {
-			for key,tag := range tags { if (tag == app.Image+":"+branch) { tags=append(tags[:key], tags[key+1:]...) } }
+		for _, branch := range getBranches(opts.All_branches) {
+			for key, tag := range tags {
+				if tag == app.Image+":"+branch {
+					tags = append(tags[:key], tags[key+1:]...)
+				}
+			}
 		}
 
 		// Proceed with deletion of Images
-		for _,tag := range tags {
-			info ("Deleting image %s", tag)
+		for _, tag := range tags {
+			info("Deleting image %s", tag)
 			res := removeImage(tag)
-			if (res != nil) {
+			if res != nil {
 				err("Deleting image failed: %s", res)
 				os.Exit(DeleteImageFailed)
 			}
