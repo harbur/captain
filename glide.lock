@@ -1,78 +1,12 @@
-hash: 6d94c5c8fcc8a8bd8561e76c32ae744b4751be0589c85812d7f7d66021e24644
-updated: 2016-05-19T16:58:17.249324169+02:00
+hash: 608cb0adf6f21d481c5aaec678c27448c201619334f99052e9928bdc7c6da443
+updated: 2016-05-19T18:54:29.009107011+02:00
 imports:
-- name: github.com/docker/docker
-  version: 1691fe6d23b083c67aea120f05c4797220388d59
-  subpackages:
-  - opts
-  - pkg/archive
-  - pkg/fileutils
-  - pkg/homedir
-  - pkg/stdcopy
-  - pkg/idtools
-  - pkg/ioutils
-  - pkg/pools
-  - pkg/promise
-  - pkg/system
-  - pkg/longpath
-- name: github.com/docker/go-units
-  version: 5d2041e26a699eaca682e2ea41c8f891e1060444
 - name: github.com/fatih/color
   version: 533cd7fd8a85905f67a1753afb4deddc85ea174f
 - name: github.com/fsouza/go-dockerclient
   version: c0253c60dbff5f09f633273afe25e6f078e90732
-- name: github.com/harbur/captain
-  version: 6d4d2d13dc850284589881241c048342e86c020e
-  subpackages:
-  - Godeps/_workspace/src/github.com/fatih/color
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient
-  - Godeps/_workspace/src/gopkg.in/yaml.v2
-  - Godeps/_workspace/src/github.com/shiena/ansicolor
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/opts
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/archive
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/fileutils
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/homedir
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/stdcopy
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/hashicorp/go-cleanhttp
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/parsers
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/ulimit
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/Sirupsen/logrus
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/idtools
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/ioutils
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/pools
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/promise
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/system
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/longpath
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/opencontainers/runc/libcontainer/user
-  - Godeps/_workspace/src/github.com/fsouza/go-dockerclient/external/github.com/docker/docker/pkg/units
-- name: github.com/hashicorp/go-cleanhttp
-  version: ad28ea4487f05916463e2423a55166280e8254b5
-- name: github.com/inconshreveable/mousetrap
-  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
-- name: github.com/mattn/go-colorable
-  version: 9cbef7c35391cca05f15f8181dc0b18bc9736dbb
-  repo: https://github.com/mattn/go-colorable
-- name: github.com/mattn/go-isatty
-  version: 56b76bdf51f7708750eac80fa38b952bb9f32639
-  repo: https://github.com/mattn/go-isatty
-- name: github.com/opencontainers/runc
-  version: d1997d99cde3815acc5b715fa1169e33abd0edfd
-  subpackages:
-  - libcontainer/user
-- name: github.com/Sirupsen/logrus
-  version: cd7d1bbe41066b6c1f19780f895901052150a575
 - name: github.com/spf13/cobra
   version: 8f5946caaeeff40a98d67f60c25e89c3525038a3
-- name: github.com/spf13/pflag
-  version: 8a0b846eb11d294deee8f68f697d48ac62aa372f
-- name: golang.org/x/net
-  version: 5916dcb167ed985a5b9e6871fbfd74848a4c170b
-  subpackages:
-  - context
-- name: golang.org/x/sys
-  version: d4feaf1a7e61e1d9e79e6c4e76c6349e9cab0a03
-  subpackages:
-  - unix
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 devImports: []
