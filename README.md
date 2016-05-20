@@ -45,6 +45,11 @@ hello-world-test:
   test:
     - docker run -e NODE_ENV=TEST harbur/hello-world-test node mochaTest
     - docker run -e NODE_ENV=TEST harbur/hello-world-test node karmaTest
+buildargs:
+  build: Dockerfile
+  image: harbur/buildargs
+  build_arg:
+    keyname: keyvalue
 ```
 
 ### image
@@ -112,6 +117,15 @@ A list of commands that are run as post-execution after the compilation of the s
 ```yaml
 post:
   - echo "Reporting after compilation"
+```
+
+### build_arg
+
+A set of key values that are passed to docker build as `--build-arg` flag. For more information about build-args see [here](https://docs.docker.com/engine/reference/commandline/build/).
+
+```yaml
+build_arg:
+  keyname: keyvalue
 ```
 
 ## CLI Commands
