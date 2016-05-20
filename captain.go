@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gopkg.in/cheggaaa/pb.v1"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -246,12 +247,11 @@ func SelfUpdate() {
 	kernel := runtime.GOOS
 	arch := runtime.GOARCH
 	captainSymlinkPath := filepath.FromSlash(binDir + "/captain")
-	currentVersionPath, err := os.Readlink(captainSymlinkPath)
+	currentVersionPath, _ := os.Readlink(captainSymlinkPath)
 
 	info("Checking the last version of Captain...")
 	version := findLastVersion()
 	downloadUrl := fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, kernel, arch)
-	downloadUrl = fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, "Darwin", "x86_64")
 	downloadedVersionPath := filepath.FromSlash(binariesDir + "/captain-" + version)
 
 	if currentVersionPath == downloadedVersionPath {
@@ -262,23 +262,23 @@ func SelfUpdate() {
 	info("New version available, start downloading %s", version)
 
 	// create binaries dir
-	if err = os.MkdirAll(binariesDir, 0755); err != nil {
+	if err := os.MkdirAll(binariesDir, 0755); err != nil {
 		fmt.Println(err)
 	}
 
 	// download new version
-	if err = downloadFile(downloadedVersionPath, downloadUrl); err != nil {
+	if err := downloadFile(downloadedVersionPath, downloadUrl); err != nil {
 		fmt.Println(err)
 	}
 
 	// grant excution to download version
-	if err = os.Chmod(downloadedVersionPath, 0755); err != nil {
+	if err := os.Chmod(downloadedVersionPath, 0755); err != nil {
 		fmt.Println(err)
 	}
 
 	info("Downloaded captain %s", version)
 
-	if err = os.MkdirAll(binDir, 0755); err != nil {
+	if err := os.MkdirAll(binDir, 0755); err != nil {
 		fmt.Println(err)
 	}
 
@@ -286,7 +286,7 @@ func SelfUpdate() {
 		os.Remove(captainSymlinkPath)
 	}
 
-	if err = os.Symlink(downloadedVersionPath, captainSymlinkPath); err != nil {
+	if err := os.Symlink(downloadedVersionPath, captainSymlinkPath); err != nil {
 		fmt.Println(err)
 	}
 
@@ -294,7 +294,21 @@ func SelfUpdate() {
 }
 
 func findLastVersion() string {
-	return "v0.8.0"
+	url := "https://raw.githubusercontent.com/harbur/captain/master/VERSION"
+
+	res, err := http.Get(url)
+
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	content, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(content)
 }
 
 func downloadFile(filepath string, url string) error {
