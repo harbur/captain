@@ -1,0 +1,10 @@
+buildargs:
+  build: Dockerfile
+  image: harbur/buildargs
+  build_arg:
+    NODE_ENV: production
+buildargs-test:
+  build: Dockerfile
+  image: harbur/buildargs-test
+  build_arg:
+    NODE_ENV: test
