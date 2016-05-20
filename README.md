@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/harbur/captain.svg?branch=master)](https://travis-ci.org/harbur/captain)
+
 # Introduction
 
 Captain - Convert your Git workflow to Docker containers ready for Continuous Delivery
