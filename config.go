@@ -36,11 +36,12 @@ var configOrder *yaml.MapSlice
 
 // App struct
 type App struct {
-	Build string
-	Image string
-	Pre   []string
-	Post  []string
-	Test  []string
+	Build     string
+	Image     string
+	Pre       []string
+	Post      []string
+	Test      []string
+	Build_arg map[string]string
 }
 
 // configFile returns the file to read the config from.

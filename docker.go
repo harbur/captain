@@ -20,6 +20,10 @@ func init() {
 	}
 }
 
+type BuildArgSet struct {
+	slice []docker.BuildArg
+}
+
 func buildImage(app App, tag string, force bool) error {
 	info("Building image %s:%s", app.Image, tag)
 
@@ -28,6 +32,14 @@ func buildImage(app App, tag string, force bool) error {
 		info("Running at %s environment...", "CIRCLECI")
 		execute("docker", "build", "-t", app.Image+":"+tag, filepath.Dir(app.Build))
 		return nil
+	}
+
+	// Create BuildArg set
+	buildArgSet := BuildArgSet{(make([]docker.BuildArg, 0, 10))}
+	if len(app.Build_arg) > 0 {
+		for k, arg := range app.Build_arg {
+			buildArgSet.slice = append(buildArgSet.slice, docker.BuildArg{Name: k, Value: arg})
+		}
 	}
 
 	opts := docker.BuildImageOptions{
@@ -39,6 +51,7 @@ func buildImage(app App, tag string, force bool) error {
 		ForceRmTmpContainer: true,
 		OutputStream:        os.Stdout,
 		ContextDir:          filepath.Dir(app.Build),
+		BuildArgs:           buildArgSet.slice,
 	}
 	err := client.BuildImage(opts)
 	if err != nil {
