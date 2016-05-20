@@ -40,6 +40,13 @@ func buildImage(app App, tag string, force bool) error {
 		OutputStream:        os.Stdout,
 		ContextDir:          filepath.Dir(app.Build),
 	}
+
+	// Use ~/.docker/ auth configuration if exists
+	dockercfg, _ := docker.NewAuthConfigurationsFromDockerCfg()
+	if dockercfg != nil {
+		opts.AuthConfigs = *dockercfg
+	}
+
 	err := client.BuildImage(opts)
 	if err != nil {
 		fmt.Printf("%s", err)
