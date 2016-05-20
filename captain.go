@@ -2,9 +2,11 @@ package captain // import "github.com/harbur/captain"
 
 import (
 	"fmt"
+	"gopkg.in/cheggaaa/pb.v1"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
 )
 
@@ -237,34 +239,58 @@ func Purge(opts BuildOptions) {
 }
 
 func SelfUpdate() {
-	captainDir := os.Getenv("HOME") + "/.captain"
-	binariesDir := captainDir + "/binaries"
-	binDir := captainDir + "/bin"
-	version := findLastVersion()
+	captainDir := filepath.FromSlash(os.Getenv("HOME") + "/.captain")
+	binariesDir := filepath.FromSlash(captainDir + "/binaries")
+	binDir := filepath.FromSlash(captainDir + "/bin")
+
 	kernel := runtime.GOOS
 	arch := runtime.GOARCH
-	// downloadUrl := fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, kernel, arch)
-	downloadUrl := fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, "Darwin", "x86_64")
-	versionPath := binariesDir + "/" + version
+	captainSymlinkPath := filepath.FromSlash(binDir + "/captain")
+	currentVersionPath, err := os.Readlink(captainSymlinkPath)
 
-	info("Self update called!")
-	info("captainDir %s", captainDir)
-	info("binariesDir %s", binariesDir)
-	info("binDir %s", binDir)
-	info("version %s", version)
-	info("kernel %s", kernel)
-	info("arch %s", arch)
-	info("downloadUrl %s", downloadUrl)
+	info("Checking the last version of Captain...")
+	version := findLastVersion()
+	downloadUrl := fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, kernel, arch)
+	downloadUrl = fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, "Darwin", "x86_64")
+	downloadedVersionPath := filepath.FromSlash(binariesDir + "/captain-" + version)
 
-	err := downloadFile(versionPath, downloadUrl)
-	if err != nil {
+	if currentVersionPath == downloadedVersionPath {
+		info("You have installed the last version of captain (%s)", version)
+		return
+	}
+
+	info("New version available, start downloading %s", version)
+
+	// create binaries dir
+	if err = os.MkdirAll(binariesDir, 0755); err != nil {
 		fmt.Println(err)
 	}
 
-	err = os.Chmod(versionPath, 0755)
-	if err != nil {
+	// download new version
+	if err = downloadFile(downloadedVersionPath, downloadUrl); err != nil {
 		fmt.Println(err)
 	}
+
+	// grant excution to download version
+	if err = os.Chmod(downloadedVersionPath, 0755); err != nil {
+		fmt.Println(err)
+	}
+
+	info("Downloaded captain %s", version)
+
+	if err = os.MkdirAll(binDir, 0755); err != nil {
+		fmt.Println(err)
+	}
+
+	if _, err := os.Stat(captainSymlinkPath); err == nil {
+		os.Remove(captainSymlinkPath)
+	}
+
+	if err = os.Symlink(downloadedVersionPath, captainSymlinkPath); err != nil {
+		fmt.Println(err)
+	}
+
+	info("Installed captain %s", version)
 }
 
 func findLastVersion() string {
@@ -287,8 +313,15 @@ func downloadFile(filepath string, url string) error {
 	}
 	defer resp.Body.Close()
 
-	// Writer the body to file
-	_, err = io.Copy(out, resp.Body)
+	// create and start bar
+	bar := pb.New64(resp.ContentLength).SetUnits(pb.U_BYTES).Start()
+	defer bar.Finish()
+
+	// create proxy reader
+	reader := bar.NewProxyReader(resp.Body)
+
+	// and copy from pb reader
+	_, err = io.Copy(out, reader)
 	if err != nil {
 		return err
 	}
