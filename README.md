@@ -45,7 +45,7 @@ hello-world-test:
   test:
     - docker run -e NODE_ENV=TEST harbur/hello-world-test node mochaTest
     - docker run -e NODE_ENV=TEST harbur/hello-world-test node karmaTest
-buildargs:
+project-with-build-args:
   build: Dockerfile
   image: harbur/buildargs
   build_arg:
