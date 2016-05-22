@@ -1,5 +1,5 @@
-hash: 608cb0adf6f21d481c5aaec678c27448c201619334f99052e9928bdc7c6da443
-updated: 2016-05-19T18:54:29.009107011+02:00
+hash: 82b05106f23cd393505dc0ec75e85a554a17292dca7eb80b3d5f665445680c53
+updated: 2016-05-20T18:39:06.648359037+02:00
 imports:
 - name: github.com/fatih/color
   version: 533cd7fd8a85905f67a1753afb4deddc85ea174f
@@ -7,6 +7,10 @@ imports:
   version: c0253c60dbff5f09f633273afe25e6f078e90732
 - name: github.com/spf13/cobra
   version: 8f5946caaeeff40a98d67f60c25e89c3525038a3
+- name: github.com/stretchr/testify
+  version: 6cb3b85ef5a0efef77caef88363ec4d4b5c0976d
+  subpackages:
+  - assert
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 devImports: []
