@@ -152,8 +152,8 @@ func handleCmd() {
 
 	var cmdSelfUpdate = &cobra.Command{
 		Use:   "self-update",
-		Short: "Update captain to last version",
-		Long:  `Download and install the last version of Captain.`,
+		Short: "Updates Captain to the last version",
+		Long:  `Updates Captain to the last available version.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			captain.SelfUpdate()
 		},

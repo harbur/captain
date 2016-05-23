@@ -167,7 +167,7 @@ Flags:
 -c, --commit-tags=false: Push the 'commit' docker tags
 ```
 
-## pull
+### pull
 
 Pulls the images from remote registry
 
@@ -183,13 +183,17 @@ Flags:
 -c, --commit-tags=false: Pull the 'commit' docker tags
 ```
 
-## version
+### self-update
+
+Updates Captain to the last available version.
+
+### version
 
 Display version
 
 Displays the version of Captain
 
-## help
+### help
 
 Help provides help for any command in the application.
 
