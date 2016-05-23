@@ -4,13 +4,17 @@ imports:
 - name: github.com/fatih/color
   version: 533cd7fd8a85905f67a1753afb4deddc85ea174f
 - name: github.com/fsouza/go-dockerclient
-  version: c0253c60dbff5f09f633273afe25e6f078e90732
+  version: d9a325f6111a14ebceefba8ff6afeb3bdaa72729
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/spf13/cobra
   version: 8f5946caaeeff40a98d67f60c25e89c3525038a3
 - name: github.com/stretchr/testify
   version: 6cb3b85ef5a0efef77caef88363ec4d4b5c0976d
   subpackages:
   - assert
+- name: gopkg.in/cheggaaa/pb.v1
+  version: 8808370bf63524e115da1371ba42bce6739f3a6b
 - name: gopkg.in/yaml.v2
   version: a83829b6f1293c91addabc89d0571c246397bbf4
 devImports: []

@@ -150,6 +150,15 @@ func handleCmd() {
 		},
 	}
 
+	var cmdSelfUpdate = &cobra.Command{
+		Use:   "self-update",
+		Short: "Updates Captain to the last version",
+		Long:  `Updates Captain to the last available version.`,
+		Run: func(cmd *cobra.Command, args []string) {
+			captain.SelfUpdate()
+		},
+	}
+
 	var cmdVersion = &cobra.Command{
 		Use:   "version",
 		Short: "Display version",
@@ -181,7 +190,7 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	cmdPush.Flags().BoolVarP(&options.branch_tags, "branch-tags", "b", true, "Push the 'branch' docker tags")
 	cmdPull.Flags().BoolVarP(&options.commit_tags, "commit-tags", "c", false, "Pull the 'commit' docker tags")
 	cmdPush.Flags().BoolVarP(&options.commit_tags, "commit-tags", "c", false, "Push the 'commit' docker tags")
-	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion, cmdPurge)
+	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion, cmdPurge, cmdSelfUpdate)
 	captainCmd.Execute()
 }
 

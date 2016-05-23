@@ -1,7 +1,14 @@
 package captain // import "github.com/harbur/captain"
 
 import (
+	"fmt"
+	"gopkg.in/cheggaaa/pb.v1"
+	"io"
+	"io/ioutil"
+	"net/http"
 	"os"
+	"path/filepath"
+	"runtime"
 )
 
 // Debug can be turned on to enable debug mode.
@@ -230,4 +237,108 @@ func Purge(opts BuildOptions) {
 			}
 		}
 	}
+}
+
+func SelfUpdate() {
+	captainDir := filepath.FromSlash(os.Getenv("HOME") + "/.captain")
+	binariesDir := filepath.FromSlash(captainDir + "/binaries")
+	binDir := filepath.FromSlash(captainDir + "/bin")
+
+	kernel := runtime.GOOS
+	arch := runtime.GOARCH
+	captainSymlinkPath := filepath.FromSlash(binDir + "/captain")
+	currentVersionPath, _ := os.Readlink(captainSymlinkPath)
+
+	info("Checking the last version of Captain...")
+	version := findLastVersion()
+	downloadUrl := fmt.Sprintf("https://github.com/harbur/captain/releases/download/%s/captain-%s-%s", version, kernel, arch)
+	downloadedVersionPath := filepath.FromSlash(binariesDir + "/captain-" + version)
+
+	if currentVersionPath == downloadedVersionPath {
+		info("You have installed the last version of captain (%s)", version)
+		return
+	}
+
+	info("New version available, start downloading %s", version)
+
+	// create binaries dir
+	if err := os.MkdirAll(binariesDir, 0755); err != nil {
+		fmt.Println(err)
+	}
+
+	// download new version
+	if err := downloadFile(downloadedVersionPath, downloadUrl); err != nil {
+		fmt.Println(err)
+	}
+
+	// grant excution to download version
+	if err := os.Chmod(downloadedVersionPath, 0755); err != nil {
+		fmt.Println(err)
+	}
+
+	info("Downloaded captain %s", version)
+
+	if err := os.MkdirAll(binDir, 0755); err != nil {
+		fmt.Println(err)
+	}
+
+	if _, err := os.Stat(captainSymlinkPath); err == nil {
+		os.Remove(captainSymlinkPath)
+	}
+
+	if err := os.Symlink(downloadedVersionPath, captainSymlinkPath); err != nil {
+		fmt.Println(err)
+	}
+
+	info("Installed captain %s", version)
+}
+
+func findLastVersion() string {
+	url := "https://raw.githubusercontent.com/harbur/captain/master/VERSION"
+
+	res, err := http.Get(url)
+
+	if err != nil {
+		panic(err)
+	}
+	defer res.Body.Close()
+
+	content, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(content)
+}
+
+func downloadFile(filepath string, url string) error {
+
+	// Create the file
+	out, err := os.Create(filepath)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	// create and start bar
+	bar := pb.New64(resp.ContentLength).SetUnits(pb.U_BYTES).Start()
+	defer bar.Finish()
+
+	// create proxy reader
+	reader := bar.NewProxyReader(resp.Body)
+
+	// and copy from pb reader
+	_, err = io.Copy(out, reader)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
