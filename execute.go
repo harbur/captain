@@ -19,12 +19,7 @@ func execute(name string, arg ...string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
-	res := cmd.Run()
-
-	if res != nil {
-		os.Exit(ExecuteFailed)
-	}
-	return res
+	return cmd.Run()
 }
 
 func oneliner(name string, arg ...string) (string, error) {

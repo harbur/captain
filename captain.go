@@ -21,27 +21,27 @@ type StatusError struct {
 }
 
 // Pre function executes commands on pre section before build
-func Pre(config Config, app App) {
+func Pre(app App) error {
 	for _, value := range app.Pre {
 		info("Running pre command: %s", value)
 		res := execute("bash", "-c", value)
 		if res != nil {
-			err("Pre execution returned non-zero status")
-			os.Exit(TestFailed)
+			return res
 		}
 	}
+	return nil
 }
 
 // Post function executes commands on pre section after build
-func Post(config Config, app App) {
+func Post(app App) error {
 	for _, value := range app.Post {
 		info("Running post command: %s", value)
 		res := execute("bash", "-c", value)
 		if res != nil {
-			err("Post execution returned non-zero status")
-			os.Exit(TestFailed)
+			return res
 		}
 	}
+	return nil
 }
 
 type BuildOptions struct {
@@ -67,7 +67,10 @@ func Build(opts BuildOptions) {
 			debug("No local git repository found, just building latest")
 
 			// Execute Pre commands
-			Pre(config, app)
+			if res := Pre(app); res != nil {
+				err("Pre execution returned non-zero status")
+				return
+			}
 
 			// Build latest image
 			res := buildImage(app, "latest", opts.Force)
@@ -95,7 +98,9 @@ func Build(opts BuildOptions) {
 				// Performing [build latest|tag latest@rev|tag latest@branch]
 
 				// Execute Pre commands
-				Pre(config, app)
+				if res := Pre(app); res != nil {
+					err("Pre execution returned non-zero status")
+				}
 
 				// Build latest image
 				res := buildImage(app, "latest", opts.Force)
@@ -118,7 +123,11 @@ func Build(opts BuildOptions) {
 				}
 			}
 		}
-		Post(config, app)
+
+		// Execute Post commands
+		if res := Post(app); res != nil {
+			err("Post execution returned non-zero status")
+		}
 	}
 }
 
@@ -132,7 +141,7 @@ func Test(opts BuildOptions) {
 			res := execute("bash", "-c", value)
 			if res != nil {
 				err("Test execution returned non-zero status")
-				os.Exit(TestFailed)
+				return
 			}
 		}
 	}
@@ -156,15 +165,24 @@ func Push(opts BuildOptions) {
 	for _, app := range config.GetApps() {
 		for _, branch := range getBranches(opts.All_branches) {
 			info("Pushing image %s:%s", app.Image, "latest")
-			execute("docker", "push", app.Image+":"+"latest")
+			if res := pushImage(app.Image, "latest"); res != nil {
+				err("Push returned non-zero status")
+				os.Exit(ExecuteFailed)
+			}
 			if opts.Branch_tags {
 				info("Pushing image %s:%s", app.Image, branch)
-				execute("docker", "push", app.Image+":"+branch)
+				if res := pushImage(app.Image, branch); res != nil {
+					err("Push returned non-zero status")
+					os.Exit(ExecuteFailed)
+				}
 			}
 			if opts.Commit_tags {
 				rev := getRevision(opts.Long_sha)
 				info("Pushing image %s:%s", app.Image, rev)
-				execute("docker", "push", app.Image+":"+rev)
+				if res := pushImage(app.Image, rev); res != nil {
+					err("Push returned non-zero status")
+					os.Exit(ExecuteFailed)
+				}
 			}
 		}
 	}
@@ -177,15 +195,24 @@ func Pull(opts BuildOptions) {
 	for _, app := range config.GetApps() {
 		for _, branch := range getBranches(opts.All_branches) {
 			info("Pulling image %s:%s", app.Image, "latest")
-			execute("docker", "pull", app.Image+":"+"latest")
+			if res := pullImage(app.Image, "latest"); res != nil {
+				err("Pull returned non-zero status")
+				os.Exit(ExecuteFailed)
+			}
 			if opts.Branch_tags {
 				info("Pulling image %s:%s", app.Image, branch)
-				execute("docker", "pull", app.Image+":"+branch)
+				if res := pullImage(app.Image, branch); res != nil {
+					err("Pull returned non-zero status")
+					os.Exit(ExecuteFailed)
+				}
 			}
 			if opts.Commit_tags {
 				rev := getRevision(opts.Long_sha)
 				info("Pulling image %s:%s", app.Image, rev)
-				execute("docker", "pull", app.Image+":"+rev)
+				if res := pullImage(app.Image, rev); res != nil {
+					err("Pull returned non-zero status")
+					os.Exit(ExecuteFailed)
+				}
 			}
 		}
 	}

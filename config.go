@@ -58,6 +58,7 @@ func configFile(path string) string {
 // and return the created config.
 func readConfig(filename string) *config {
 	data, err := ioutil.ReadFile(filename)
+	os.Chdir(filepath.Dir(filename))
 	if err != nil {
 		panic(StatusError{err, 74})
 	}
