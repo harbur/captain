@@ -8,8 +8,12 @@ services:
 
 before_install:
   - go get github.com/Masterminds/glide
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/mattn/goveralls
   - glide install
   - go get
 
 script:
  - go test
+ - go test -v -covermode=count -coverprofile=coverage.out
+ - $HOME/gopath/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
