@@ -67,6 +67,14 @@ func buildImage(app App, tag string, force bool) error {
 	return err
 }
 
+func pushImage(image string, version string) error {
+	return execute("docker", "push", image+":"+version)
+}
+
+func pullImage(image string, version string) error {
+	return execute("docker", "pull", image+":"+version)
+}
+
 func tagImage(app App, origin string, tag string) error {
 	if tag != "" {
 		info("Tagging image %s:%s as %s:%s", app.Image, origin, app.Image, tag)

@@ -165,13 +165,13 @@ func Push(opts BuildOptions) {
 	for _, app := range config.GetApps() {
 		for _, branch := range getBranches(opts.All_branches) {
 			info("Pushing image %s:%s", app.Image, "latest")
-			if res := execute("docker", "push", app.Image+":"+"latest"); res != nil {
+			if res := pushImage(app.Image, "latest"); res != nil {
 				err("Push returned non-zero status")
 				os.Exit(ExecuteFailed)
 			}
 			if opts.Branch_tags {
 				info("Pushing image %s:%s", app.Image, branch)
-				if res := execute("docker", "push", app.Image+":"+branch); res != nil {
+				if res := pushImage(app.Image, branch); res != nil {
 					err("Push returned non-zero status")
 					os.Exit(ExecuteFailed)
 				}
@@ -179,7 +179,7 @@ func Push(opts BuildOptions) {
 			if opts.Commit_tags {
 				rev := getRevision(opts.Long_sha)
 				info("Pushing image %s:%s", app.Image, rev)
-				if res := execute("docker", "push", app.Image+":"+rev); res != nil {
+				if res := pushImage(app.Image, rev); res != nil {
 					err("Push returned non-zero status")
 					os.Exit(ExecuteFailed)
 				}
@@ -195,13 +195,13 @@ func Pull(opts BuildOptions) {
 	for _, app := range config.GetApps() {
 		for _, branch := range getBranches(opts.All_branches) {
 			info("Pulling image %s:%s", app.Image, "latest")
-			if res := execute("docker", "pull", app.Image+":"+"latest"); res != nil {
+			if res := pullImage(app.Image, "latest"); res != nil {
 				err("Pull returned non-zero status")
 				os.Exit(ExecuteFailed)
 			}
 			if opts.Branch_tags {
 				info("Pulling image %s:%s", app.Image, branch)
-				if res := execute("docker", "pull", app.Image+":"+branch); res != nil {
+				if res := pullImage(app.Image, branch); res != nil {
 					err("Pull returned non-zero status")
 					os.Exit(ExecuteFailed)
 				}
@@ -209,7 +209,7 @@ func Pull(opts BuildOptions) {
 			if opts.Commit_tags {
 				rev := getRevision(opts.Long_sha)
 				info("Pulling image %s:%s", app.Image, rev)
-				if res := execute("docker", "pull", app.Image+":"+rev); res != nil {
+				if res := pullImage(app.Image, rev); res != nil {
 					err("Pull returned non-zero status")
 					os.Exit(ExecuteFailed)
 				}

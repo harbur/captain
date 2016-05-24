@@ -38,3 +38,13 @@ func TestPostFail(t *testing.T) {
 	res := Post(app)
 	assert.NotNil(t, res, "Error returned")
 }
+
+func TestDownloadFile(t *testing.T) {
+	res := downloadFile("/tmp/captain.html", "https://github.com/harbur/captain")
+	assert.Nil(t, res, "captain")
+}
+
+func TestFindLastVersion(t *testing.T) {
+	res := findLastVersion()
+	assert.NotNil(t, res, "Last version exists")
+}
