@@ -5,38 +5,43 @@ import (
 	"testing"
 )
 
-func TestPre(t *testing.T) {
-	app := App{
-		Pre: []string{"echo test"},
-	}
-	res := Pre(app)
+// Test Fixtures
+var validApp = App{
+	Image: "",
+	Pre:   []string{"echo running pre"},
+	Post:  []string{"echo running post"},
+}
 
+var invalidApp = App{
+	Pre:  []string{"nonexistingPreCommand"},
+	Post: []string{"nonexistingPostCommand"},
+}
+
+// Pre Command
+func TestPre(t *testing.T) {
+	res := Pre(validApp)
 	assert.Nil(t, res, "No error returned")
 }
 
 func TestPreFail(t *testing.T) {
-	app := App{
-		Pre: []string{"nonexistingCommand"},
-	}
-	res := Pre(app)
+	res := Pre(invalidApp)
 	assert.NotNil(t, res, "Error returned")
 }
 
+// Post Command
 func TestPost(t *testing.T) {
-	app := App{
-		Post: []string{"echo test"},
-	}
-	res := Post(app)
-
+	res := Post(validApp)
 	assert.Nil(t, res, "No error returned")
 }
 
 func TestPostFail(t *testing.T) {
-	app := App{
-		Post: []string{"nonexistingCommand"},
-	}
-	res := Post(app)
+	res := Post(invalidApp)
 	assert.NotNil(t, res, "Error returned")
+}
+
+// SelfUpdate Command
+func TestSelfUpdate(t *testing.T) {
+	SelfUpdate()
 }
 
 func TestDownloadFile(t *testing.T) {
@@ -47,8 +52,4 @@ func TestDownloadFile(t *testing.T) {
 func TestFindLastVersion(t *testing.T) {
 	res := findLastVersion()
 	assert.NotNil(t, res, "Last version exists")
-}
-
-func TestSelfUpdate(t *testing.T) {
-	SelfUpdate()
 }
