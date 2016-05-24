@@ -9,20 +9,20 @@ import (
 )
 
 func TestBuildImage(t *testing.T) {
-	app := App{Build: "test/noCaptainYML/Dockerfile", Image: "captain_test"}
+	app := App{Build: basedir + "/test/noCaptainYML/Dockerfile", Image: "captain_test"}
 	res := buildImage(app, "latest", false)
 	assert.Nil(t, res, "Docker build should not return any error")
 }
 
 func TestBuildImageError(t *testing.T) {
-	app := App{Build: "test/noCaptainYML/Dockerfile.error", Image: "captain_test"}
+	app := App{Build: basedir + "/test/noCaptainYML/Dockerfile.error", Image: "captain_test"}
 	res := buildImage(app, "latest", false)
 	assert.NotNil(t, res, "Docker build should return an error")
 }
 
 func TestBuildImageCircleCI(t *testing.T) {
 	os.Setenv("CIRCLECI", "true")
-	app := App{Build: "test/noCaptainYML/Dockerfile", Image: "captain_test"}
+	app := App{Build: basedir + "/test/noCaptainYML/Dockerfile", Image: "captain_test"}
 	res := buildImage(app, "latest", false)
 	assert.Nil(t, res, "Docker build should not return any error")
 }

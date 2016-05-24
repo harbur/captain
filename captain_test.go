@@ -39,6 +39,17 @@ func TestPostFail(t *testing.T) {
 	assert.NotNil(t, res, "Error returned")
 }
 
+// Build Command
+func TestBuild(t *testing.T) {
+	var testConfig = readConfig(configFile("test/Simple/captain.yml"))
+
+	var buildOpts = BuildOptions{
+		Config: testConfig,
+	}
+
+	Build(buildOpts)
+}
+
 // SelfUpdate Command
 func TestSelfUpdate(t *testing.T) {
 	SelfUpdate()

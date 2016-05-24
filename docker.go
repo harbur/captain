@@ -41,7 +41,6 @@ func buildImage(app App, tag string, force bool) error {
 			buildArgSet.slice = append(buildArgSet.slice, docker.BuildArg{Name: k, Value: arg})
 		}
 	}
-
 	opts := docker.BuildImageOptions{
 		Name:                app.Image + ":" + tag,
 		Dockerfile:          filepath.Base(app.Build),
