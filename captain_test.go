@@ -41,13 +41,24 @@ func TestPostFail(t *testing.T) {
 
 // Build Command
 func TestBuild(t *testing.T) {
-	var testConfig = readConfig(configFile("test/Simple/captain.yml"))
+	var testConfig = readConfig(configFile(basedir + "/test/Simple/captain.yml"))
 
 	var buildOpts = BuildOptions{
 		Config: testConfig,
 	}
 
 	Build(buildOpts)
+}
+
+// Pull Command
+func TestPullNoBranchTags(t *testing.T) {
+	var testConfig = readConfig(configFile(basedir + "/test/alpine/captain.yml"))
+
+	var buildOpts = BuildOptions{
+		Config:      testConfig,
+		Branch_tags: false,
+	}
+	Pull(buildOpts)
 }
 
 // SelfUpdate Command
