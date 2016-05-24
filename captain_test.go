@@ -50,6 +50,17 @@ func TestBuild(t *testing.T) {
 	Build(buildOpts)
 }
 
+// Test Command
+func TestTest(t *testing.T) {
+	var testConfig = readConfig(configFile(basedir + "/test/Simple/captain.yml"))
+
+	var buildOpts = BuildOptions{
+		Config: testConfig,
+	}
+
+	Test(buildOpts)
+}
+
 // Pull Command
 func TestPullNoBranchTags(t *testing.T) {
 	var testConfig = readConfig(configFile(basedir + "/test/alpine/captain.yml"))
