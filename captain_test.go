@@ -61,6 +61,16 @@ func TestPullNoBranchTags(t *testing.T) {
 	Pull(buildOpts)
 }
 
+// Purge Command
+func TestPurge(t *testing.T) {
+	var testConfig = readConfig(configFile(basedir + "/test/alpine/captain.yml"))
+
+	var buildOpts = BuildOptions{
+		Config: testConfig,
+	}
+	Purge(buildOpts)
+}
+
 // SelfUpdate Command
 func TestSelfUpdate(t *testing.T) {
 	SelfUpdate()
