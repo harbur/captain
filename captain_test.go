@@ -48,3 +48,7 @@ func TestFindLastVersion(t *testing.T) {
 	res := findLastVersion()
 	assert.NotNil(t, res, "Last version exists")
 }
+
+func TestSelfUpdate(t *testing.T) {
+	SelfUpdate()
+}
