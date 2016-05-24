@@ -73,6 +73,9 @@ func TestPurge(t *testing.T) {
 
 // SelfUpdate Command
 func TestSelfUpdate(t *testing.T) {
+	// First Time Self update
+	SelfUpdate()
+	// Already Installed last version
 	SelfUpdate()
 }
 
