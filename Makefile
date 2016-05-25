@@ -16,4 +16,6 @@ goconvey:
 
 
 cross:
+	mkdir -p build
 	gox --os windows --os linux --os darwin --arch 386 --arch amd64 github.com/harbur/captain/cmd/captain
+	mv captain_{darwin,linux,windows}_* build
