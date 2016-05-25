@@ -13,10 +13,9 @@ echo "Running tests..."
 go test
 
 echo "Update version..."
-echo "v${version}" > VERSION
-sed -i.bak 's/fmt\.Println("v[0-9]*\.[0-9]*\.[0-9]*")/fmt.Println("v'$version'")/' cmd/captain/cmd.go
-sed -i.bak 's/captain\/releases\/download\/v[0-9]*\.[0-9]*\.[0-9]*\/captain/captain\/releases\/download\/v'$version'\/captain/' README.md
-rm cmd/captain/cmd.go.bak README.md.bak
+echo -n "v${version}" > VERSION
+sed -i '' 's/fmt\.Println("v[0-9]*\.[0-9]*\.[0-9]*")/fmt.Println("v'$version'")/' cmd/captain/cmd.go
+sed -i '' 's/v[0-9]*\.[0-9]*\.[0-9]*/v'$version'/' README.md
 
 echo "Build binaries..."
 make cross
