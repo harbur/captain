@@ -36,6 +36,7 @@ mkdir -p $CAPTAIN_BIN_DIR $CAPTAIN_BINARIES_DIR
 echo "Start downloading Captain ${CAPTAIN_CURRENT_VERSION_URL}"
 curl -sSL https://github.com/harbur/captain/releases/download/${CAPTAIN_CURRENT_VERSION_URL}/${CAPTAIN_DISTRIBUTION} > ${CAPTAIN_CURRENT_VERSION_PATH}
 ln -snf ${CAPTAIN_CURRENT_VERSION_PATH} "${CAPTAIN_BIN_DIR}/captain"
+chmod +x "${CAPTAIN_BIN_DIR}/captain"
 
 echo "Captain ${CAPTAIN_CURRENT_VERSION_URL} installed"
 echo ""
