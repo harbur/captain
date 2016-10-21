@@ -207,7 +207,11 @@ func visit(namespace string) filepath.WalkFunc {
 			// Get Parent Dirname
 			absolutePath, _ := filepath.Abs(path)
 			var image = strings.ToLower(filepath.Base(filepath.Dir(absolutePath)))
-			imagesMap[path] = namespace + "/" + image + strings.ToLower(filepath.Ext(path))
+			delimitedNamespace := namespace
+			if !strings.Contains(namespace, "/") {
+				delimitedNamespace += "/"
+			}
+			imagesMap[path] = delimitedNamespace + image + strings.ToLower(filepath.Ext(path))
 			debug("Located %s will be used to create %s", path, imagesMap[path])
 		}
 		return nil
