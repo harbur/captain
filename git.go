@@ -33,7 +33,9 @@ func getBranches(all_branches bool) []string {
 		branches = strings.Split(branches_str, "\n")
 
 		// Branches list is separated by spaces. Let's put it in an array
-		labels = append(labels, branches...)
+		if !strings.Contains(branches_str, "tags") {
+			labels = append(labels, branches...)
+		}
 	}
 
 	tags_str, _ := oneliner("git", "tag", "--points-at", "HEAD")
