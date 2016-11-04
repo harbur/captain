@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 
 	"github.com/fsouza/go-dockerclient"
 )
@@ -67,11 +68,21 @@ func buildImage(app App, tag string, force bool) error {
 }
 
 func pushImage(image string, version string) error {
-	return execute("docker", "push", image+":"+version)
+	// Check if Google Container Registry is used
+	if match, _ := regexp.MatchString(`(.*\.)?gcr\.io\/`, image); match {
+		return execute("gcloud", "docker", "--", "push", image+":"+version)
+	} else {
+		return execute("docker", "push", image+":"+version)
+	}
 }
 
 func pullImage(image string, version string) error {
-	return execute("docker", "pull", image+":"+version)
+	// Check if Google Container Registry is used
+	if match, _ := regexp.MatchString(`(.*\.)?gcr\.io\/`, image); match {
+		return execute("gcloud", "docker", "--", "pull", image+":"+version)
+	} else {
+		return execute("docker", "pull", image+":"+version)
+	}
 }
 
 func tagImage(app App, origin string, tag string) error {
