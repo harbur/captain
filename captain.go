@@ -46,6 +46,7 @@ func Post(app App) error {
 
 type BuildOptions struct {
 	Config       Config
+	Tag          string
 	Force        bool
 	All_branches bool
 	Long_sha     bool
@@ -77,6 +78,11 @@ func Build(opts BuildOptions) {
 			if res != nil {
 				os.Exit(BuildFailed)
 			}
+
+			// Add additional user-defined Tag
+			if opts.Tag != "" {
+				tagImage(app, "latest", opts.Tag)
+			}
 		} else {
 			// Skip build if there are no local changes and the commit is already built
 			if !isDirty() && imageExist(app, rev) && !opts.Force {
@@ -94,6 +100,10 @@ func Build(opts BuildOptions) {
 					}
 				}
 
+				// Add additional user-defined Tag
+				if opts.Tag != "" {
+					tagImage(app, rev, opts.Tag)
+				}
 			} else {
 				// Performing [build latest|tag latest@rev|tag latest@branch]
 
@@ -119,6 +129,11 @@ func Build(opts BuildOptions) {
 						if res != nil {
 							os.Exit(TagFailed)
 						}
+					}
+
+					// Add additional user-defined Tag
+					if opts.Tag != "" {
+						tagImage(app, rev, opts.Tag)
 					}
 				}
 			}
@@ -184,6 +199,15 @@ func Push(opts BuildOptions) {
 					os.Exit(ExecuteFailed)
 				}
 			}
+
+			// Add additional user-defined Tag
+			if opts.Tag != "" {
+				info("Pushing image %s:%s", app.Image, opts.Tag)
+				if res := pushImage(app.Image, opts.Tag); res != nil {
+					err("Push returned non-zero status")
+					os.Exit(ExecuteFailed)
+				}
+			}
 		}
 	}
 }
@@ -210,6 +234,15 @@ func Pull(opts BuildOptions) {
 				rev := getRevision(opts.Long_sha)
 				info("Pulling image %s:%s", app.Image, rev)
 				if res := pullImage(app.Image, rev); res != nil {
+					err("Pull returned non-zero status")
+					os.Exit(ExecuteFailed)
+				}
+			}
+
+			// Add additional user-defined Tag
+			if opts.Tag != "" {
+				info("Pulling image %s:%s", app.Image, opts.Tag)
+				if res := pullImage(app.Image, opts.Tag); res != nil {
 					err("Pull returned non-zero status")
 					os.Exit(ExecuteFailed)
 				}
