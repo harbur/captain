@@ -17,6 +17,7 @@ type Options struct {
 	namespace string
 	config    string
 	images    []string
+	tag       string
 
 	// Options to define the docker tags context
 	all_branches bool
@@ -41,6 +42,7 @@ func handleCmd() {
 
 			buildOpts := captain.BuildOptions{
 				Config:       config,
+				Tag:          options.tag,
 				Force:        options.force,
 				All_branches: options.all_branches,
 				Long_sha:     options.long_sha,
@@ -65,6 +67,7 @@ func handleCmd() {
 
 			buildOpts := captain.BuildOptions{
 				Config:       config,
+				Tag:          options.tag,
 				Force:        options.force,
 				All_branches: options.all_branches,
 				Long_sha:     options.long_sha,
@@ -91,6 +94,7 @@ func handleCmd() {
 
 			buildOpts := captain.BuildOptions{
 				Config:       config,
+				Tag:          options.tag,
 				Force:        options.force,
 				All_branches: options.all_branches,
 				Long_sha:     options.long_sha,
@@ -117,6 +121,7 @@ func handleCmd() {
 
 			buildOpts := captain.BuildOptions{
 				Config:       config,
+				Tag:          options.tag,
 				Force:        options.force,
 				All_branches: options.all_branches,
 				Long_sha:     options.long_sha,
@@ -164,7 +169,7 @@ func handleCmd() {
 		Short: "Display version",
 		Long:  `Displays the version of Captain.`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("v1.0.0")
+			fmt.Println("v1.1.0")
 		},
 	}
 
@@ -181,15 +186,23 @@ It works by reading captain.yaml file which describes how to build, test, push a
 	captainCmd.PersistentFlags().StringVarP(&options.namespace, "namespace", "N", getNamespace(), "Set default image namespace")
 	captainCmd.PersistentFlags().BoolVarP(&color.NoColor, "no-color", "n", false, "Disable color output")
 	captainCmd.PersistentFlags().BoolVarP(&options.long_sha, "long-sha", "l", false, "Use the long git commit SHA when referencing revisions")
+
 	cmdBuild.Flags().BoolVarP(&options.force, "force", "f", false, "Force build even if image is already built")
 	cmdBuild.Flags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Build all branches on specific commit instead of just working branch")
+	cmdBuild.Flags().StringVarP(&options.tag, "tag", "t", "", "Tag version")
+
 	cmdPull.Flags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Pull all branches on specific commit instead of just working branch")
-	cmdPush.Flags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Push all branches on specific commit instead of just working branch")
-	cmdPurge.Flags().BoolVarP(&options.force, "dangling", "d", false, "Remove dangling images")
 	cmdPull.Flags().BoolVarP(&options.branch_tags, "branch-tags", "b", true, "Pull the 'branch' docker tags")
-	cmdPush.Flags().BoolVarP(&options.branch_tags, "branch-tags", "b", true, "Push the 'branch' docker tags")
 	cmdPull.Flags().BoolVarP(&options.commit_tags, "commit-tags", "c", false, "Pull the 'commit' docker tags")
+	cmdPull.Flags().StringVarP(&options.tag, "tag", "t", "", "Tag version")
+
+	cmdPush.Flags().BoolVarP(&options.all_branches, "all-branches", "B", false, "Push all branches on specific commit instead of just working branch")
+	cmdPush.Flags().BoolVarP(&options.branch_tags, "branch-tags", "b", true, "Push the 'branch' docker tags")
 	cmdPush.Flags().BoolVarP(&options.commit_tags, "commit-tags", "c", false, "Push the 'commit' docker tags")
+	cmdPush.Flags().StringVarP(&options.tag, "tag", "t", "", "Tag version")
+
+	cmdPurge.Flags().BoolVarP(&options.force, "dangling", "d", false, "Remove dangling images")
+
 	captainCmd.AddCommand(cmdBuild, cmdTest, cmdPush, cmdPull, cmdVersion, cmdPurge, cmdSelfUpdate)
 	captainCmd.Execute()
 }
