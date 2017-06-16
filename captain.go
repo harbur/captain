@@ -156,7 +156,7 @@ func Test(opts BuildOptions) {
 			res := execute("bash", "-c", value)
 			if res != nil {
 				err("Test execution returned non-zero status")
-				return
+				os.Exit(ExecuteFailed)
 			}
 		}
 	}
