@@ -4,7 +4,7 @@ imports:
 - name: github.com/fatih/color
   version: 533cd7fd8a85905f67a1753afb4deddc85ea174f
 - name: github.com/fsouza/go-dockerclient
-  version: d9a325f6111a14ebceefba8ff6afeb3bdaa72729
+  version: 4bc6a18363f79b32c26f92e2e6d8bfd30d79a770
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/spf13/cobra
