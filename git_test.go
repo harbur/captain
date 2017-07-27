@@ -34,12 +34,10 @@ func TestGitIsGit(t *testing.T) {
 }
 
 func TestgetBranchesNotTags(t *testing.T) {
-	oneLinerFunc = TestMockOneLine
-	val := 
-
-	assert.Equal(t, []{"master"})
+	oneLinerFunc = MockOneLine
+	assert.Equal(t, getBranches(true), []string{"master"})
 }
 
-func TestMockOneLine(name string, arg ...string) (string, error) {
+func MockOneLine(name string, arg ...string) (string, error) {
 	return name, nil
 }
