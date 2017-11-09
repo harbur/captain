@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var oneLinerFunc = oneliner
+
 func getRevision(long_sha bool) string {
 	params := []string{"rev-parse"}
 	if !long_sha {
@@ -12,7 +14,7 @@ func getRevision(long_sha bool) string {
 	}
 
 	params = append(params, "HEAD")
-	res, _ := oneliner("git", params...)
+	res, _ := oneLinerFunc("git", params...)
 	return res
 }
 
@@ -20,9 +22,9 @@ func getBranches(all_branches bool) []string {
 	// Labels (branches + tags)
 	var labels = []string{}
 
-	branches_str, _ := oneliner("git", "name-rev", "--name-only", "HEAD")
+	branches_str, _ := oneLinerFunc("git", "name-rev", "--name-only", "HEAD")
 	if all_branches {
-		branches_str, _ = oneliner("git", "branch", "--no-column", "--contains", "HEAD")
+		branches_str, _ = oneLinerFunc("git", "branch", "--no-column", "--contains", "HEAD")
 	}
 
 	var branches = make([]string, 5)
@@ -33,10 +35,13 @@ func getBranches(all_branches bool) []string {
 		branches = strings.Split(branches_str, "\n")
 
 		// Branches list is separated by spaces. Let's put it in an array
-		labels = append(labels, branches...)
+		t := regexp.MustCompile("^[tags/]+")
+		if !t.Match([]byte(branches_str)) {
+			labels = append(labels, branches...)
+		}
 	}
 
-	tags_str, _ := oneliner("git", "tag", "--points-at", "HEAD")
+	tags_str, _ := oneLinerFunc("git", "tag", "--points-at", "HEAD")
 
 	if tags_str != "" {
 		tags := strings.Split(tags_str, "\n")
@@ -65,7 +70,7 @@ func getBranches(all_branches bool) []string {
 }
 
 func isDirty() bool {
-	res, _ := oneliner("git", "status", "--porcelain")
+	res, _ := oneLinerFunc("git", "status", "--porcelain")
 	return len(res) > 0
 }
 

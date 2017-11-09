@@ -32,3 +32,12 @@ func TestGitIsDirty(t *testing.T) {
 func TestGitIsGit(t *testing.T) {
 	assert.Equal(t, true, isGit(), "There should be a git repository")
 }
+
+func TestgetBranchesNotTags(t *testing.T) {
+	oneLinerFunc = MockOneLine
+	assert.Equal(t, getBranches(true), []string{"master"})
+}
+
+func MockOneLine(name string, arg ...string) (string, error) {
+	return name, nil
+}
