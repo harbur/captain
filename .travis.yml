@@ -15,9 +15,9 @@ before_install:
   - glide install
   - go get
 
-script:
- - go test -v -covermode=count -coverprofile=coverage.out
- - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+#script:
+# - go test -v -covermode=count -coverprofile=coverage.out
+#  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
 
 # calls goreleaser
 deploy:
