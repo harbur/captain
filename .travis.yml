@@ -1,7 +1,7 @@
 language: go
 
 go: 
- - 1.6
+ - 1.11
 
 go_import_path: github.com/harbur/captain
 
