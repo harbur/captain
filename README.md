@@ -18,7 +18,7 @@ From the other side, you can now pull the feature branch you want to test, or cr
 
 To install Captain, run:
 ```
-curl -sSL https://raw.githubusercontent.com/harbur/captain/v1.1.2/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/harbur/captain/v1.1.3/install.sh | bash
 ```
 
 You will need to add `~/.captain/bin` in your `PATH`. E.g. in your `.bashrc` or `.zshrc` add:
