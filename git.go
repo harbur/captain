@@ -22,13 +22,16 @@ func getBranches(all_branches bool) []string {
 
 	branches_str, _ := oneliner("git", "name-rev", "--name-only", "--exclude=tags/*", "HEAD")
 	if all_branches {
-		branches_str, _ = oneliner("git", "branch", "--no-column", "--contains", "HEAD")
+		branches_str, _ = oneliner("git", "branch", "--no-column", "--points-at", "HEAD")
 	}
 
 	var branches = make([]string, 5)
 	if branches_str != "" {
 		// Remove asterisk from branches list
 		r := regexp.MustCompile("[\\* ] ")
+		branches_str = r.ReplaceAllString(branches_str, "")
+		// Remove "(HEAD detached at..." if not on a branch
+		r = regexp.MustCompile("\\(HEAD detached at .*\\)")
 		branches_str = r.ReplaceAllString(branches_str, "")
 		branches = strings.Split(branches_str, "\n")
 
@@ -45,23 +48,26 @@ func getBranches(all_branches bool) []string {
 		labels = append(labels, tags...)
 	}
 
+	var cleanLabels = []string{}
 	for key := range labels {
+		var label = labels[key]
 		// Remove start of "heads/origin" if exist
-		r := regexp.MustCompile("^heads\\/origin\\/")
-		labels[key] = r.ReplaceAllString(labels[key], "")
+		label = regexp.MustCompile("^heads\\/origin\\/").ReplaceAllString(label, "")
 
 		// Remove start of "remotes/origin" if exist
-		r = regexp.MustCompile("^remotes\\/origin\\/")
-		labels[key] = r.ReplaceAllString(labels[key], "")
+		label = regexp.MustCompile("^remotes\\/origin\\/").ReplaceAllString(label, "")
 
 		// Replace all "/" with "."
-		labels[key] = strings.Replace(labels[key], "/", ".", -1)
+		label = strings.Replace(label, "/", ".", -1)
 
 		// Replace all "~" with "."
-		labels[key] = strings.Replace(labels[key], "~", ".", -1)
-	}
+		label = strings.Replace(label, "~", ".", -1)
 
-	return labels
+		if label != "" {
+			cleanLabels = append(cleanLabels, label)
+		}
+	}
+	return cleanLabels
 }
 
 func isDirty() bool {
