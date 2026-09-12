@@ -1,6 +1,8 @@
 package captain // import "github.com/harbur/captain"
 
 import (
+	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -31,4 +33,16 @@ func TestGitIsDirty(t *testing.T) {
 
 func TestGitIsGit(t *testing.T) {
 	assert.Equal(t, true, isGit(), "There should be a git repository")
+}
+
+// Unlike TestGitIsDirty above, this creates its own controlled untracked file
+// instead of relying on the ambient state of the checkout.
+func TestGitIsDirtyWithUntrackedFile(t *testing.T) {
+	marker := basedir + "/.captain_isdirty_marker_test"
+	if err := ioutil.WriteFile(marker, []byte("x"), 0644); err != nil {
+		t.Fatalf("failed to create marker file: %v", err)
+	}
+	defer os.Remove(marker)
+
+	assert.True(t, isDirty(), "An untracked file should make the repository report as dirty")
 }
