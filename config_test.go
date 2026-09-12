@@ -1,9 +1,12 @@
 package captain // import "github.com/harbur/captain"
 
 import (
-	"github.com/stretchr/testify/assert"
+	"encoding/json"
+	"errors"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var basedir, _ = os.Getwd()
@@ -61,4 +64,39 @@ func TestGetApp(t *testing.T) {
 	c := NewConfig("", basedir+"/test/Simple/captain.yml", false)
 	app := c.GetApp("web")
 	assert.Equal(t, "harbur/test_web", app.Image, "Should return web image")
+}
+
+func TestConfigFilesDefault(t *testing.T) {
+	c := configFile("")
+	assert.Equal(t, "captain.yml", c, "Should default to captain.yml when no path is given")
+}
+
+func TestGetAppNonExistent(t *testing.T) {
+	c := NewConfig("", basedir+"/test/Simple/captain.yml", false)
+	app := c.GetApp("nonexistent")
+	assert.Equal(t, App{}, app, "Should return an empty App when the name is not found")
+}
+
+// displaySyntaxError is written to format a *json.SyntaxError, even though the
+// current caller (unmarshal) only ever feeds it YAML errors - exercise it
+// directly with the error type it actually knows how to render.
+func TestDisplaySyntaxErrorWithJSONSyntaxError(t *testing.T) {
+	data := []byte("line one\nline two\n{ invalid json")
+	var v interface{}
+	jsonErr := json.Unmarshal(data, &v)
+
+	syntaxErr, ok := jsonErr.(*json.SyntaxError)
+	if !ok {
+		t.Fatalf("expected json.Unmarshal to return a *json.SyntaxError, got %T", jsonErr)
+	}
+
+	res := displaySyntaxError(data, syntaxErr)
+	assert.Error(t, res, "Should format a human-readable error")
+	assert.Contains(t, res.Error(), "Error in line", "Should mention the offending line")
+}
+
+func TestDisplaySyntaxErrorWithNonSyntaxError(t *testing.T) {
+	original := errors.New("some other kind of failure")
+	res := displaySyntaxError([]byte("irrelevant"), original)
+	assert.Equal(t, original, res, "Should return the original error untouched when it isn't a *json.SyntaxError")
 }
