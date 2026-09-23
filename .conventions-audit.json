@@ -1,0 +1,18 @@
+{
+  "last_audited": "2026-09-23",
+  "skill_commit": "ba74b0c744f8ddfddc40ff91311f0cf2ec0fe696",
+  "proposed": [
+    {
+      "gap": "ci-travis-to-github-actions",
+      "pr": 90,
+      "status": "open",
+      "date": "2026-09-23"
+    }
+  ],
+  "open_gaps": [
+    "missing-renovate-json: no renovate.json at the repo root extending github>harbur/renovate-config, where skills/infra-deploy/SKILL.md's Dependency updates section requires one in every repo. Likely explains why go.mod is pinned to 2017-2019-era dependency versions. Small, mechanical - good next candidate.",
+    "test-fixtures-use-removed-docker-image: docker_test.go/captain_test.go fixtures (TestBuild, TestBuildImage, TestTagImage, TestImageExist, TestPullNoBranchTags) build or pull golang:1.4.2/golang:1.6, both removed from Docker Hub (schema-v1 manifests no longer served) - these fail identically in any environment. This PR's new CI workflow skips them rather than fixing them, to keep the CI-runner migration a single mechanical change; fixing the fixtures (e.g. moving to a current base image) is a separate, small effort.",
+    "legacy-go-toolchain-and-deps: go.mod declares go 1.12 and pins many indirect dependencies (docker/docker, fsouza/go-dockerclient, etc.) to pre-modules commit-hash versions. Builds fine under a modern Go toolchain today, but bumping these is a larger, non-mechanical dependency-by-dependency effort, likely easier once Renovate (above) is in place."
+  ],
+  "clean": false
+}
