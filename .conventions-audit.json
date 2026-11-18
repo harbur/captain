@@ -4,7 +4,7 @@
   "proposed": [
     {
       "gap": "add-renovate-json",
-      "pr": null,
+      "pr": 91,
       "status": "open",
       "date": "2026-11-18"
     }
