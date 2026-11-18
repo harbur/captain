@@ -1,0 +1,17 @@
+{
+  "last_audited": "2026-11-18",
+  "skill_commit": "fe8b35f5543a05ecc44a10485b4dd6f8777f947d",
+  "proposed": [
+    {
+      "gap": "add-renovate-json",
+      "pr": 91,
+      "status": "open",
+      "date": "2026-11-18"
+    }
+  ],
+  "open_gaps": [
+    "migrate-travis-ci-to-github-actions (blocked: go test ./... has a pre-existing failure in TestBuild - it pulls the ancient golang:1.4.2 base image, whose v1 manifest is rejected by modern containerd snapshotter-backed Docker; unrelated to this PR, but must be resolved or worked around before a GitHub Actions test job can be added cleanly)",
+    "makefile-well-documented-format (Makefile lacks .DEFAULT_GOAL, ##@ section headers, per-target ## descriptions, and the prescribed help target)"
+  ],
+  "clean": false
+}
